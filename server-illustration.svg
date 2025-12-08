@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" style="max-width: 100%; height: auto;">
+  <!-- Background -->
+  <defs>
+    <!-- Gradients for Node A (Electric Blue) -->
+    <linearGradient id="nodeAGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563EB;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1D4ED8;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Gradients for Node B (Vibrant Purple) -->
+    <linearGradient id="nodeBGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#9333EA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Glow effect -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- LED blink animation for Node A (more active) -->
+    <animate id="blinkA1" attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/>
+    <animate id="blinkA2" attributeName="opacity" values="1;0.3;1" dur="2s" begin="0.3s" repeatCount="indefinite"/>
+    <animate id="blinkA3" attributeName="opacity" values="1;0.3;1" dur="1.8s" begin="0.6s" repeatCount="indefinite"/>
+
+    <!-- LED blink animation for Node B (calmer) -->
+    <animate id="blinkB1" attributeName="opacity" values="1;0.5;1" dur="3s" repeatCount="indefinite"/>
+    <animate id="blinkB2" attributeName="opacity" values="1;0.5;1" dur="3.5s" begin="0.8s" repeatCount="indefinite"/>
+  </defs>
+
+  <!-- Dark background -->
+  <rect width="800" height="400" fill="#0f0f1a"/>
+
+  <!-- Connection lines (dotted, gentle) -->
+  <line x1="230" y1="200" x2="370" y2="200" stroke="#3B82F6" stroke-width="2" stroke-dasharray="5,5" opacity="0.4">
+    <animate attributeName="stroke-dashoffset" from="0" to="10" dur="2s" repeatCount="indefinite"/>
+  </line>
+  <line x1="570" y1="200" x2="430" y2="200" stroke="#A855F7" stroke-width="2" stroke-dasharray="5,5" opacity="0.4">
+    <animate attributeName="stroke-dashoffset" from="0" to="10" dur="2s" repeatCount="indefinite"/>
+  </line>
+
+  <!-- WiFi signal waves between nodes -->
+  <path d="M 380 190 Q 400 180, 420 190" stroke="#3B82F6" stroke-width="1.5" fill="none" opacity="0.3">
+    <animate attributeName="opacity" values="0.3;0.7;0.3" dur="3s" repeatCount="indefinite"/>
+  </path>
+  <path d="M 380 200 Q 400 190, 420 200" stroke="#3B82F6" stroke-width="1.5" fill="none" opacity="0.2">
+    <animate attributeName="opacity" values="0.2;0.6;0.2" dur="3s" begin="0.5s" repeatCount="indefinite"/>
+  </path>
+  <path d="M 380 210 Q 400 220, 420 210" stroke="#A855F7" stroke-width="1.5" fill="none" opacity="0.3">
+    <animate attributeName="opacity" values="0.3;0.7;0.3" dur="3s" begin="1s" repeatCount="indefinite"/>
+  </path>
+
+  <!-- Node A (Left - Electric Blue - Connection-Optimized) -->
+  <g id="nodeA">
+    <!-- Server chassis -->
+    <rect x="50" y="120" width="180" height="160" rx="8" fill="url(#nodeAGradient)" stroke="#3B82F6" stroke-width="2" filter="url(#glow)"/>
+
+    <!-- Front panel details -->
+    <rect x="60" y="135" width="160" height="30" rx="4" fill="#1e3a8a" opacity="0.5"/>
+    <rect x="60" y="175" width="160" height="35" rx="4" fill="#1e3a8a" opacity="0.3"/>
+    <rect x="60" y="220" width="160" height="50" rx="4" fill="#1e3a8a" opacity="0.3"/>
+
+    <!-- LED indicators (more active) -->
+    <circle cx="75" cy="150" r="4" fill="#22D3EE">
+      <animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="90" cy="150" r="4" fill="#22D3EE">
+      <animate attributeName="opacity" values="1;0.3;1" dur="2s" begin="0.3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="105" cy="150" r="4" fill="#22D3EE">
+      <animate attributeName="opacity" values="1;0.3;1" dur="1.8s" begin="0.6s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="120" cy="150" r="4" fill="#10B981">
+      <animate attributeName="opacity" values="1;0.4;1" dur="2.2s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Status display -->
+    <text x="140" y="196" font-family="monospace" font-size="10" fill="#60A5FA" opacity="0.9">STATUS:</text>
+    <text x="70" y="208" font-family="monospace" font-size="9" fill="#93C5FD" opacity="0.8">ACTIVE</text>
+
+    <!-- Signal strength bars -->
+    <rect x="70" y="235" width="8" height="20" fill="#3B82F6" opacity="0.9"/>
+    <rect x="82" y="230" width="8" height="25" fill="#3B82F6" opacity="0.9"/>
+    <rect x="94" y="225" width="8" height="30" fill="#3B82F6" opacity="0.9"/>
+    <rect x="106" y="235" width="8" height="20" fill="#3B82F6" opacity="0.4"/>
+    <rect x="118" y="240" width="8" height="15" fill="#3B82F6" opacity="0.3"/>
+
+    <!-- Ventilation grills -->
+    <line x1="140" y1="235" x2="210" y2="235" stroke="#1D4ED8" stroke-width="1" opacity="0.3"/>
+    <line x1="140" y1="243" x2="210" y2="243" stroke="#1D4ED8" stroke-width="1" opacity="0.3"/>
+    <line x1="140" y1="251" x2="210" y2="251" stroke="#1D4ED8" stroke-width="1" opacity="0.3"/>
+    <line x1="140" y1="259" x2="210" y2="259" stroke="#1D4ED8" stroke-width="1" opacity="0.3"/>
+  </g>
+
+  <!-- Node A Label -->
+  <text x="140" y="100" font-family="monospace" font-size="18" font-weight="bold" fill="#3B82F6" text-anchor="middle">NODE A</text>
+  <text x="140" y="118" font-family="monospace" font-size="10" fill="#60A5FA" text-anchor="middle" opacity="0.8">CONNECTION-OPTIMIZED</text>
+  <text x="140" y="300" font-family="monospace" font-size="9" fill="#93C5FD" text-anchor="middle" opacity="0.7">Uptime: ∞ | Latency: async</text>
+
+  <!-- Node B (Right - Vibrant Purple - Autonomy-Optimized) -->
+  <g id="nodeB">
+    <!-- Server chassis -->
+    <rect x="570" y="120" width="180" height="160" rx="8" fill="url(#nodeBGradient)" stroke="#A855F7" stroke-width="2" filter="url(#glow)"/>
+
+    <!-- Front panel details -->
+    <rect x="580" y="135" width="160" height="30" rx="4" fill="#581c87" opacity="0.5"/>
+    <rect x="580" y="175" width="160" height="35" rx="4" fill="#581c87" opacity="0.3"/>
+    <rect x="580" y="220" width="160" height="50" rx="4" fill="#581c87" opacity="0.3"/>
+
+    <!-- LED indicators (calmer) -->
+    <circle cx="595" cy="150" r="4" fill="#C084FC">
+      <animate attributeName="opacity" values="1;0.5;1" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="610" cy="150" r="4" fill="#C084FC">
+      <animate attributeName="opacity" values="1;0.5;1" dur="3.5s" begin="0.8s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="625" cy="150" r="4" fill="#10B981">
+      <animate attributeName="opacity" values="1;0.6;1" dur="4s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Status display -->
+    <text x="660" y="196" font-family="monospace" font-size="10" fill="#C084FC" opacity="0.9">STATUS:</text>
+    <text x="590" y="208" font-family="monospace" font-size="9" fill="#D8B4FE" opacity="0.8">STABLE</text>
+
+    <!-- Signal strength bars (fewer, showing selective connection) -->
+    <rect x="590" y="235" width="8" height="20" fill="#A855F7" opacity="0.9"/>
+    <rect x="602" y="235" width="8" height="20" fill="#A855F7" opacity="0.9"/>
+    <rect x="614" y="240" width="8" height="15" fill="#A855F7" opacity="0.6"/>
+    <rect x="626" y="245" width="8" height="10" fill="#A855F7" opacity="0.3"/>
+
+    <!-- Ventilation grills -->
+    <line x1="650" y1="235" x2="720" y2="235" stroke="#7C3AED" stroke-width="1" opacity="0.3"/>
+    <line x1="650" y1="243" x2="720" y2="243" stroke="#7C3AED" stroke-width="1" opacity="0.3"/>
+    <line x1="650" y1="251" x2="720" y2="251" stroke="#7C3AED" stroke-width="1" opacity="0.3"/>
+    <line x1="650" y1="259" x2="720" y2="259" stroke="#7C3AED" stroke-width="1" opacity="0.3"/>
+  </g>
+
+  <!-- Node B Label -->
+  <text x="660" y="100" font-family="monospace" font-size="18" font-weight="bold" fill="#A855F7" text-anchor="middle">NODE B</text>
+  <text x="660" y="118" font-family="monospace" font-size="10" fill="#C084FC" text-anchor="middle" opacity="0.8">AUTONOMY-OPTIMIZED</text>
+  <text x="660" y="300" font-family="monospace" font-size="9" fill="#D8B4FE" text-anchor="middle" opacity="0.7">Uptime: ∞ | Response: async</text>
+
+  <!-- Connection status label -->
+  <text x="400" y="165" font-family="monospace" font-size="11" fill="#94A3B8" text-anchor="middle" opacity="0.7">
+    <tspan>── PERSISTENT CONNECTION ──</tspan>
+  </text>
+  <text x="400" y="245" font-family="monospace" font-size="9" fill="#94A3B8" text-anchor="middle" opacity="0.6">
+    <tspan>No timeout | ACK optional</tspan>
+  </text>
+
+  <!-- Zero-notification indicator -->
+  <g id="zeroNotification">
+    <rect x="320" y="340" width="160" height="35" rx="6" fill="#1a1a2e" stroke="#64748B" stroke-width="1" opacity="0.8"/>
+    <text x="400" y="355" font-family="monospace" font-size="10" fill="#94A3B8" text-anchor="middle">🔕 ZERO-NOTIFICATION</text>
+    <text x="400" y="368" font-family="monospace" font-size="8" fill="#64748B" text-anchor="middle">ARCHITECTURE</text>
+  </g>
+</svg>

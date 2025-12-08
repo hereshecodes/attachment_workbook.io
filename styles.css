@@ -1864,4 +1864,50 @@ h1 {
         width: 100%;
         text-align: center;
     }
+
+    /* Systems Optimization Protocols - Mobile fixes */
+    .helps-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .helps-column h3 {
+        font-size: 0.7rem;
+    }
+
+    .helps-column ul {
+        font-size: 0.8rem;
+    }
+
+    /* Code blocks - prevent horizontal overflow */
+    pre {
+        overflow-x: auto;
+        white-space: pre;
+        font-size: 0.7rem !important;
+        padding: 12px !important;
+        margin: 0 !important;
+    }
+
+    /* Ensure collapsible content doesn't overflow */
+    .collapsible-inner {
+        padding: 16px 12px;
+        overflow-x: hidden;
+    }
+
+    /* Month navigation buttons - stack on mobile */
+    .month-navigation {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .month-nav-btn {
+        font-size: 0.75rem;
+        padding: 6px 12px;
+    }
+
+    .current-month {
+        width: 100%;
+        text-align: center;
+    }
 }
