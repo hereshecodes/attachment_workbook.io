@@ -40,14 +40,14 @@ A beautiful, interactive web app for couples to understand each other's attachme
 
 ### Mood Options
 
-**For Her (Connection-Seeking):**
+**For (Connection-Seeking):**
 - Need space, but okay
 - Feeling anxious
 - Feeling disconnected
 - Ready to reconnect
 - All good ♡
 
-**For Him (Autonomy-Valuing):**
+**For (Autonomy-Valuing):**
 - Need space, but okay
 - Feeling overwhelmed
 - Feeling disconnected
