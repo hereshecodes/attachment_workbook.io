@@ -471,9 +471,11 @@
                     checkForComboAlert(data);
                 });
 
-                historyRef.orderByChild('timestamp').limitToLast(50).on('value', (snapshot) => {
+                historyRef.on('value', (snapshot) => {
                     const history = [];
                     snapshot.forEach((child) => history.push(child.val()));
+                    // Sort by timestamp in JavaScript instead of Firebase query
+                    history.sort((a, b) => b.timestamp - a.timestamp);
                     moodHistory = history;
                     updateMoodCalendar(history);
                     
