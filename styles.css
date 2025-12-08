@@ -944,15 +944,16 @@ h1 {
     align-items: center;
     justify-content: space-between;
     padding: 16px 20px;
-    background: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.95);
     border-radius: 16px;
     cursor: pointer;
     transition: all 0.2s;
-    border: 1px solid rgba(0,0,0,0.04);
+    border: 1px solid rgba(168, 85, 247, 0.2);
 }
 
 .collapsible-header:hover {
-    background: rgba(255,255,255,0.9);
+    background: rgba(255,255,255,1);
+    border-color: rgba(168, 85, 247, 0.3);
 }
 
 .collapsible-header-left {
@@ -968,12 +969,14 @@ h1 {
 .collapsible-title {
     font-family: 'Playfair Display', serif;
     font-size: 1rem;
-    color: #4a4a5a;
+    color: #2a2a3a;
+    font-weight: 600;
 }
 
 .collapsible-toggle {
     font-size: 1rem;
-    color: #888;
+    color: #A855F7;
+    font-weight: 600;
     transition: transform 0.3s ease;
 }
 
@@ -1065,7 +1068,7 @@ h1 {
 .card-title {
     font-family: 'Playfair Display', serif;
     font-size: 1.2rem;
-    font-weight: 500;
+    font-weight: 600;
     margin-bottom: 4px;
 }
 
@@ -1087,7 +1090,7 @@ h1 {
     list-style: none;
     font-size: 0.7rem;
     line-height: 1.7;
-    color: #666666;
+    color: #3a3a3a;
     font-weight: 500;
 }
 
@@ -1118,7 +1121,7 @@ h1 {
 }
 
 .section-label {
-    font-weight: 600;
+    font-weight: 700;
     font-size: 0.45rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -1132,7 +1135,7 @@ h1 {
 .section-content {
     font-size: 0.65rem;
     line-height: 1.4;
-    color: #666666;
+    color: #3a3a3a;
     font-weight: 500;
 }
 
@@ -1141,7 +1144,7 @@ h1 {
     font-style: italic;
     line-height: 1.5;
     margin-top: 2px;
-    color: #666666;
+    color: #3a3a3a;
     font-weight: 500;
 }
 
@@ -1164,7 +1167,8 @@ h1 {
 .overlap-title {
     font-family: 'Playfair Display', serif;
     font-size: 0.9rem;
-    color: #5a4a5a;
+    color: #2a2a3a;
+    font-weight: 600;
     margin-bottom: 4px;
 }
 
@@ -1179,7 +1183,7 @@ h1 {
     list-style: none;
     font-size: 0.62rem;
     line-height: 1.8;
-    color: #666666;
+    color: #3a3a3a;
     font-weight: 600;
 }
 
@@ -1188,7 +1192,7 @@ h1 {
     padding-top: 8px;
     border-top: 1px solid rgba(100, 80, 100, 0.15);
     font-size: 0.6rem;
-    color: #6a5a6a;
+    color: #3a3a3a;
     font-weight: 600;
 }
 
@@ -1210,12 +1214,12 @@ h1 {
 
 .helps-column h3 {
     font-size: 0.55rem;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.12em;
     margin-bottom: 10px;
     padding-bottom: 6px;
-    border-bottom: 1px solid rgba(0,0,0,0.08);
+    border-bottom: 2px solid rgba(0,0,0,0.1);
 }
 
 .helps-column:nth-child(1) h3 { color: #1D4ED8; }
@@ -1226,7 +1230,7 @@ h1 {
     list-style: none;
     font-size: 0.72rem;
     line-height: 1.8;
-    color: #666666;
+    color: #3a3a3a;
     font-weight: 500;
 }
 
