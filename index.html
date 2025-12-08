@@ -466,28 +466,28 @@
                     <div class="helps-column">
                         <h3>For Her</h3>
                         <ul>
-                            <li>Trust that he'll come back</li>
-                            <li>Self soothe before reaching out</li>
-                            <li>Build a rich life outside us</li>
-                            <li>His space isn't about me</li>
+                            <li>Give space when needed, knowing we're solid</li>
+                            <li>Share feelings without needing fixing</li>
+                            <li>Trust my own rhythm and needs</li>
+                            <li>We both need processing time sometimes</li>
                         </ul>
                     </div>
                     <div class="helps-column">
                         <h3>For Us</h3>
                         <ul>
                             <li>"I feel..." instead of "You always..."</li>
-                            <li>20 min to cool off, then reconnect</li>
-                            <li>Weekly check ins reduce surprises</li>
-                            <li>Balance "us time" and "me time"</li>
+                            <li>Take breaks when needed, reconnect when ready</li>
+                            <li>Regular check-ins keep us connected</li>
+                            <li>Balance togetherness and independence</li>
                         </ul>
                     </div>
                     <div class="helps-column">
                         <h3>For Him</h3>
                         <ul>
-                            <li>Small, consistent gestures matter</li>
-                            <li>Name when you're coming back</li>
-                            <li>Proactive reassurance builds trust</li>
-                            <li>Stay 10% longer in hard moments</li>
+                            <li>Simple gestures go a long way</li>
+                            <li>A quick heads-up helps us both relax</li>
+                            <li>Sharing your thoughts strengthens us</li>
+                            <li>Being present matters more than perfection</li>
                         </ul>
                     </div>
                 </div>
@@ -641,10 +641,13 @@
             // Update URL and save
             window.history.replaceState({}, '', `?room=${roomId}`);
             localStorage.setItem('lastRoom', roomId);
-            
+
             // Load room name
             const savedName = localStorage.getItem('roomName_' + roomId);
             document.getElementById('room-name').textContent = savedName || 'Our Space';
+
+            // Load and apply display names
+            updateDisplayNames();
             
             // Update share link
             document.getElementById('share-link').value = window.location.href;
@@ -659,6 +662,15 @@
                     const data = snapshot.val() || {};
                     updateLiveStatus(data);
                     checkForComboAlert(data);
+
+                    // Load settings from Firebase
+                    if (data.settings) {
+                        localStorage.setItem('myName', data.settings.myName || 'Her');
+                        localStorage.setItem('partnerName', data.settings.partnerName || 'Him');
+                        localStorage.setItem('myPronouns', data.settings.myPronouns || 'she/her');
+                        localStorage.setItem('partnerPronouns', data.settings.partnerPronouns || 'he/him');
+                        updateDisplayNames();
+                    }
                 });
 
                 historyRef.on('value', (snapshot) => {
@@ -1364,7 +1376,23 @@
                 partnerPronouns = document.getElementById('partner-custom-pronoun').value.trim() || 'they/them';
             }
 
-            // Save to localStorage
+            const settings = {
+                myName,
+                partnerName,
+                myPronouns,
+                partnerPronouns
+            };
+
+            // Save to Firebase
+            if (roomRef) {
+                roomRef.child('settings').set(settings).then(() => {
+                    console.log('Settings saved to Firebase');
+                }).catch(err => {
+                    console.error('Failed to save settings:', err);
+                });
+            }
+
+            // Also save to localStorage as backup
             localStorage.setItem('myName', myName);
             localStorage.setItem('partnerName', partnerName);
             localStorage.setItem('myPronouns', myPronouns);
@@ -1421,7 +1449,7 @@
         <p style="font-size: 0.85rem; color: #888; margin-bottom: 12px;">
             Made with 💕 for better understanding between partners
         </p>
-        <a href="https://github.com/hereshecodes" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 20px; background: rgba(255,255,255,0.8); border: 1px solid rgba(0,0,0,0.1); text-decoration: none; color: #4a4a5a; font-size: 0.8rem; transition: all 0.2s;">
+        <a href="https://github.com/hereshecodes/attachment_workbook.io" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 20px; background: rgba(255,255,255,0.8); border: 1px solid rgba(0,0,0,0.1); text-decoration: none; color: #4a4a5a; font-size: 0.8rem; transition: all 0.2s;">
             <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
                 <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
             </svg>
