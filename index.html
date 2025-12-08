@@ -514,6 +514,7 @@
             background: linear-gradient(150deg, rgba(200, 150, 160, 0.35) 0%, rgba(180, 130, 145, 0.2) 100%);
             border: 2px solid rgba(180, 120, 135, 0.4);
             box-shadow: 0 20px 60px rgba(180, 120, 135, 0.15), inset 0 0 80px rgba(255, 255, 255, 0.4);
+            animation: gentleBreathe 8s ease-in-out infinite;
         }
 
         .circle-you {
@@ -521,6 +522,12 @@
             background: linear-gradient(150deg, rgba(75, 45, 95, 0.35) 0%, rgba(60, 35, 80, 0.25) 100%);
             border: 2px solid rgba(75, 45, 95, 0.4);
             box-shadow: 0 20px 60px rgba(75, 45, 95, 0.15), inset 0 0 80px rgba(255, 255, 255, 0.2);
+            animation: gentleBreathe 8s ease-in-out infinite 4s;
+        }
+
+        @keyframes gentleBreathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
         }
 
         .content-card {
@@ -869,6 +876,249 @@
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-16px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { transform: scale(1.1); }
+            70% { transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes emojiBounce {
+            0%, 100% { transform: translateY(0); }
+            25% { transform: translateY(-6px) rotate(-5deg); }
+            75% { transform: translateY(-3px) rotate(5deg); }
+        }
+
+        @keyframes emojiPop {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.4); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+            50% { box-shadow: 0 8px 32px rgba(140, 120, 150, 0.25); }
+        }
+
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-80px) scale(0.5); }
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideInEntry {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Page load animations */
+        .connection-bar {
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .identity-selector {
+            animation: slideDown 0.5s ease-out 0.1s both;
+        }
+
+        .live-status-card {
+            animation: cardEntrance 0.5s ease-out both;
+        }
+
+        .live-status-card.me-card {
+            animation-delay: 0.2s;
+        }
+
+        .live-status-card.you-card {
+            animation-delay: 0.3s;
+        }
+
+        /* Status card update pulse */
+        .live-status-card.just-updated {
+            animation: pulseGlow 0.8s ease-out;
+        }
+
+        /* Partner message slide in */
+        .partner-message.visible {
+            animation: slideInLeft 0.4s ease-out;
+        }
+
+        /* Mood insight panel */
+        .mood-insight.visible {
+            animation: slideDown 0.4s ease-out;
+        }
+
+        /* Signal button enhancements */
+        .signal-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .signal-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+
+        .signal-btn:active::after {
+            width: 200px;
+            height: 200px;
+        }
+
+        .signal-btn.active-me,
+        .signal-btn.active-you {
+            animation: bounceIn 0.4s ease-out;
+        }
+
+        /* Calendar entry animations */
+        .calendar-day {
+            animation: slideInEntry 0.4s ease-out both;
+        }
+
+        .calendar-day:nth-child(1) { animation-delay: 0s; }
+        .calendar-day:nth-child(2) { animation-delay: 0.05s; }
+        .calendar-day:nth-child(3) { animation-delay: 0.1s; }
+        .calendar-day:nth-child(4) { animation-delay: 0.15s; }
+        .calendar-day:nth-child(5) { animation-delay: 0.2s; }
+
+        .calendar-mood-entry {
+            transition: transform 0.2s ease;
+        }
+
+        .calendar-mood-entry:hover {
+            transform: scale(1.05);
+        }
+
+        .calendar-mood-entry .entry-emoji {
+            display: inline-block;
+            animation: gentleFloat 3s ease-in-out infinite;
+        }
+
+        .calendar-mood-entry:nth-child(odd) .entry-emoji {
+            animation-delay: 0.5s;
+        }
+
+        .calendar-mood-entry.new-entry {
+            animation: bounceIn 0.5s ease-out;
+        }
+
+        .calendar-mood-entry.new-entry .entry-emoji {
+            animation: emojiPop 0.5s ease-out;
+        }
+
+        /* Venn diagram hover effects */
+        .content-card {
+            transition: all 0.4s ease, transform 0.3s ease;
+        }
+
+        .content-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        }
+
+        .overlap-card:hover {
+            transform: translate(-50%, -50%) scale(1.02);
+        }
+
+        /* Floating hearts container */
+        .floating-hearts {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .floating-heart {
+            position: absolute;
+            font-size: 1.5rem;
+            animation: floatUp 2s ease-out forwards;
+        }
+
+        /* Legend emoji hover */
+        .legend-item .emoji {
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+
+        .legend-item:hover .emoji {
+            animation: emojiBounce 0.5s ease;
+        }
+
+        /* Identity button animations */
+        .identity-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .identity-btn.active::before {
+            content: '✓';
+            position: absolute;
+            right: 12px;
+            animation: bounceIn 0.3s ease-out;
+        }
+
+        /* Custom message box */
+        .custom-message-box {
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .send-message-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .send-message-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Helps section cards */
+        .helps-column {
+            transition: transform 0.3s ease;
+        }
+
+        .helps-column:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Copy button success animation */
+        .copy-btn.copied {
+            animation: bounceIn 0.3s ease-out;
         }
 
         /* ============ RESPONSIVE ============ */
@@ -1430,6 +1680,11 @@
                 timestamp: Date.now()
             };
 
+            // Trigger floating hearts for "all good"
+            if (moodKey === 'good') {
+                createFloatingHearts(buttonElement);
+            }
+
             // Save to Firebase
             if (isFirebaseConfigured && roomRef) {
                 roomRef.child(currentIdentity).set(update)
@@ -1454,6 +1709,33 @@
 
             // Show insight panel
             showInsight(currentIdentity, moodKey);
+        }
+
+        // ============ FLOATING HEARTS ANIMATION ============
+        function createFloatingHearts(element) {
+            const rect = element.getBoundingClientRect();
+            const container = document.createElement('div');
+            container.className = 'floating-hearts';
+            container.style.left = rect.left + rect.width / 2 + 'px';
+            container.style.top = rect.top + 'px';
+            document.body.appendChild(container);
+
+            const hearts = ['♡', '💕', '✨', '💗', '♥'];
+            
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('span');
+                    heart.className = 'floating-heart';
+                    heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                    heart.style.left = (Math.random() - 0.5) * 60 + 'px';
+                    heart.style.animationDuration = (1.5 + Math.random()) + 's';
+                    container.appendChild(heart);
+                    
+                    setTimeout(() => heart.remove(), 2000);
+                }, i * 100);
+            }
+
+            setTimeout(() => container.remove(), 3000);
         }
 
         function sendCustomMessage() {
@@ -1491,6 +1773,8 @@
         }
 
         // ============ LIVE STATUS UPDATE ============
+        let previousData = {};
+        
         function updateLiveStatus(data) {
             ['me', 'you'].forEach(person => {
                 const moodEl = document.getElementById(`live-mood-${person}`);
@@ -1498,9 +1782,20 @@
                 const cardEl = moodEl.closest('.live-status-card');
 
                 if (data && data[person]) {
+                    // Check if this is a new update
+                    const isNewUpdate = !previousData[person] || 
+                        previousData[person].timestamp !== data[person].timestamp;
+                    
                     moodEl.textContent = data[person].label;
                     moodEl.classList.add('active');
                     cardEl.classList.add('has-mood');
+                    
+                    // Trigger pulse animation on new update
+                    if (isNewUpdate) {
+                        cardEl.classList.remove('just-updated');
+                        void cardEl.offsetWidth; // Force reflow
+                        cardEl.classList.add('just-updated');
+                    }
                     
                     const time = new Date(data[person].timestamp);
                     timeEl.textContent = `Updated ${formatTime(time)}`;
@@ -1516,6 +1811,8 @@
                     timeEl.textContent = '';
                 }
             });
+            
+            previousData = JSON.parse(JSON.stringify(data || {}));
         }
 
         function formatTime(date) {
@@ -1563,6 +1860,8 @@
         }
 
         // ============ MOOD HISTORY CALENDAR ============
+        let lastHistoryTimestamp = 0;
+        
         function updateMoodCalendar(history) {
             const calendar = document.getElementById('mood-calendar');
             
@@ -1570,6 +1869,10 @@
                 calendar.innerHTML = '<div class="no-history">No mood history yet. Start sharing how you feel!</div>';
                 return;
             }
+
+            // Find newest entry timestamp
+            const newestTimestamp = Math.max(...history.map(h => h.timestamp));
+            const hasNewEntry = newestTimestamp > lastHistoryTimestamp;
 
             // Group by date
             const grouped = {};
@@ -1602,8 +1905,10 @@
                     const time = new Date(entry.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
                     const personClass = entry.person === 'me' ? 'me' : 'you';
                     const personLabel = entry.person === 'me' ? 'Her' : 'Him';
+                    const isNew = hasNewEntry && entry.timestamp === newestTimestamp;
+                    const newClass = isNew ? 'new-entry' : '';
                     
-                    html += `<div class="calendar-mood-entry ${personClass}">
+                    html += `<div class="calendar-mood-entry ${personClass} ${newClass}">
                         <span class="entry-emoji">${entry.emoji || moodEmojis[entry.mood] || '💭'}</span>
                         <span class="entry-label">${personLabel}</span>
                         <span class="entry-time">${time}</span>
@@ -1614,6 +1919,7 @@
             });
 
             calendar.innerHTML = html;
+            lastHistoryTimestamp = newestTimestamp;
         }
 
         // ============ ROOM MANAGEMENT ============
@@ -1622,7 +1928,11 @@
             navigator.clipboard.writeText(link).then(() => {
                 const btn = document.querySelector('.copy-btn');
                 btn.textContent = 'Copied!';
-                setTimeout(() => btn.textContent = 'Copy Link', 2000);
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = 'Copy Link';
+                    btn.classList.remove('copied');
+                }, 2000);
             });
         }
 
