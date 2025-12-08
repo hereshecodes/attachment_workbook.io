@@ -507,11 +507,45 @@
                     </div>
                 </div>
 
-                <div style="margin-top: 24px; padding: 16px; background: linear-gradient(135deg, #fff9e6 0%, #fff5d9 100%); border-radius: 12px; border-left: 4px solid #f0c040;">
+                <div style="background: rgba(138, 106, 154, 0.05); padding: 16px; border-radius: 12px; margin-top: 20px; font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.6; color: #5a4a6a;">
+                    <div style="margin-bottom: 12px; font-weight: 600; color: #4a3a5a;">📡 Network Traffic Flow</div>
+                    <pre style="margin: 0; white-space: pre; overflow-x: auto;">
+Request Flow:
+Node A ──[SIGNAL: need_space]──> Node B
+       <─[ACK: received]─────── Node B
+
+Response Latency:
+Fast (< 5min)  ███████████████░░░░░ 75% uptime
+Normal (< 1hr) ████████████████████░ 95% uptime
+Slow (> 1hr)   █████████████████████ 100% eventual consistency
+
+Status Codes:
+200 OK                    - System stable
+202 Accepted              - Processing async
+408 Request Timeout       - Need more time
+503 Service Unavailable   - Temporary buffer overflow</pre>
+                </div>
+
+                <div style="margin-top: 20px; padding: 16px; background: linear-gradient(135deg, #fff9e6 0%, #fff5d9 100%); border-radius: 12px; border-left: 4px solid #f0c040;">
                     <div style="font-weight: 600; color: #6a5a4a; margin-bottom: 8px;">💡 Engineering Note:</div>
                     <div style="font-size: 0.9rem; color: #6a5a4a; line-height: 1.6;">
                         This isn't about fixing bugs in each other—it's about optimizing the interface between two well-functioning systems. When Node A signals high load, Node B doesn't need to debug Node A's internals. Just acknowledge the signal and allow async processing. Both systems remain stable independently.
                     </div>
+                </div>
+
+                <div style="background: rgba(138, 106, 154, 0.05); padding: 16px; border-radius: 12px; margin-top: 20px; font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.6; color: #5a4a6a;">
+                    <div style="margin-bottom: 12px; font-weight: 600; color: #4a3a5a;">🔀 Version Control Metaphor</div>
+                    <pre style="margin: 0; white-space: pre; overflow-x: auto;">
+git log --oneline relationship.branch
+
+* a3f91c2 (HEAD) Merge: Better async communication
+* 8b2e4d1 feat: Implemented keepalive packets
+* c7a9f3e fix: Reduced timeout anxiety
+* 2d1b8a4 refactor: Optimized buffer handling
+* f5e3c2b Initial commit: Two systems connecting
+
+// No force push. No hard reset.
+// Just continuous integration.</pre>
                 </div>
             </div>
         </div>
@@ -564,36 +598,36 @@
                     label: "Need space, but okay",
                     message: "I just need a little quiet time to recharge. This isn't about you. I'll be back soon.",
                     insightTitle: "When I Need Space",
-                    insightMe: "This is healthy! Take this time to do something that fills your cup.",
-                    insightYou: "She's practicing self regulation. A simple 'take your time' means a lot."
+                    insightMe: "// STATUS: 200 OK - Processing independently. Take this time to do something that fills your cup.",
+                    insightYou: "// ACK received - She's self-regulating. A simple 'take your time' is perfect keepalive packet."
                 },
                 anxious: {
                     label: "Feeling anxious",
                     message: "I'm feeling a bit anxious right now. I don't need you to fix it. Just knowing you're there helps.",
                     insightTitle: "When I'm Feeling Anxious",
-                    insightMe: "Notice this feeling without acting on it. Try 5 deep breaths first.",
-                    insightYou: "She's being vulnerable. A heart emoji or 'I'm here' goes far."
+                    insightMe: "// High latency detected - Notice this feeling without acting on it. Try 5 deep breaths first.",
+                    insightYou: "// Signal received - She's being vulnerable. A heart emoji or 'I'm here' goes far."
                 },
                 disconnected: {
                     label: "Feeling disconnected",
                     message: "I'm feeling a bit distant from us. I'd love some quality time when you're ready.",
                     insightTitle: "When I Feel Disconnected",
-                    insightMe: "Ask: am I seeking connection or seeking reassurance?",
-                    insightYou: "She's missing you. Low pressure togetherness would help."
+                    insightMe: "// TODO: Debug - Am I seeking connection or seeking reassurance?",
+                    insightYou: "// Connection timeout - She's missing you. Low-pressure sync session would help."
                 },
                 reconnect: {
                     label: "Ready to reconnect",
                     message: "I'm feeling open and ready to connect. No pressure, just wanted you to know. ♡",
                     insightTitle: "Ready to Reconnect",
-                    insightMe: "Stay open without attaching to a specific outcome.",
-                    insightYou: "This is an invitation, not a demand. Now's a good moment."
+                    insightMe: "// READY state - Stay open without expecting specific response code.",
+                    insightYou: "// Port open - This is an invitation, not a requirement. Good time to sync."
                 },
                 good: {
                     label: "All good ♡",
                     message: "Feeling good and settled. Just wanted you to know all is well. ♡",
                     insightTitle: "All Good",
-                    insightMe: "Notice what contributed to this feeling.",
-                    insightYou: "She's content. No action needed. Just receive this."
+                    insightMe: "// 200 OK - System stable. Note what contributed to this state.",
+                    insightYou: "// All systems nominal - She's content. No action needed. Just receive this."
                 }
             },
             you: {
@@ -601,36 +635,36 @@
                     label: "Need space, but okay",
                     message: "I'm taking some time to recharge. This isn't distance, it's how I process. I'll be back.",
                     insightTitle: "When He Needs Space",
-                    insightMe: "His space is not about me. Do something nourishing for yourself.",
-                    insightYou: "Naming when you'll return helps her nervous system settle."
+                    insightMe: "// His buffer processing != connection issue. Do something nourishing for yourself.",
+                    insightYou: "// Broadcasting ETA reduces timeout anxiety - Naming when you'll return helps stabilize system."
                 },
                 overwhelmed: {
                     label: "Feeling overwhelmed",
                     message: "Feeling a bit overwhelmed right now. I need to step back and recalibrate.",
                     insightTitle: "When He's Overwhelmed",
-                    insightMe: "His withdrawal isn't punishment, it's protection. Don't chase.",
-                    insightYou: "A small gesture when you're ready bridges the gap."
+                    insightMe: "// 503 Service Temporarily Unavailable - His withdrawal is system protection, not punishment. Don't retry immediately.",
+                    insightYou: "// High load detected - A small keepalive packet when ready bridges the gap."
                 },
                 disconnected: {
                     label: "Feeling disconnected",
                     message: "I've been in my own world lately. It's not intentional. I want to find our way back.",
                     insightTitle: "When He Feels Disconnected",
-                    insightMe: "He's naming it, that's huge. Let him lead the reconnection.",
-                    insightYou: "She'll appreciate you naming this."
+                    insightMe: "// git commit -m 'Acknowledge disconnect' - He's naming it, that's huge. Let him initiate merge.",
+                    insightYou: "// Sharing internal state visibility builds trust - She'll appreciate you naming this."
                 },
                 reconnect: {
                     label: "Ready to reconnect",
                     message: "I'm feeling open and ready to be close. Just wanted you to know I'm here.",
                     insightTitle: "When He's Ready to Reconnect",
-                    insightMe: "Receive this. Don't overwhelm the moment. Match his pace.",
-                    insightYou: "Your presence is the gift."
+                    insightMe: "// Connection restored - Receive this. Don't overload. Match his bandwidth.",
+                    insightYou: "// Your uptime presence > perfection - Being available is the gift."
                 },
                 good: {
                     label: "All good ♡",
                     message: "I'm good. Feeling settled and close to you. ♡",
                     insightTitle: "All Good",
-                    insightMe: "Soak this in. This is what secure feels like.",
-                    insightYou: "Enjoy this moment of peace together."
+                    insightMe: "// 200 OK - Both systems stable. Soak this in. This is what secure feels like.",
+                    insightYou: "// Optimal throughput achieved - Enjoy this moment of low-latency connection."
                 }
             }
         };
@@ -1086,13 +1120,13 @@
 
             if (tension.includes(data.me.mood) && tension.includes(data.you.mood)) {
                 alert.classList.add('visible');
-                text.textContent = "You're both in a tender spot. Try the 20 minute rule: take space, then come back with curiosity. You've navigated this before.";
+                text.textContent = "⚠️ High latency detected on both nodes. Recommendation: Implement circuit breaker pattern (20 min cooldown), then retry with curiosity. Previous deployments successful.";
             } else if (data.me.mood === 'anxious' && (data.you.mood === 'space' || data.you.mood === 'overwhelmed')) {
                 alert.classList.add('visible');
-                text.textContent = "A familiar dance: she's reaching, he's retreating. His space isn't rejection, her reaching isn't pressure. Give it an hour.";
+                text.textContent = "🔄 Classic retry loop: Node A pinging, Node B buffering. Neither is ERROR state. Expected behavior. Auto-resolve in ~1h.";
             } else if (data.me.mood === 'good' && data.you.mood === 'good') {
                 alert.classList.add('visible');
-                text.textContent = "☀️ You're both feeling good. Soak it in. This is what you're building toward.";
+                text.textContent = "✅ 200 OK - Both systems operating at optimal throughput. Low-latency connection achieved. This is your target state.";
                 setTimeout(() => alert.classList.remove('visible'), 5000);
             } else {
                 alert.classList.remove('visible');
