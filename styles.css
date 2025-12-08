@@ -988,7 +988,7 @@ h1 {
 }
 
 .collapsible-content.open {
-    max-height: 2000px;
+    max-height: 5000px;
 }
 
 .collapsible-inner {
