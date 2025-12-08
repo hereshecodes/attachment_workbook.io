@@ -1087,6 +1087,8 @@ h1 {
     list-style: none;
     font-size: 0.7rem;
     line-height: 1.7;
+    color: #2a2a2a;
+    font-weight: 500;
 }
 
 .traits li {
@@ -1130,6 +1132,8 @@ h1 {
 .section-content {
     font-size: 0.65rem;
     line-height: 1.4;
+    color: #2a2a2a;
+    font-weight: 500;
 }
 
 .growth-item {
@@ -1137,6 +1141,8 @@ h1 {
     font-style: italic;
     line-height: 1.5;
     margin-top: 2px;
+    color: #2a2a2a;
+    font-weight: 500;
 }
 
 .overlap-card {
@@ -1173,8 +1179,8 @@ h1 {
     list-style: none;
     font-size: 0.62rem;
     line-height: 1.8;
-    color: #4a4a5a;
-    font-weight: 500;
+    color: #2a2a2a;
+    font-weight: 600;
 }
 
 .shared-lang {
@@ -1220,6 +1226,8 @@ h1 {
     list-style: none;
     font-size: 0.72rem;
     line-height: 1.8;
+    color: #2a2a2a;
+    font-weight: 500;
 }
 
 .helps-column li {
