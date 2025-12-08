@@ -1707,8 +1707,8 @@
                 updateLiveStatus(data);
             }
 
-            // Show insight panel
-            showInsight(currentIdentity, moodKey);
+            // Show insight panel (not a partner update - YOU clicked this)
+            showInsight(currentIdentity, moodKey, false);
         }
 
         // ============ FLOATING HEARTS ANIMATION ============
@@ -1839,18 +1839,48 @@
             text.innerHTML = messageHtml;
             container.classList.add('visible');
 
-            // Also show insight for partner's mood
-            showInsight(person, data.mood);
+            // Show insight for partner's mood (IS a partner update)
+            showInsight(person, data.mood, true);
         }
 
         // ============ INSIGHT PANEL ============
-        function showInsight(person, moodKey) {
+        function showInsight(person, moodKey, isPartnerUpdate = false) {
             const mood = moodData[person] && moodData[person][moodKey];
             if (!mood) return;
 
-            document.getElementById('insight-title').textContent = mood.insightTitle;
-            document.getElementById('insight-me').textContent = mood.insightMe;
-            document.getElementById('insight-you').textContent = mood.insightYou;
+            const titleEl = document.getElementById('insight-title');
+            const card1 = document.querySelector('.mood-insight-card.for-me');
+            const card2 = document.querySelector('.mood-insight-card.for-you');
+            const insightMeEl = document.getElementById('insight-me');
+            const insightYouEl = document.getElementById('insight-you');
+
+            titleEl.textContent = mood.insightTitle;
+
+            if (isPartnerUpdate) {
+                // PARTNER updated their mood - show what THEY need and what YOU can do
+                const partnerName = person === 'me' ? 'She' : 'He';
+                
+                card1.querySelector('h4').textContent = `What ${partnerName}'s Saying`;
+                card2.querySelector('h4').textContent = 'How I Can Help';
+                
+                insightMeEl.textContent = mood.message;
+                // If partner is 'me' (her), show insightYou (guidance for him)
+                // If partner is 'you' (him), show insightMe (guidance for her)
+                insightYouEl.textContent = person === 'me' ? mood.insightYou : mood.insightMe;
+            } else {
+                // YOU updated your own mood - show YOUR self-guidance
+                card1.querySelector('h4').textContent = 'Reminder for Me';
+                card2.querySelector('h4').textContent = 'What They\'ll See';
+                
+                // If you're 'me' (her), your guidance is insightMe
+                // If you're 'you' (him), your guidance is insightYou
+                const selfGuidance = person === 'me' ? mood.insightMe : mood.insightYou;
+                const partnerGuidance = person === 'me' ? mood.insightYou : mood.insightMe;
+                const partnerName = person === 'me' ? 'He' : 'She';
+                
+                insightMeEl.textContent = selfGuidance;
+                insightYouEl.textContent = `${partnerName}'ll receive: "${mood.message}"`;
+            }
             
             document.getElementById('mood-insight').classList.add('visible');
         }
