@@ -322,6 +322,76 @@
             transform: none;
         }
 
+        /* ============ CUSTOM MESSAGE BOX ============ */
+        .custom-message-box {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 16px;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .custom-message-box label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .custom-message-box textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 12px;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 12px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.85rem;
+            resize: vertical;
+            margin-bottom: 12px;
+        }
+
+        .custom-message-box textarea:focus {
+            outline: none;
+            border-color: #c4949e;
+        }
+
+        .send-message-btn {
+            padding: 10px 24px;
+            border-radius: 20px;
+            border: none;
+            background: linear-gradient(135deg, #c4949e, #a07080);
+            color: white;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .send-message-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .custom-note {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed rgba(0,0,0,0.1);
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        .custom-note-label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #888;
+            font-style: normal;
+            display: block;
+            margin-bottom: 4px;
+        }
+
         /* ============ MOOD INSIGHT PANEL ============ */
         .mood-insight {
             width: 100%;
@@ -607,6 +677,129 @@
             opacity: 0.7;
         }
 
+        /* ============ MOOD HISTORY CALENDAR ============ */
+        .mood-history-section {
+            width: 100%;
+            max-width: 920px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 28px 32px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(140, 120, 150, 0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+        }
+
+        .mood-history-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: #4a4a5a;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .mood-history-legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .legend-item {
+            font-size: 0.7rem;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .legend-item .emoji {
+            font-size: 1rem;
+        }
+
+        .mood-calendar {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .mood-calendar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .mood-calendar::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+            border-radius: 3px;
+        }
+
+        .mood-calendar::-webkit-scrollbar-thumb {
+            background: rgba(140, 120, 150, 0.3);
+            border-radius: 3px;
+        }
+
+        .calendar-day {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 12px;
+            gap: 12px;
+        }
+
+        .calendar-date {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #888;
+            min-width: 80px;
+        }
+
+        .calendar-moods {
+            display: flex;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .calendar-mood-entry {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+
+        .calendar-mood-entry.me {
+            background: linear-gradient(135deg, rgba(196, 148, 158, 0.2), rgba(160, 112, 128, 0.15));
+            color: #9a6070;
+        }
+
+        .calendar-mood-entry.you {
+            background: linear-gradient(135deg, rgba(138, 106, 154, 0.2), rgba(90, 60, 106, 0.15));
+            color: #5a3c6a;
+        }
+
+        .calendar-mood-entry .entry-emoji {
+            font-size: 1.1rem;
+        }
+
+        .calendar-mood-entry .entry-time {
+            font-size: 0.6rem;
+            opacity: 0.7;
+        }
+
+        .no-history {
+            text-align: center;
+            color: #999;
+            font-size: 0.85rem;
+            padding: 20px;
+            font-style: italic;
+        }
+
         /* ============ HELPS SECTION ============ */
         .helps-section {
             width: 100%;
@@ -734,6 +927,22 @@
 
             .helps-section { max-width: 400px; padding: 24px 20px; }
 
+            .mood-history-section { max-width: 400px; padding: 24px 20px; }
+
+            .mood-history-legend {
+                gap: 10px;
+            }
+
+            .calendar-day {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .calendar-moods {
+                flex-wrap: wrap;
+            }
+
             .helps-grid {
                 grid-template-columns: 1fr;
                 gap: 20px;
@@ -818,6 +1027,12 @@
         <div class="signal-buttons-grid" id="signal-buttons">
             <!-- Buttons will be populated based on identity -->
         </div>
+        
+        <div class="custom-message-box" id="custom-message-box" style="display: none;">
+            <label for="custom-message">Add a personal note (optional):</label>
+            <textarea id="custom-message" placeholder="Anything else you want to share..."></textarea>
+            <button class="send-message-btn" onclick="sendCustomMessage()">Update Message</button>
+        </div>
     </div>
 
     <!-- Mood Insight Panel -->
@@ -871,12 +1086,12 @@
             <div class="overlap-title">Shared Space</div>
             <span class="overlap-icon">♡</span>
             <ul class="overlap-traits">
-                <li>Strong physical chemistry</li>
-                <li>Emotional potential</li>
-                <li>Softer in person</li>
-                <li>Both fear losing each other</li>
-                <li>Both want connection differently</li>
-                <li>Best together in low-pressure time</li>
+                <li>Physical presence settles us both</li>
+                <li>Walls come down when we're together</li>
+                <li>Same need, different languages</li>
+                <li>Both more invested than we show</li>
+                <li>We thrive in quiet, unplanned moments</li>
+                <li>Capable of real intimacy when we feel safe</li>
             </ul>
             <div class="shared-lang">
                 <span class="shared-lang-label">Shared love languages</span>
@@ -906,6 +1121,21 @@
                 <span class="section-label">What helps</span>
                 <div class="growth-item">Naming the return: "I need a break, but I'll be back"</div>
             </div>
+        </div>
+    </div>
+
+    <!-- Mood History Calendar -->
+    <div class="mood-history-section" id="mood-history-section">
+        <div class="mood-history-title">Our Mood History</div>
+        <div class="mood-history-legend">
+            <span class="legend-item"><span class="emoji">🌿</span> Space</span>
+            <span class="legend-item"><span class="emoji">🌊</span> Anxious/Overwhelmed</span>
+            <span class="legend-item"><span class="emoji">🌫️</span> Disconnected</span>
+            <span class="legend-item"><span class="emoji">🌸</span> Reconnect</span>
+            <span class="legend-item"><span class="emoji">☀️</span> All Good</span>
+        </div>
+        <div class="mood-calendar" id="mood-calendar">
+            <!-- Calendar entries will be populated here -->
         </div>
     </div>
 
@@ -950,13 +1180,14 @@
     <script>
         // ============ FIREBASE CONFIG ============
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT.firebaseapp.com",
-            databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-            projectId: "YOUR_PROJECT",
-            storageBucket: "YOUR_PROJECT.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyDivrvDQijdlHP6nFOBlQB7eAOf8WFo_GA",
+            authDomain: "attachmentstyles-b807c.firebaseapp.com",
+            databaseURL: "https://attachmentstyles-b807c-default-rtdb.firebaseio.com",
+            projectId: "attachmentstyles-b807c",
+            storageBucket: "attachmentstyles-b807c.firebasestorage.app",
+            messagingSenderId: "619137221036",
+            appId: "1:619137221036:web:905bcdec602659048d7a09",
+            measurementId: "G-QKBXCNN831"
         };
 
         // Check if Firebase is configured
@@ -964,9 +1195,20 @@
 
         let db = null;
         let roomRef = null;
+        let historyRef = null;
         let currentIdentity = null;
         let roomId = null;
-        let localData = {}; // Store data locally for immediate UI updates
+        let currentMoodKey = null;
+
+        // ============ MOOD EMOJIS ============
+        const moodEmojis = {
+            space: '🌿',
+            anxious: '🌊',
+            overwhelmed: '🌊',
+            disconnected: '🌫️',
+            reconnect: '🌸',
+            good: '☀️'
+        };
 
         // ============ MOOD DATA ============
         const moodData = {
@@ -1059,39 +1301,41 @@
             
             document.getElementById('room-code').textContent = roomId;
 
-            // Load local data first
-            localData = JSON.parse(localStorage.getItem('relationshipMoods_' + roomId) || '{}');
-            updateLiveStatus(localData);
-
             if (isFirebaseConfigured) {
-                try {
-                    // Initialize Firebase
-                    firebase.initializeApp(firebaseConfig);
-                    db = firebase.database();
-                    roomRef = db.ref('rooms/' + roomId);
-                    
-                    // Listen for changes
-                    roomRef.on('value', (snapshot) => {
-                        const data = snapshot.val() || {};
-                        localData = data;
-                        localStorage.setItem('relationshipMoods_' + roomId, JSON.stringify(data));
-                        updateLiveStatus(data);
-                    });
+                // Initialize Firebase
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.database();
+                roomRef = db.ref('rooms/' + roomId);
+                historyRef = db.ref('history/' + roomId);
+                
+                // Listen for changes - THIS IS THE REAL-TIME LISTENER
+                roomRef.on('value', (snapshot) => {
+                    const data = snapshot.val() || {};
+                    updateLiveStatus(data);
+                });
 
-                    // Update connection status
-                    const connectedRef = db.ref('.info/connected');
-                    connectedRef.on('value', (snap) => {
-                        updateConnectionStatus(snap.val());
+                // Listen for history changes
+                historyRef.orderByChild('timestamp').limitToLast(50).on('value', (snapshot) => {
+                    const history = [];
+                    snapshot.forEach((child) => {
+                        history.push(child.val());
                     });
-                } catch (error) {
-                    console.error('Firebase init error:', error);
-                    updateConnectionStatus(false);
-                    document.getElementById('status-text').textContent = 'Firebase error - using local mode';
-                }
+                    updateMoodCalendar(history);
+                });
+
+                // Update connection status
+                const connectedRef = db.ref('.info/connected');
+                connectedRef.on('value', (snap) => {
+                    updateConnectionStatus(snap.val());
+                });
             } else {
                 // Demo mode - no Firebase
                 updateConnectionStatus(false);
-                document.getElementById('status-text').textContent = 'Local mode (set up Firebase to sync)';
+                document.getElementById('status-text').textContent = 'Demo Mode (see setup instructions)';
+                
+                // Load from localStorage for demo
+                const savedData = JSON.parse(localStorage.getItem('relationshipMoods_' + roomId) || '{}');
+                updateLiveStatus(savedData);
             }
 
             // Check for saved identity
@@ -1117,7 +1361,7 @@
                 dot.classList.remove('connected');
                 dot.classList.add('disconnected');
                 if (isFirebaseConfigured) {
-                    text.textContent = 'Reconnecting...';
+                    text.textContent = 'Disconnected';
                 }
             }
         }
@@ -1155,28 +1399,15 @@
             Object.keys(moods).forEach(moodKey => {
                 const btn = document.createElement('button');
                 btn.className = 'signal-btn';
-                btn.dataset.mood = moodKey;
                 btn.textContent = moods[moodKey].label;
-                btn.addEventListener('click', function() {
-                    selectMood(moodKey, this);
-                });
-                
-                // Check if this mood is currently active
-                if (localData[currentIdentity] && localData[currentIdentity].mood === moodKey) {
-                    btn.classList.add(currentIdentity === 'me' ? 'active-me' : 'active-you');
-                }
-                
+                btn.onclick = function() { selectMood(moodKey, this); };
                 container.appendChild(btn);
             });
         }
 
         // ============ MOOD SELECTION ============
         function selectMood(moodKey, buttonElement) {
-            if (!currentIdentity) {
-                alert('Please select who you are first!');
-                return;
-            }
-
+            currentMoodKey = moodKey;
             const mood = moodData[currentIdentity][moodKey];
             
             // Update button states
@@ -1185,34 +1416,78 @@
             });
             buttonElement.classList.add(currentIdentity === 'me' ? 'active-me' : 'active-you');
 
+            // Show custom message box
+            document.getElementById('custom-message-box').style.display = 'block';
+            document.getElementById('custom-message').value = '';
+            document.getElementById('custom-message').placeholder = 'Anything else you want to share...';
+
             // Create update object
             const update = {
                 mood: moodKey,
                 label: mood.label,
                 message: mood.message,
+                customNote: '',
                 timestamp: Date.now()
             };
 
-            // Update local data immediately for instant UI feedback
-            localData[currentIdentity] = update;
-            localStorage.setItem('relationshipMoods_' + roomId, JSON.stringify(localData));
-            
-            // Update UI immediately
-            updateLiveStatus(localData);
-
-            // Save to Firebase if configured
+            // Save to Firebase
             if (isFirebaseConfigured && roomRef) {
                 roomRef.child(currentIdentity).set(update)
-                    .then(() => {
-                        console.log('Saved to Firebase');
-                    })
-                    .catch((error) => {
-                        console.error('Firebase save error:', error);
-                    });
+                    .then(() => console.log('Mood saved to Firebase'))
+                    .catch((err) => console.error('Firebase error:', err));
+                
+                // Also save to history
+                const historyEntry = {
+                    person: currentIdentity,
+                    mood: moodKey,
+                    label: mood.label,
+                    emoji: moodEmojis[moodKey],
+                    timestamp: Date.now()
+                };
+                historyRef.push(historyEntry);
+            } else {
+                const data = JSON.parse(localStorage.getItem('relationshipMoods_' + roomId) || '{}');
+                data[currentIdentity] = update;
+                localStorage.setItem('relationshipMoods_' + roomId, JSON.stringify(data));
+                updateLiveStatus(data);
             }
 
             // Show insight panel
             showInsight(currentIdentity, moodKey);
+        }
+
+        function sendCustomMessage() {
+            const customNote = document.getElementById('custom-message').value.trim();
+            if (!currentMoodKey) return;
+
+            const mood = moodData[currentIdentity][currentMoodKey];
+
+            const update = {
+                mood: currentMoodKey,
+                label: mood.label,
+                message: mood.message,
+                customNote: customNote,
+                timestamp: Date.now()
+            };
+
+            if (isFirebaseConfigured && roomRef) {
+                roomRef.child(currentIdentity).set(update)
+                    .then(() => {
+                        console.log('Custom message saved');
+                        document.getElementById('custom-message').value = '';
+                        document.getElementById('custom-message').placeholder = 'Message sent! ♡';
+                        setTimeout(() => {
+                            document.getElementById('custom-message').placeholder = 'Anything else you want to share...';
+                        }, 2000);
+                    })
+                    .catch((err) => console.error('Firebase error:', err));
+            } else {
+                const data = JSON.parse(localStorage.getItem('relationshipMoods_' + roomId) || '{}');
+                data[currentIdentity] = update;
+                localStorage.setItem('relationshipMoods_' + roomId, JSON.stringify(data));
+                updateLiveStatus(data);
+                document.getElementById('custom-message').value = '';
+            }
         }
 
         // ============ LIVE STATUS UPDATE ============
@@ -1259,7 +1534,12 @@
             const text = document.getElementById('partner-message-text');
 
             label.textContent = person === 'me' ? "Message from Her" : "Message from Him";
-            text.textContent = data.message;
+            
+            let messageHtml = data.message;
+            if (data.customNote) {
+                messageHtml += `<div class="custom-note"><span class="custom-note-label">Personal note:</span>${data.customNote}</div>`;
+            }
+            text.innerHTML = messageHtml;
             container.classList.add('visible');
 
             // Also show insight for partner's mood
@@ -1280,6 +1560,60 @@
 
         function closeInsight() {
             document.getElementById('mood-insight').classList.remove('visible');
+        }
+
+        // ============ MOOD HISTORY CALENDAR ============
+        function updateMoodCalendar(history) {
+            const calendar = document.getElementById('mood-calendar');
+            
+            if (!history || history.length === 0) {
+                calendar.innerHTML = '<div class="no-history">No mood history yet. Start sharing how you feel!</div>';
+                return;
+            }
+
+            // Group by date
+            const grouped = {};
+            history.forEach(entry => {
+                const date = new Date(entry.timestamp);
+                const dateKey = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                if (!grouped[dateKey]) {
+                    grouped[dateKey] = [];
+                }
+                grouped[dateKey].push(entry);
+            });
+
+            // Sort dates (newest first)
+            const sortedDates = Object.keys(grouped).sort((a, b) => {
+                const dateA = new Date(grouped[a][0].timestamp);
+                const dateB = new Date(grouped[b][0].timestamp);
+                return dateB - dateA;
+            });
+
+            // Render
+            let html = '';
+            sortedDates.forEach(dateKey => {
+                const entries = grouped[dateKey].sort((a, b) => b.timestamp - a.timestamp);
+                
+                html += `<div class="calendar-day">
+                    <div class="calendar-date">${dateKey}</div>
+                    <div class="calendar-moods">`;
+                
+                entries.forEach(entry => {
+                    const time = new Date(entry.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                    const personClass = entry.person === 'me' ? 'me' : 'you';
+                    const personLabel = entry.person === 'me' ? 'Her' : 'Him';
+                    
+                    html += `<div class="calendar-mood-entry ${personClass}">
+                        <span class="entry-emoji">${entry.emoji || moodEmojis[entry.mood] || '💭'}</span>
+                        <span class="entry-label">${personLabel}</span>
+                        <span class="entry-time">${time}</span>
+                    </div>`;
+                });
+                
+                html += `</div></div>`;
+            });
+
+            calendar.innerHTML = html;
         }
 
         // ============ ROOM MANAGEMENT ============
