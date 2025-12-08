@@ -347,32 +347,32 @@
         </div>
     </div>
 
-    <!-- 8. MOOD CALENDAR (Collapsible) -->
+    <!-- 8. MOOD HISTORY / GIT LOG (Collapsible) -->
     <div class="collapsible-section">
         <div class="collapsible-header" onclick="toggleSection(this)">
             <div class="collapsible-header-left">
-                <span class="collapsible-icon">📅</span>
-                <span class="collapsible-title">Mood History</span>
+                <span class="collapsible-icon">📊</span>
+                <span class="collapsible-title">git log --graph relationship.branch</span>
             </div>
             <span class="collapsible-toggle">▼</span>
         </div>
         <div class="collapsible-content">
             <div class="collapsible-inner">
-                <div class="calendar-legend">
-                    <span class="legend-item"><span class="emoji">🌿</span> Space</span>
-                    <span class="legend-item"><span class="emoji">🌊</span> Anxious/Overwhelmed</span>
-                    <span class="legend-item"><span class="emoji">🌫️</span> Disconnected</span>
-                    <span class="legend-item"><span class="emoji">🌸</span> Reconnect</span>
-                    <span class="legend-item"><span class="emoji">☀️</span> All Good</span>
+                <div class="calendar-legend" style="font-family: 'Courier New', monospace; font-size: 0.85rem;">
+                    <span class="legend-item"><span class="emoji">🌿</span> IDLE (buffering)</span>
+                    <span class="legend-item"><span class="emoji">🌊</span> HIGH_LOAD</span>
+                    <span class="legend-item"><span class="emoji">🌫️</span> TIMEOUT</span>
+                    <span class="legend-item"><span class="emoji">🌸</span> READY</span>
+                    <span class="legend-item"><span class="emoji">☀️</span> 200 OK</span>
                 </div>
                 <div class="month-navigation">
-                    <button class="month-nav-btn" onclick="previousMonth()">◀ Previous</button>
-                    <span class="current-month" id="current-month">December 2025</span>
-                    <button class="month-nav-btn" onclick="nextMonth()">Next ▶</button>
-                    <button class="month-nav-btn" onclick="updateMoodCalendar(moodHistory)" style="margin-left: 12px;">🔄 Refresh</button>
+                    <button class="month-nav-btn" onclick="previousMonth()">◀ git log --skip</button>
+                    <span class="current-month" id="current-month" style="font-family: 'Courier New', monospace;">December 2025</span>
+                    <button class="month-nav-btn" onclick="nextMonth()">git log --recent ▶</button>
+                    <button class="month-nav-btn" onclick="updateMoodCalendar(moodHistory)" style="margin-left: 12px;">🔄 git pull</button>
                 </div>
                 <div class="calendar-container" id="mood-calendar">
-                    <div class="no-history">No mood history yet. Start sharing how you feel!</div>
+                    <div class="no-history" style="font-family: 'Courier New', monospace;">// No commits yet. Initialize with your first status update.</div>
                 </div>
             </div>
         </div>
@@ -1134,9 +1134,11 @@ git log --oneline relationship.branch
         }
 
         // ============ AI FEATURES ============
-        const AI_CONTEXT = `You are a warm relationship coach helping an anxious-avoidant couple. 
-        She is anxious-leaning (needs reassurance). He is avoidant-leaning (needs space).
-        Keep responses brief (2-3 sentences), warm, and actionable.`;
+        const AI_CONTEXT = `You are a systems engineer consulting on a coupled network architecture.
+        Node A (Her/Dev) is connection-optimizing with lower latency tolerance. Node B (Him/Engr) is autonomy-optimizing with buffer preference.
+        Use dev/network engineering language: status codes (200, 503), async/sync, latency, throughput, buffering, keepalive packets, circuit breakers, etc.
+        Keep responses brief (2-3 sentences), technical, and actionable. Frame relationship dynamics as system optimization, not emotional fixing.
+        Example language: "High latency detected", "implement circuit breaker", "buffer overflow", "ACK received", "graceful degradation", "eventual consistency".`;
 
         async function callAI(prompt) {
             // Check if API key is configured
@@ -1264,13 +1266,13 @@ git log --oneline relationship.branch
             textEl.textContent = result || `📝 ${good} good moments this week. You're showing up for each other.`;
         }
 
-        // ============ MOOD CALENDAR ============
+        // ============ MOOD CALENDAR (GIT LOG) ============
         function updateMoodCalendar(history) {
             const container = document.getElementById('mood-calendar');
             console.log('updateMoodCalendar called with', history?.length, 'entries:', history);
 
             if (!history || history.length === 0) {
-                container.innerHTML = '<div class="no-history">No mood history yet. Start sharing how you feel!</div>';
+                container.innerHTML = '<div class="no-history" style="font-family: \'Courier New\', monospace;">// No commits yet. Initialize with your first status update.</div>';
                 return;
             }
 
@@ -1298,7 +1300,7 @@ git log --oneline relationship.branch
             });
 
             if (monthHistory.length === 0) {
-                container.innerHTML = `<div class="no-history">No mood history for ${targetDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</div>`;
+                container.innerHTML = `<div class="no-history" style="font-family: 'Courier New', monospace;">// No commits for ${targetDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</div>`;
                 return;
             }
 
@@ -1317,19 +1319,32 @@ git log --oneline relationship.branch
                 new Date(grouped[b][0].timestamp) - new Date(grouped[a][0].timestamp)
             );
 
-            // Display all days in the month
+            // Display all days in the month - Git log style
             let html = '';
             sorted.forEach((day, i) => {
                 const entries = grouped[day].sort((a, b) => b.timestamp - a.timestamp);
-                html += `<div class="calendar-day" style="animation-delay: ${i * 0.05}s">
-                    <div class="calendar-date">${day}</div>
+                html += `<div class="calendar-day" style="animation-delay: ${i * 0.05}s; font-family: 'Courier New', monospace;">
+                    <div class="calendar-date" style="font-weight: 600; color: #5a4a6a; border-bottom: 1px solid rgba(138, 106, 154, 0.15); padding-bottom: 8px; margin-bottom: 8px;">${day}</div>
                     <div class="calendar-moods">`;
                 entries.forEach(e => {
                     const time = new Date(e.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-                    html += `<div class="calendar-mood-entry ${e.person}">
+                    const hash = Math.random().toString(36).substring(2, 9);
+                    const nodeLabel = e.person === 'me' ? 'Node_A' : 'Node_B';
+                    const moodMap = {
+                        space: 'IDLE',
+                        anxious: 'HIGH_LOAD',
+                        overwhelmed: 'HIGH_LOAD',
+                        disconnected: 'TIMEOUT',
+                        reconnect: 'READY',
+                        good: 'OK_200'
+                    };
+                    const statusLabel = moodMap[e.mood] || e.label;
+                    html += `<div class="calendar-mood-entry ${e.person}" style="display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 0.85rem;">
+                        <span style="color: #f0c040; font-weight: 600;">${hash}</span>
                         <span class="entry-emoji">${e.emoji || moodEmojis[e.mood]}</span>
-                        <span>${e.person === 'me' ? 'Her' : 'Him'}</span>
-                        <span class="entry-time">${time}</span>
+                        <span style="color: #8a6a9a; font-weight: 600;">${nodeLabel}:</span>
+                        <span style="color: #5a4a6a;">${statusLabel}</span>
+                        <span class="entry-time" style="color: #999; font-size: 0.8rem; margin-left: auto;">${time}</span>
                     </div>`;
                 });
                 html += '</div></div>';
