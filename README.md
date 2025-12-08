@@ -294,14 +294,17 @@ Find and replace in `index.html`:
 
 ### Changing Colors
 
-The color scheme is defined in `styles.css`. Find these color codes:
+The color scheme is defined in `styles.css`. The current bold, dark theme uses:
 
 ```css
-/* Her colors (rose/pink) */
-#c4949e, #a07080, #9a6070
+/* Node A / Her colors (electric blue) */
+#3B82F6, #2563EB, #1D4ED8
 
-/* His colors (purple) */
-#8a6a9a, #5a3c6a, #4a2d5f
+/* Node B / Him colors (vibrant purple) */
+#A855F7, #9333EA, #7C3AED
+
+/* Dark background gradient */
+background: linear-gradient(160deg, #0f0f1a 0%, #1a1a2e 30%, #16213e 100%);
 ```
 
 You can do a find-and-replace across the CSS file to change the color scheme.
@@ -366,6 +369,10 @@ This project is free to use for personal purposes. Feel free to customize it for
 ---
 
 ## 🔄 Recent Updates
+
+### Version 2.1
+- 🔕 **Zero-Notification Architecture**: Added prominent messaging that reassures partners there are no notifications, alerts, or pressure for immediate responses—designed to support autonomy and async processing
+- 🎨 **Bold Color Redesign**: Transformed to dark theme with vibrant electric blue (Node A) and purple (Node B) colors for high contrast and modern aesthetic
 
 ### Version 2.0
 - ✨ **AI Integration**: Added Claude-powered message rephrasing, pattern insights, and weekly reflections
