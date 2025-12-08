@@ -1,4 +1,4 @@
-# 💕 Relationship Styles — Real-Time Connection Tool
+# 💕 Relationship Styles Real-Time Connection Tool
 
 ## ✨ Quick Overview
 
