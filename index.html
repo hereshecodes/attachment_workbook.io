@@ -66,6 +66,78 @@
         </div>
     </div>
 
+    <!-- ATTACHMENT STYLE ONBOARDING -->
+    <div class="attachment-onboarding" id="attachment-onboarding" style="display: none;">
+        <div class="onboarding-content">
+            <div class="onboarding-title">Let's personalize your experience</div>
+            <div class="onboarding-subtitle">Understanding your attachment style helps us provide better guidance</div>
+
+            <div class="attachment-quiz">
+                <div class="quiz-question">
+                    <div class="question-number">Question 1 of 3</div>
+                    <div class="question-text" id="quiz-question-text">In relationships, I tend to...</div>
+                    <div class="quiz-options" id="quiz-options">
+                        <!-- Options will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="attachment-results" id="attachment-results" style="display: none;">
+                <div class="results-title">Your Attachment Style</div>
+                <div class="style-badge" id="style-badge"></div>
+                <div class="style-description" id="style-description"></div>
+                <div class="style-strengths" id="style-strengths"></div>
+                <div class="style-growth" id="style-growth"></div>
+                <button class="continue-btn" onclick="completeOnboarding()">Continue to App</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ATTACHMENT STYLE SETTINGS (accessible later) -->
+    <div class="attachment-settings-modal" id="attachment-settings-modal" style="display: none;">
+        <div class="settings-modal-content">
+            <div class="settings-header">
+                <div class="settings-title">Attachment Style Settings</div>
+                <button class="close-settings-btn" onclick="closeAttachmentSettings()">✕</button>
+            </div>
+
+            <div class="settings-body">
+                <div class="setting-section">
+                    <div class="setting-label">Your Attachment Style</div>
+                    <select class="attachment-select" id="my-attachment-select" onchange="updateAttachmentStyle('me', this.value)">
+                        <option value="anxious">Anxious (Connection-Seeking)</option>
+                        <option value="avoidant">Avoidant (Autonomy-Valuing)</option>
+                        <option value="secure">Secure (Balanced)</option>
+                        <option value="fearful">Fearful-Avoidant (Mixed)</option>
+                    </select>
+                    <div class="setting-description" id="my-style-description"></div>
+                </div>
+
+                <div class="setting-section">
+                    <div class="setting-label">Partner's Attachment Style</div>
+                    <select class="attachment-select" id="partner-attachment-select" onchange="updateAttachmentStyle('you', this.value)">
+                        <option value="anxious">Anxious (Connection-Seeking)</option>
+                        <option value="avoidant">Avoidant (Autonomy-Valuing)</option>
+                        <option value="secure">Secure (Balanced)</option>
+                        <option value="fearful">Fearful-Avoidant (Mixed)</option>
+                    </select>
+                    <div class="setting-description" id="partner-style-description"></div>
+                </div>
+
+                <div class="setting-section">
+                    <div class="setting-label">Display Names</div>
+                    <div class="name-inputs">
+                        <input type="text" class="name-input" id="my-name-input" placeholder="Your name (e.g., Her)" maxlength="15">
+                        <input type="text" class="name-input" id="partner-name-input" placeholder="Partner's name (e.g., Him)" maxlength="15">
+                    </div>
+                    <button class="save-names-btn" onclick="saveDisplayNames()">Save Names</button>
+                </div>
+            </div>
+
+            <button class="save-settings-btn" onclick="saveAttachmentSettings()">Save Changes</button>
+        </div>
+    </div>
+
     <!-- 3. LIVE STATUS CARDS -->
     <div class="status-section">
         <div class="live-status">
@@ -195,6 +267,7 @@
                     <button class="month-nav-btn" onclick="previousMonth()">◀ Previous</button>
                     <span class="current-month" id="current-month">December 2025</span>
                     <button class="month-nav-btn" onclick="nextMonth()">Next ▶</button>
+                    <button class="month-nav-btn" onclick="updateMoodCalendar(moodHistory)" style="margin-left: 12px;">🔄 Refresh</button>
                 </div>
                 <div class="calendar-container" id="mood-calendar">
                     <div class="no-history">No mood history yet. Start sharing how you feel!</div>
@@ -469,7 +542,7 @@
                 firebase.initializeApp(firebaseConfig);
                 db = firebase.database();
                 roomRef = db.ref('rooms/' + roomId);
-                historyRef = db.ref('history/' + roomId);
+                historyRef = roomRef.child('history');
                 
                 roomRef.on('value', (snapshot) => {
                     const data = snapshot.val() || {};
@@ -478,13 +551,20 @@
                 });
 
                 historyRef.on('value', (snapshot) => {
+                    console.log('Firebase snapshot received:', snapshot.exists(), 'Number of children:', snapshot.numChildren());
                     const history = [];
-                    snapshot.forEach((child) => history.push(child.val()));
+                    snapshot.forEach((child) => {
+                        const entry = child.val();
+                        console.log('Processing history entry:', entry);
+                        history.push(entry);
+                    });
+                    console.log('Total history entries loaded:', history.length);
                     // Sort by timestamp in JavaScript instead of Firebase query
                     history.sort((a, b) => b.timestamp - a.timestamp);
+                    console.log('Sorted history:', history);
                     moodHistory = history;
                     updateMoodCalendar(history);
-                    
+
                     if (currentIdentity && history.length >= 3) {
                         setTimeout(generateInsights, 500);
                         setTimeout(generateWeeklyReflection, 1000);
@@ -1011,8 +1091,15 @@
             console.log('updateMoodCalendar called with', history?.length, 'entries:', history);
 
             if (!history || history.length === 0) {
-                container.innerHTML = '<div class="no-history">No mood history yet.</div>';
+                container.innerHTML = '<div class="no-history">No mood history yet. Start sharing how you feel!</div>';
                 return;
+            }
+
+            // Auto-expand the Mood History section if it has data and is collapsed
+            const historySection = container.closest('.collapsible-section');
+            if (historySection && !historySection.querySelector('.collapsible-header').classList.contains('open')) {
+                historySection.querySelector('.collapsible-header').classList.add('open');
+                historySection.querySelector('.collapsible-content').classList.add('open');
             }
 
             // Calculate the target month
