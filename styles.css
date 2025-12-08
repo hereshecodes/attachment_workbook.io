@@ -63,7 +63,6 @@ h1 {
     max-width: 920px;
     background: rgba(255,255,255,0.95);
     backdrop-filter: blur(10px);
-    border-radius: 16px;
     padding: 16px 24px;
     margin-bottom: 24px;
     border: 1px solid rgba(0,0,0,0.06);
@@ -718,7 +717,7 @@ h1 {
     font-size: 0.9rem;
     line-height: 1.6;
     font-style: italic;
-    color: #444;
+    color: white;
 }
 
 .custom-note {
