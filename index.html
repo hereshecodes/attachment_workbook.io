@@ -66,64 +66,112 @@
             text-align: center;
         }
 
-        /* ============ CONNECTION STATUS ============ */
-        .connection-bar {
+        /* ============ ROOM BAR (STICKY) ============ */
+        .room-bar {
             width: 100%;
             max-width: 920px;
-            background: rgba(255,255,255,0.8);
+            background: rgba(255,255,255,0.95);
             backdrop-filter: blur(10px);
             border-radius: 16px;
             padding: 16px 24px;
             margin-bottom: 24px;
+            border: 1px solid rgba(0,0,0,0.06);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .room-bar-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 12px;
-            border: 1px solid rgba(0,0,0,0.06);
         }
 
-        .connection-status {
+        .room-identity {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 0.8rem;
+            gap: 12px;
         }
 
-        .status-dot {
-            width: 10px;
-            height: 10px;
+        .room-name-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .room-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: #4a4a5a;
+        }
+
+        .room-name-edit {
+            background: none;
+            border: none;
+            font-size: 0.75rem;
+            color: #888;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+
+        .room-name-edit:hover {
+            color: #666;
+        }
+
+        .room-name-input {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: #4a4a5a;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 4px 10px;
+            width: 120px;
+            display: none;
+        }
+
+        .connection-dot {
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: #ccc;
             animation: pulse 2s infinite;
         }
 
-        .status-dot.connected { background: #7cb87c; }
-        .status-dot.disconnected { background: #d88; }
+        .connection-dot.connected { background: #7cb87c; }
 
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
 
-        .room-info {
+        .identity-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .identity-badge.me {
+            background: linear-gradient(135deg, #c4949e, #a07080);
+            color: white;
+        }
+
+        .identity-badge.you {
+            background: linear-gradient(135deg, #8a6a9a, #5a3c6a);
+            color: white;
+        }
+
+        .share-actions {
             display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
+            gap: 8px;
         }
 
-        .room-code {
-            font-family: monospace;
-            font-size: 0.85rem;
-            background: rgba(0,0,0,0.05);
+        .share-btn {
             padding: 8px 14px;
-            border-radius: 8px;
-            letter-spacing: 0.1em;
-        }
-
-        .copy-btn, .new-room-btn {
-            padding: 8px 16px;
             border-radius: 20px;
             border: 1px solid rgba(0,0,0,0.1);
             background: white;
@@ -131,30 +179,168 @@
             font-size: 0.75rem;
             cursor: pointer;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .copy-btn:hover, .new-room-btn:hover {
+        .share-btn:hover {
+            background: #f5f5f5;
+            transform: translateY(-1px);
+        }
+
+        .share-btn.primary {
+            background: linear-gradient(135deg, #8a7a9a, #6a5a7a);
+            color: white;
+            border: none;
+        }
+
+        .share-btn.primary:hover {
+            box-shadow: 0 4px 12px rgba(106, 90, 122, 0.3);
+        }
+
+        /* Share Modal */
+        .share-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .share-modal.visible {
+            display: flex;
+        }
+
+        .share-modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            animation: bounceIn 0.3s ease;
+        }
+
+        .share-modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: #4a4a5a;
+            margin-bottom: 8px;
+        }
+
+        .share-modal-subtitle {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 24px;
+        }
+
+        .qr-code {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 20px;
+            background: #f5f5f5;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-code canvas {
+            border-radius: 8px;
+        }
+
+        .share-link-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .share-link-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: #666;
+            background: #f9f9f9;
+        }
+
+        .copy-link-btn {
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, #8a7a9a, #6a5a7a);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .share-options {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .share-option-btn {
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.1);
+            background: white;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .share-option-btn:hover {
             background: #f5f5f5;
         }
 
-        /* ============ WHO AM I SELECTOR ============ */
-        .identity-selector {
-            width: 100%;
-            max-width: 920px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 20px 24px;
-            margin-bottom: 24px;
-            text-align: center;
-            border: 1px solid rgba(0,0,0,0.06);
+        .close-modal-btn {
+            padding: 10px 24px;
+            border-radius: 20px;
+            border: 1px solid rgba(0,0,0,0.1);
+            background: white;
+            font-size: 0.8rem;
+            cursor: pointer;
         }
 
-        .identity-selector h3 {
+        /* ============ WELCOME / IDENTITY SELECTOR ============ */
+        .welcome-card {
+            width: 100%;
+            max-width: 920px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(250,248,255,0.9));
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 24px;
+            text-align: center;
+            border: 1px solid rgba(140, 120, 160, 0.15);
+            animation: slideDown 0.5s ease-out 0.1s both;
+        }
+
+        .welcome-title {
             font-family: 'Playfair Display', serif;
-            font-size: 1.1rem;
-            margin-bottom: 14px;
+            font-size: 1.4rem;
             color: #4a4a5a;
+            margin-bottom: 8px;
+        }
+
+        .welcome-subtitle {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 20px;
         }
 
         .identity-buttons {
@@ -202,46 +388,66 @@
             border-color: transparent;
         }
 
-        .identity-selected {
-            display: none;
+        .returning-user-note {
+            margin-top: 16px;
+            padding: 12px 16px;
+            background: rgba(140, 200, 140, 0.1);
+            border-radius: 12px;
             font-size: 0.8rem;
-            color: #666;
-            margin-top: 12px;
+            color: #5a7a5a;
+            display: none;
         }
 
-        .identity-selected.visible { display: block; }
+        .returning-user-note.visible {
+            display: block;
+        }
 
-        /* ============ LIVE STATUS DISPLAY ============ */
-        .live-status {
+        /* ============ LIVE STATUS CARDS ============ */
+        .status-section {
             width: 100%;
             max-width: 920px;
+            margin-bottom: 24px;
+        }
+
+        .live-status {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 28px;
+            gap: 16px;
         }
 
         .live-status-card {
-            background: rgba(255,255,255,0.85);
+            background: rgba(255,255,255,0.9);
             backdrop-filter: blur(10px);
             border-radius: 16px;
             padding: 20px;
             text-align: center;
             border: 1px solid rgba(0,0,0,0.06);
             transition: all 0.4s ease;
+            animation: cardEntrance 0.5s ease-out both;
         }
 
-        .live-status-card.me-card { border-top: 3px solid #c4949e; }
-        .live-status-card.you-card { border-top: 3px solid #6a4a7a; }
+        .live-status-card.me-card {
+            border-top: 3px solid #c4949e;
+            animation-delay: 0.2s;
+        }
+        
+        .live-status-card.you-card {
+            border-top: 3px solid #6a4a7a;
+            animation-delay: 0.3s;
+        }
 
         .live-status-card.has-mood {
             box-shadow: 0 8px 24px rgba(0,0,0,0.08);
         }
 
+        .live-status-card.just-updated {
+            animation: pulseGlow 0.8s ease-out;
+        }
+
         .live-status-name {
             font-family: 'Playfair Display', serif;
-            font-size: 1.1rem;
-            margin-bottom: 8px;
+            font-size: 1rem;
+            margin-bottom: 6px;
         }
 
         .me-card .live-status-name { color: #9a6070; }
@@ -250,7 +456,7 @@
         .live-status-mood {
             font-size: 0.85rem;
             color: #666;
-            min-height: 24px;
+            min-height: 22px;
         }
 
         .live-status-mood.active {
@@ -261,32 +467,44 @@
         .live-status-time {
             font-size: 0.65rem;
             color: #999;
-            margin-top: 6px;
+            margin-top: 4px;
         }
 
-        /* ============ SIGNAL SECTION ============ */
-        .signal-section {
+        /* ============ MOOD SELECTOR ============ */
+        .mood-section {
             width: 100%;
             max-width: 920px;
-            margin-bottom: 28px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(0,0,0,0.06);
+            display: none;
         }
 
-        .signal-header {
+        .mood-section.visible {
+            display: block;
+            animation: slideDown 0.4s ease;
+        }
+
+        .mood-header {
             font-family: 'Playfair Display', serif;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             text-align: center;
             color: #4a4a5a;
             margin-bottom: 16px;
         }
 
-        .signal-buttons-grid {
+        .mood-buttons {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 10px;
+            margin-bottom: 16px;
         }
 
-        .signal-btn {
+        .mood-btn {
             padding: 12px 20px;
             border-radius: 25px;
             border: 1.5px solid rgba(0,0,0,0.1);
@@ -299,39 +517,40 @@
             color: #555;
         }
 
-        .signal-btn:hover {
+        .mood-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        .signal-btn.active-me {
+        .mood-btn.active-me {
             background: linear-gradient(135deg, #c4949e, #a07080);
             color: white;
             border-color: transparent;
+            animation: bounceIn 0.4s ease-out;
         }
 
-        .signal-btn.active-you {
+        .mood-btn.active-you {
             background: linear-gradient(135deg, #8a6a9a, #5a3c6a);
             color: white;
             border-color: transparent;
+            animation: bounceIn 0.4s ease-out;
         }
 
-        .signal-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
+        /* Note Box */
+        .note-box {
+            padding: 16px;
+            background: rgba(250,248,252,0.8);
+            border-radius: 12px;
+            margin-top: 16px;
+            display: none;
         }
 
-        /* ============ CUSTOM MESSAGE BOX ============ */
-        .custom-message-box {
-            margin-top: 20px;
-            padding: 20px;
-            background: rgba(255,255,255,0.8);
-            border-radius: 16px;
-            border: 1px solid rgba(0,0,0,0.06);
+        .note-box.visible {
+            display: block;
+            animation: slideDown 0.3s ease;
         }
 
-        .custom-message-box label {
+        .note-box label {
             display: block;
             font-size: 0.75rem;
             font-weight: 600;
@@ -339,71 +558,73 @@
             margin-bottom: 8px;
         }
 
-        .custom-message-box textarea {
+        .note-box textarea {
             width: 100%;
-            min-height: 80px;
+            min-height: 70px;
             padding: 12px;
             border: 1px solid rgba(0,0,0,0.1);
-            border-radius: 12px;
+            border-radius: 10px;
             font-family: 'Quicksand', sans-serif;
             font-size: 0.85rem;
             resize: vertical;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
-        .custom-message-box textarea:focus {
+        .note-box textarea:focus {
             outline: none;
             border-color: #c4949e;
         }
 
-        .send-message-btn {
-            padding: 10px 24px;
-            border-radius: 20px;
-            border: none;
-            background: linear-gradient(135deg, #c4949e, #a07080);
-            color: white;
-            font-family: 'Quicksand', sans-serif;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .send-message-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        .message-actions {
+        .note-actions {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
         }
 
-        .ai-helper-btn {
-            padding: 10px 20px;
-            border-radius: 20px;
+        .ai-rephrase-btn {
+            padding: 8px 16px;
+            border-radius: 16px;
             border: 1px solid rgba(140, 120, 150, 0.3);
             background: rgba(140, 120, 150, 0.1);
             color: #6a5a7a;
-            font-family: 'Quicksand', sans-serif;
             font-size: 0.75rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
         }
 
-        .ai-helper-btn:hover {
+        .ai-rephrase-btn:hover {
             background: rgba(140, 120, 150, 0.2);
+        }
+
+        .send-note-btn {
+            padding: 8px 20px;
+            border-radius: 16px;
+            border: none;
+            background: linear-gradient(135deg, #c4949e, #a07080);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .send-note-btn:hover {
             transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
         .ai-suggestion {
-            margin-top: 16px;
-            padding: 16px;
+            margin-top: 12px;
+            padding: 14px;
             background: linear-gradient(135deg, rgba(140, 120, 160, 0.1), rgba(200, 180, 210, 0.1));
-            border-radius: 12px;
+            border-radius: 10px;
             border: 1px solid rgba(140, 120, 150, 0.2);
+            display: none;
+        }
+
+        .ai-suggestion.visible {
+            display: block;
             animation: slideDown 0.3s ease;
         }
 
@@ -411,239 +632,56 @@
             font-size: 0.7rem;
             font-weight: 600;
             color: #6a5a7a;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .ai-suggestion-text {
-            font-size: 0.85rem;
-            line-height: 1.6;
+            font-size: 0.82rem;
+            line-height: 1.5;
             color: #444;
             font-style: italic;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
-        .ai-suggestion-actions {
+        .suggestion-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
 
-        .use-suggestion-btn {
-            padding: 8px 16px;
-            border-radius: 16px;
+        .use-btn, .dismiss-btn {
+            padding: 6px 14px;
+            border-radius: 14px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .use-btn {
             border: none;
             background: linear-gradient(135deg, #8a7a9a, #6a5a7a);
             color: white;
-            font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
         }
 
-        .dismiss-suggestion-btn {
-            padding: 8px 16px;
-            border-radius: 16px;
+        .dismiss-btn {
             border: 1px solid rgba(0,0,0,0.1);
             background: white;
             color: #666;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s;
         }
 
-        /* Help Me Understand Section */
-        .understand-section {
-            margin-top: 16px;
-            text-align: center;
-        }
-
-        .understand-btn {
-            padding: 12px 24px;
-            border-radius: 24px;
-            border: 1px solid rgba(140, 120, 150, 0.3);
-            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240, 235, 245, 0.9));
-            color: #5a4a6a;
-            font-family: 'Quicksand', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .understand-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(140, 120, 150, 0.2);
-        }
-
-        .understand-response {
-            margin-top: 16px;
-            padding: 20px;
-            background: linear-gradient(135deg, rgba(140, 120, 160, 0.08), rgba(255,255,255,0.9));
-            border-radius: 16px;
-            border: 1px solid rgba(140, 120, 150, 0.2);
-            position: relative;
-            text-align: left;
-            animation: slideDown 0.4s ease;
-        }
-
-        .understand-text {
-            font-size: 0.85rem;
-            line-height: 1.7;
-            color: #444;
-        }
-
-        .dismiss-understand {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: none;
-            border: none;
-            font-size: 1rem;
-            cursor: pointer;
-            opacity: 0.4;
-            transition: opacity 0.2s;
-        }
-
-        .dismiss-understand:hover {
-            opacity: 0.8;
-        }
-
-        /* AI Insights Panel */
-        .ai-insights-panel {
+        /* ============ ALERTS & MESSAGES ============ */
+        .alert-section {
             width: 100%;
             max-width: 920px;
-            background: linear-gradient(135deg, rgba(240, 235, 250, 0.8), rgba(255,255,255,0.9));
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 28px;
-            border: 1px solid rgba(140, 120, 160, 0.2);
-            box-shadow: 0 8px 32px rgba(140, 120, 160, 0.1);
+            margin-bottom: 24px;
         }
 
-        .ai-insights-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-
-        .ai-insights-icon {
-            font-size: 1.2rem;
-        }
-
-        .ai-insights-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.1rem;
-            color: #4a4a5a;
-            flex: 1;
-        }
-
-        .refresh-insights-btn {
-            padding: 6px 14px;
-            border-radius: 14px;
-            border: 1px solid rgba(140, 120, 150, 0.3);
-            background: white;
-            color: #6a5a7a;
-            font-size: 0.7rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .refresh-insights-btn:hover {
-            background: rgba(140, 120, 150, 0.1);
-        }
-
-        .ai-insights-content {
-            min-height: 60px;
-        }
-
-        .ai-insights-text {
-            font-size: 0.85rem;
-            line-height: 1.7;
-            color: #555;
-        }
-
-        /* Weekly Reflection */
-        .weekly-reflection {
-            width: 100%;
-            max-width: 920px;
-            background: linear-gradient(135deg, rgba(255, 250, 245, 0.9), rgba(255,255,255,0.9));
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 28px;
-            border: 1px solid rgba(200, 180, 160, 0.2);
-            box-shadow: 0 8px 32px rgba(180, 160, 140, 0.1);
-        }
-
-        .weekly-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-
-        .weekly-icon {
-            font-size: 1.2rem;
-        }
-
-        .weekly-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.1rem;
-            color: #5a4a4a;
-        }
-
-        .weekly-content {
-            min-height: 60px;
-        }
-
-        .weekly-text {
-            font-size: 0.85rem;
-            line-height: 1.7;
-            color: #555;
-        }
-
-        /* Loading Animation */
-        .ai-loading {
-            display: flex;
-            justify-content: center;
-            gap: 6px;
-            padding: 20px;
-        }
-
-        .loading-dot {
-            width: 8px;
-            height: 8px;
-            background: rgba(140, 120, 160, 0.4);
-            border-radius: 50%;
-            animation: loadingBounce 1.2s ease-in-out infinite;
-        }
-
-        .loading-dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .loading-dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes loadingBounce {
-            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
-            40% { transform: scale(1.2); opacity: 1; }
-        }
-
-        /* Combo Alert */
         .combo-alert {
-            width: 100%;
-            max-width: 920px;
             background: linear-gradient(135deg, rgba(255, 230, 220, 0.9), rgba(255, 245, 240, 0.9));
             border-radius: 16px;
-            padding: 20px 24px;
-            margin-bottom: 24px;
+            padding: 18px 22px;
             border-left: 4px solid #d4a090;
-            animation: slideDown 0.4s ease;
             display: none;
+            animation: slideDown 0.4s ease;
         }
 
         .combo-alert.visible {
@@ -652,22 +690,51 @@
 
         .combo-alert-title {
             font-family: 'Playfair Display', serif;
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: #8a6a5a;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .combo-alert-text {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             line-height: 1.6;
             color: #6a5a4a;
         }
 
-        .custom-note {
+        .partner-message {
+            background: linear-gradient(135deg, rgba(140, 120, 160, 0.1), rgba(255,255,255,0.9));
+            border-radius: 16px;
+            padding: 18px 22px;
+            border-left: 4px solid #8a6a9a;
             margin-top: 12px;
-            padding-top: 12px;
+            display: none;
+            animation: slideInLeft 0.4s ease;
+        }
+
+        .partner-message.visible {
+            display: block;
+        }
+
+        .partner-message-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #6a4a7a;
+            margin-bottom: 6px;
+        }
+
+        .partner-message-text {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            font-style: italic;
+            color: #444;
+        }
+
+        .custom-note {
+            margin-top: 10px;
+            padding-top: 10px;
             border-top: 1px dotted rgba(0,0,0,0.1);
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             color: #555;
         }
 
@@ -681,37 +748,75 @@
             margin-bottom: 4px;
         }
 
-        /* ============ MOOD INSIGHT PANEL ============ */
-        .mood-insight {
+        .understand-btn {
+            margin-top: 12px;
+            padding: 10px 18px;
+            border-radius: 20px;
+            border: 1px solid rgba(140, 120, 150, 0.3);
+            background: white;
+            color: #5a4a6a;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .understand-btn:hover {
+            background: rgba(140, 120, 150, 0.1);
+        }
+
+        .understand-response {
+            margin-top: 12px;
+            padding: 16px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 12px;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        .understand-response.visible {
+            display: block;
+        }
+
+        .understand-text {
+            font-size: 0.82rem;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        /* ============ INSIGHT PANEL ============ */
+        .insight-panel {
             width: 100%;
             max-width: 920px;
             background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
             backdrop-filter: blur(12px);
             border-radius: 20px;
-            padding: 28px;
-            margin-bottom: 28px;
+            padding: 24px;
+            margin-bottom: 24px;
             border: 1px solid rgba(140, 120, 150, 0.2);
             box-shadow: 0 8px 32px rgba(0,0,0,0.08);
             display: none;
+        }
+
+        .insight-panel.visible {
+            display: block;
             animation: slideDown 0.4s ease;
         }
 
-        .mood-insight.visible { display: block; }
-
-        .mood-insight-header {
+        .insight-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
-        .mood-insight-title {
+        .insight-title {
             font-family: 'Playfair Display', serif;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #4a4a5a;
         }
 
-        .mood-close {
+        .insight-close {
             background: none;
             border: none;
             font-size: 1.2rem;
@@ -720,79 +825,198 @@
             transition: opacity 0.2s;
         }
 
-        .mood-close:hover { opacity: 0.8; }
+        .insight-close:hover { opacity: 0.8; }
 
-        .mood-insight-grid {
+        .insight-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 16px;
         }
 
-        .mood-insight-card {
-            padding: 20px;
-            border-radius: 14px;
+        .insight-card {
+            padding: 16px;
+            border-radius: 12px;
             background: rgba(255,255,255,0.7);
         }
 
-        .mood-insight-card h4 {
+        .insight-card h4 {
             font-size: 0.65rem;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             opacity: 0.7;
         }
 
-        .mood-insight-card p {
-            font-size: 0.82rem;
-            line-height: 1.7;
+        .insight-card p {
+            font-size: 0.8rem;
+            line-height: 1.6;
         }
 
-        .mood-insight-card.for-me { border-top: 3px solid #c4949e; }
-        .mood-insight-card.for-you { border-top: 3px solid #6a4a7a; }
+        .insight-card.for-me { border-top: 3px solid #c4949e; }
+        .insight-card.for-you { border-top: 3px solid #6a4a7a; }
 
-        /* ============ PARTNER'S MESSAGE ============ */
-        .partner-message {
+        /* ============ AI SECTIONS ============ */
+        .ai-section {
             width: 100%;
             max-width: 920px;
-            background: linear-gradient(135deg, rgba(140, 120, 160, 0.1), rgba(255,255,255,0.9));
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .ai-card {
+            background: linear-gradient(135deg, rgba(240, 235, 250, 0.8), rgba(255,255,255,0.9));
+            backdrop-filter: blur(10px);
             border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 28px;
-            border-left: 4px solid #8a6a9a;
-            display: none;
-            animation: fadeIn 0.4s ease;
+            padding: 20px;
+            border: 1px solid rgba(140, 120, 160, 0.15);
         }
 
-        .partner-message.visible { display: block; }
-
-        .partner-message-label {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #6a4a7a;
-            margin-bottom: 8px;
+        .ai-card.weekly {
+            background: linear-gradient(135deg, rgba(255, 250, 245, 0.9), rgba(255,255,255,0.9));
+            border-color: rgba(200, 180, 160, 0.2);
         }
 
-        .partner-message-text {
+        .ai-card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .ai-card-icon {
+            font-size: 1rem;
+        }
+
+        .ai-card-title {
+            font-family: 'Playfair Display', serif;
             font-size: 0.95rem;
-            line-height: 1.7;
-            font-style: italic;
-            color: #444;
+            color: #4a4a5a;
+            flex: 1;
+        }
+
+        .refresh-btn {
+            padding: 4px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(140, 120, 150, 0.3);
+            background: white;
+            color: #6a5a7a;
+            font-size: 0.65rem;
+            cursor: pointer;
+        }
+
+        .ai-card-content {
+            font-size: 0.82rem;
+            line-height: 1.6;
+            color: #555;
+            min-height: 50px;
+        }
+
+        .ai-loading {
+            display: none;
+            justify-content: center;
+            gap: 6px;
+            padding: 16px;
+        }
+
+        .ai-loading.visible {
+            display: flex;
+        }
+
+        .loading-dot {
+            width: 6px;
+            height: 6px;
+            background: rgba(140, 120, 160, 0.4);
+            border-radius: 50%;
+            animation: loadingBounce 1.2s ease-in-out infinite;
+        }
+
+        .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes loadingBounce {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1.2); opacity: 1; }
+        }
+
+        /* ============ COLLAPSIBLE SECTIONS ============ */
+        .collapsible-section {
+            width: 100%;
+            max-width: 920px;
+            margin-bottom: 16px;
+        }
+
+        .collapsible-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+
+        .collapsible-header:hover {
+            background: rgba(255,255,255,0.9);
+        }
+
+        .collapsible-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .collapsible-icon {
+            font-size: 1rem;
+        }
+
+        .collapsible-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            color: #4a4a5a;
+        }
+
+        .collapsible-toggle {
+            font-size: 1rem;
+            color: #888;
+            transition: transform 0.3s ease;
+        }
+
+        .collapsible-header.open .collapsible-toggle {
+            transform: rotate(180deg);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .collapsible-content.open {
+            max-height: 2000px;
+        }
+
+        .collapsible-inner {
+            padding: 20px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 0 0 16px 16px;
+            margin-top: -8px;
         }
 
         /* ============ VENN DIAGRAM ============ */
         .venn-container {
             position: relative;
             width: 100%;
-            max-width: 920px;
-            height: 520px;
-            margin-bottom: 30px;
+            height: 480px;
         }
 
         .circle {
             position: absolute;
-            width: 420px;
-            height: 420px;
+            width: 380px;
+            height: 380px;
             border-radius: 50%;
             top: 50px;
             transition: all 0.4s ease;
@@ -821,30 +1045,34 @@
 
         .content-card {
             position: absolute;
-            background: rgba(255, 255, 255, 0.88);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 22px 20px;
-            width: 225px;
+            border-radius: 16px;
+            padding: 18px 16px;
+            width: 200px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.08);
-            transition: all 0.4s ease;
         }
 
         .card-me {
-            left: 25px;
-            top: 75px;
+            left: 20px;
+            top: 70px;
             border: 1px solid rgba(180, 120, 135, 0.3);
         }
 
         .card-you {
-            right: 25px;
-            top: 75px;
+            right: 20px;
+            top: 70px;
             border: 1px solid rgba(75, 45, 95, 0.3);
+        }
+
+        .content-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
         }
 
         .card-title {
             font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: 500;
             margin-bottom: 4px;
         }
@@ -853,11 +1081,11 @@
         .card-you .card-title { color: #4a2d5f; }
 
         .card-subtitle {
-            font-size: 0.55rem;
+            font-size: 0.5rem;
             font-weight: 600;
             letter-spacing: 0.1em;
             text-transform: uppercase;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
 
         .card-me .card-subtitle { color: #b07080; }
@@ -865,13 +1093,13 @@
 
         .traits {
             list-style: none;
-            font-size: 0.75rem;
-            line-height: 1.8;
+            font-size: 0.7rem;
+            line-height: 1.7;
         }
 
         .traits li {
             position: relative;
-            padding-left: 14px;
+            padding-left: 12px;
             margin-bottom: 2px;
         }
 
@@ -881,8 +1109,8 @@
             left: 0;
             top: 50%;
             transform: translateY(-50%);
-            width: 5px;
-            height: 5px;
+            width: 4px;
+            height: 4px;
             border-radius: 50%;
         }
 
@@ -890,122 +1118,164 @@
         .card-you .traits li::before { background: linear-gradient(135deg, #7a5a8a, #4a2d5f); }
 
         .section-divider {
-            margin-top: 12px;
-            padding-top: 10px;
+            margin-top: 10px;
+            padding-top: 8px;
             border-top: 1px solid rgba(0,0,0,0.06);
         }
 
         .section-label {
             font-weight: 600;
-            font-size: 0.5rem;
+            font-size: 0.45rem;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
             display: block;
         }
 
         .card-me .section-label { color: #a07080; }
         .card-you .section-label { color: #6a4a7a; }
 
-        .section-content { font-size: 0.7rem; line-height: 1.5; }
-
-        .growth-item {
-            font-size: 0.68rem;
-            font-style: italic;
-            line-height: 1.6;
-            margin-top: 3px;
+        .section-content {
+            font-size: 0.65rem;
+            line-height: 1.4;
         }
 
-        /* Overlap */
+        .growth-item {
+            font-size: 0.62rem;
+            font-style: italic;
+            line-height: 1.5;
+            margin-top: 2px;
+        }
+
         .overlap-card {
             position: absolute;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            width: 185px;
+            width: 170px;
             text-align: center;
             z-index: 10;
-            background: rgba(255, 255, 255, 0.92);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(12px);
-            border-radius: 20px;
-            padding: 20px 16px;
+            border-radius: 16px;
+            padding: 16px 14px;
             border: 1px solid rgba(140, 100, 140, 0.25);
             box-shadow: 0 12px 40px rgba(0,0,0,0.1);
         }
 
         .overlap-title {
             font-family: 'Playfair Display', serif;
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: #5a4a5a;
             margin-bottom: 4px;
         }
 
         .overlap-icon {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             opacity: 0.35;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             display: block;
         }
 
         .overlap-traits {
             list-style: none;
-            font-size: 0.68rem;
-            line-height: 1.85;
+            font-size: 0.62rem;
+            line-height: 1.8;
             color: #4a4a5a;
             font-weight: 500;
         }
 
         .shared-lang {
-            margin-top: 12px;
-            padding-top: 10px;
+            margin-top: 10px;
+            padding-top: 8px;
             border-top: 1px solid rgba(100, 80, 100, 0.15);
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: #6a5a6a;
             font-weight: 600;
         }
 
         .shared-lang-label {
-            font-size: 0.48rem;
+            font-size: 0.45rem;
             text-transform: uppercase;
             letter-spacing: 0.1em;
             display: block;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
             opacity: 0.7;
         }
 
-        /* ============ MOOD HISTORY CALENDAR ============ */
-        .mood-history-section {
-            width: 100%;
-            max-width: 920px;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: 28px 32px;
-            margin-bottom: 30px;
-            border: 1px solid rgba(140, 120, 150, 0.2);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+        /* ============ HELPS SECTION ============ */
+        .helps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
         }
 
-        .mood-history-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.3rem;
-            color: #4a4a5a;
-            text-align: center;
-            margin-bottom: 16px;
+        .helps-column h3 {
+            font-size: 0.55rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(0,0,0,0.08);
         }
 
-        .mood-history-legend {
+        .helps-column:nth-child(1) h3 { color: #9a6070; }
+        .helps-column:nth-child(2) h3 { color: #5a4a6a; }
+        .helps-column:nth-child(3) h3 { color: #4a2d5f; }
+
+        .helps-column ul {
+            list-style: none;
+            font-size: 0.72rem;
+            line-height: 1.8;
+        }
+
+        .helps-column li {
+            position: relative;
+            padding-left: 14px;
+            margin-bottom: 3px;
+        }
+
+        .helps-column li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            opacity: 0.4;
+            font-size: 0.75rem;
+        }
+
+        /* ============ MOOD CALENDAR ============ */
+        .calendar-container {
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        .calendar-container::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .calendar-container::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+            border-radius: 3px;
+        }
+
+        .calendar-container::-webkit-scrollbar-thumb {
+            background: rgba(140, 120, 150, 0.3);
+            border-radius: 3px;
+        }
+
+        .calendar-legend {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 16px;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
             border-bottom: 1px solid rgba(0,0,0,0.06);
         }
 
         .legend-item {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #666;
             display: flex;
             align-items: center;
@@ -1013,60 +1283,41 @@
         }
 
         .legend-item .emoji {
-            font-size: 1rem;
-        }
-
-        .mood-calendar {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .mood-calendar::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .mood-calendar::-webkit-scrollbar-track {
-            background: rgba(0,0,0,0.05);
-            border-radius: 3px;
-        }
-
-        .mood-calendar::-webkit-scrollbar-thumb {
-            background: rgba(140, 120, 150, 0.3);
-            border-radius: 3px;
+            font-size: 0.9rem;
         }
 
         .calendar-day {
             display: flex;
             align-items: center;
-            padding: 12px 16px;
+            padding: 10px 14px;
             background: rgba(255,255,255,0.6);
-            border-radius: 12px;
-            gap: 12px;
+            border-radius: 10px;
+            gap: 10px;
+            margin-bottom: 6px;
+            animation: slideInEntry 0.4s ease-out both;
         }
 
         .calendar-date {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 600;
             color: #888;
-            min-width: 80px;
+            min-width: 70px;
         }
 
         .calendar-moods {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             flex: 1;
+            flex-wrap: wrap;
         }
 
         .calendar-mood-entry {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 0.7rem;
         }
 
         .calendar-mood-entry.me {
@@ -1080,86 +1331,26 @@
         }
 
         .calendar-mood-entry .entry-emoji {
-            font-size: 1.1rem;
+            font-size: 0.95rem;
         }
 
         .calendar-mood-entry .entry-time {
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             opacity: 0.7;
         }
 
         .no-history {
             text-align: center;
             color: #999;
-            font-size: 0.85rem;
-            padding: 20px;
-            font-style: italic;
-        }
-
-        /* ============ HELPS SECTION ============ */
-        .helps-section {
-            width: 100%;
-            max-width: 920px;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: 28px 32px;
-            border: 1px solid rgba(140, 120, 150, 0.2);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.06);
-        }
-
-        .helps-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.3rem;
-            color: #4a4a5a;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .helps-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-        }
-
-        .helps-column h3 {
-            font-size: 0.6rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid rgba(0,0,0,0.08);
-        }
-
-        .helps-column:nth-child(1) h3 { color: #9a6070; }
-        .helps-column:nth-child(2) h3 { color: #5a4a6a; }
-        .helps-column:nth-child(3) h3 { color: #4a2d5f; }
-
-        .helps-column ul {
-            list-style: none;
-            font-size: 0.75rem;
-            line-height: 1.9;
-        }
-
-        .helps-column li {
-            position: relative;
-            padding-left: 16px;
-            margin-bottom: 4px;
-        }
-
-        .helps-column li::before {
-            content: '•';
-            position: absolute;
-            left: 0;
-            opacity: 0.4;
             font-size: 0.8rem;
+            padding: 16px;
+            font-style: italic;
         }
 
         /* ============ ANIMATIONS ============ */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         @keyframes slideDown {
@@ -1168,37 +1359,25 @@
         }
 
         @keyframes slideInLeft {
-            from { opacity: 0; transform: translateX(-30px); }
+            from { opacity: 0; transform: translateX(-20px); }
             to { opacity: 1; transform: translateX(0); }
         }
 
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(30px); }
+        @keyframes slideInEntry {
+            from { opacity: 0; transform: translateX(-12px); }
             to { opacity: 1; transform: translateX(0); }
         }
 
         @keyframes bounceIn {
             0% { opacity: 0; transform: scale(0.3); }
-            50% { transform: scale(1.1); }
-            70% { transform: scale(0.9); }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.95); }
             100% { opacity: 1; transform: scale(1); }
         }
 
-        @keyframes emojiBounce {
-            0%, 100% { transform: translateY(0); }
-            25% { transform: translateY(-6px) rotate(-5deg); }
-            75% { transform: translateY(-3px) rotate(5deg); }
-        }
-
-        @keyframes emojiPop {
-            0% { transform: scale(0); opacity: 0; }
-            50% { transform: scale(1.4); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        @keyframes gentleFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-4px); }
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes pulseGlow {
@@ -1206,147 +1385,11 @@
             50% { box-shadow: 0 8px 32px rgba(140, 120, 150, 0.25); }
         }
 
-        @keyframes ripple {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(2.5); opacity: 0; }
-        }
-
         @keyframes floatUp {
             0% { opacity: 1; transform: translateY(0) scale(1); }
             100% { opacity: 0; transform: translateY(-80px) scale(0.5); }
         }
 
-        @keyframes sparkle {
-            0%, 100% { opacity: 0; transform: scale(0); }
-            50% { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes slideInEntry {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes cardEntrance {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Page load animations */
-        .connection-bar {
-            animation: slideDown 0.5s ease-out;
-        }
-
-        .identity-selector {
-            animation: slideDown 0.5s ease-out 0.1s both;
-        }
-
-        .live-status-card {
-            animation: cardEntrance 0.5s ease-out both;
-        }
-
-        .live-status-card.me-card {
-            animation-delay: 0.2s;
-        }
-
-        .live-status-card.you-card {
-            animation-delay: 0.3s;
-        }
-
-        /* Status card update pulse */
-        .live-status-card.just-updated {
-            animation: pulseGlow 0.8s ease-out;
-        }
-
-        /* Partner message slide in */
-        .partner-message.visible {
-            animation: slideInLeft 0.4s ease-out;
-        }
-
-        /* Mood insight panel */
-        .mood-insight.visible {
-            animation: slideDown 0.4s ease-out;
-        }
-
-        /* Signal button enhancements */
-        .signal-btn {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .signal-btn::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255,255,255,0.3);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.3s, height 0.3s;
-        }
-
-        .signal-btn:active::after {
-            width: 200px;
-            height: 200px;
-        }
-
-        .signal-btn.active-me,
-        .signal-btn.active-you {
-            animation: bounceIn 0.4s ease-out;
-        }
-
-        /* Calendar entry animations */
-        .calendar-day {
-            animation: slideInEntry 0.4s ease-out both;
-        }
-
-        .calendar-day:nth-child(1) { animation-delay: 0s; }
-        .calendar-day:nth-child(2) { animation-delay: 0.05s; }
-        .calendar-day:nth-child(3) { animation-delay: 0.1s; }
-        .calendar-day:nth-child(4) { animation-delay: 0.15s; }
-        .calendar-day:nth-child(5) { animation-delay: 0.2s; }
-
-        .calendar-mood-entry {
-            transition: transform 0.2s ease;
-        }
-
-        .calendar-mood-entry:hover {
-            transform: scale(1.05);
-        }
-
-        .calendar-mood-entry .entry-emoji {
-            display: inline-block;
-            animation: gentleFloat 3s ease-in-out infinite;
-        }
-
-        .calendar-mood-entry:nth-child(odd) .entry-emoji {
-            animation-delay: 0.5s;
-        }
-
-        .calendar-mood-entry.new-entry {
-            animation: bounceIn 0.5s ease-out;
-        }
-
-        .calendar-mood-entry.new-entry .entry-emoji {
-            animation: emojiPop 0.5s ease-out;
-        }
-
-        /* Venn diagram hover effects */
-        .content-card {
-            transition: all 0.4s ease, transform 0.3s ease;
-        }
-
-        .content-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
-        }
-
-        .overlap-card:hover {
-            transform: translate(-50%, -50%) scale(1.02);
-        }
-
-        /* Floating hearts container */
         .floating-hearts {
             position: fixed;
             pointer-events: none;
@@ -1359,74 +1402,31 @@
             animation: floatUp 2s ease-out forwards;
         }
 
-        /* Legend emoji hover */
-        .legend-item .emoji {
-            display: inline-block;
-            transition: transform 0.2s ease;
-        }
-
-        .legend-item:hover .emoji {
-            animation: emojiBounce 0.5s ease;
-        }
-
-        /* Identity button animations */
-        .identity-btn {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .identity-btn.active::before {
-            content: '✓';
-            position: absolute;
-            right: 12px;
-            animation: bounceIn 0.3s ease-out;
-        }
-
-        /* Custom message box */
-        .custom-message-box {
-            animation: slideDown 0.3s ease-out;
-        }
-
-        .send-message-btn {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .send-message-btn:active {
-            transform: scale(0.95);
-        }
-
-        /* Helps section cards */
-        .helps-column {
-            transition: transform 0.3s ease;
-        }
-
-        .helps-column:hover {
-            transform: translateY(-2px);
-        }
-
-        /* Copy button success animation */
-        .copy-btn.copied {
-            animation: bounceIn 0.3s ease-out;
-        }
-
         /* ============ RESPONSIVE ============ */
         @media (max-width: 960px) {
             h1 { font-size: 2rem; }
 
-            .connection-bar {
+            .room-bar {
+                position: relative;
+                top: 0;
+            }
+
+            .room-bar-top {
                 flex-direction: column;
                 text-align: center;
             }
 
             .live-status {
                 grid-template-columns: 1fr;
-                gap: 12px;
+                gap: 10px;
             }
 
-            .mood-insight-grid {
+            .ai-section {
                 grid-template-columns: 1fr;
-                gap: 16px;
+            }
+
+            .insight-grid {
+                grid-template-columns: 1fr;
             }
 
             .venn-container {
@@ -1434,7 +1434,7 @@
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                gap: 20px;
+                gap: 16px;
             }
 
             .circle { display: none; }
@@ -1446,74 +1446,52 @@
                 top: auto;
                 transform: none;
                 width: 100%;
-                max-width: 400px;
+                max-width: 350px;
             }
 
-            .card-me {
-                background: linear-gradient(150deg, rgba(200, 150, 160, 0.15) 0%, rgba(255,255,255,0.95) 100%);
-                order: 1;
-            }
-
-            .overlap-card {
-                background: linear-gradient(150deg, rgba(140, 100, 140, 0.1) 0%, rgba(255,255,255,0.95) 100%);
-                order: 2;
-            }
-
-            .card-you {
-                background: linear-gradient(150deg, rgba(75, 45, 95, 0.12) 0%, rgba(255,255,255,0.95) 100%);
-                order: 3;
-            }
-
-            .helps-section { max-width: 400px; padding: 24px 20px; }
-
-            .mood-history-section { max-width: 400px; padding: 24px 20px; }
-
-            .ai-insights-panel, .weekly-reflection { 
-                max-width: 400px; 
-                padding: 20px; 
-            }
-
-            .mood-history-legend {
-                gap: 10px;
-            }
-
-            .calendar-day {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
-            }
-
-            .calendar-moods {
-                flex-wrap: wrap;
-            }
+            .card-me { order: 1; }
+            .overlap-card { order: 2; }
+            .card-you { order: 3; }
 
             .helps-grid {
                 grid-template-columns: 1fr;
-                gap: 20px;
+                gap: 16px;
             }
-
-            .helps-column {
-                padding-bottom: 16px;
-                border-bottom: 1px solid rgba(0,0,0,0.05);
-            }
-
-            .helps-column:last-child { border-bottom: none; }
         }
 
         @media (max-width: 480px) {
-            body { padding: 24px 16px; }
+            body { padding: 20px 16px; }
             h1 { font-size: 1.6rem; }
-            .subtitle { font-size: 0.75rem; }
 
-            .identity-buttons { flex-direction: column; gap: 10px; }
+            .room-bar { padding: 14px 18px; }
+
+            .identity-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+
             .identity-btn { width: 100%; }
 
-            .signal-btn { padding: 10px 16px; font-size: 0.75rem; }
+            .share-actions {
+                flex-direction: column;
+                width: 100%;
+            }
 
-            .content-card, .overlap-card { padding: 20px 18px; border-radius: 16px; }
-            .card-title { font-size: 1.3rem; }
+            .share-btn { justify-content: center; }
 
-            .helps-section { padding: 20px 18px; border-radius: 16px; }
+            .mood-btn {
+                padding: 10px 16px;
+                font-size: 0.75rem;
+            }
+
+            .note-actions {
+                flex-direction: column;
+            }
+
+            .ai-rephrase-btn, .send-note-btn {
+                width: 100%;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -1521,263 +1499,301 @@
     <h1>Relationship Styles</h1>
     <p class="subtitle">A shared space for understanding each other</p>
 
-    <!-- Connection Bar -->
-    <div class="connection-bar">
-        <div class="connection-status">
-            <div class="status-dot" id="status-dot"></div>
-            <span id="status-text">Connecting...</span>
-        </div>
-        <div class="room-info">
-            <span>Room:</span>
-            <span class="room-code" id="room-code">------</span>
-            <button class="copy-btn" onclick="copyRoomLink()">Copy Link</button>
-            <button class="new-room-btn" onclick="createNewRoom()">New Room</button>
-        </div>
-    </div>
-
-    <!-- Identity Selector -->
-    <div class="identity-selector" id="identity-selector">
-        <h3>Who are you?</h3>
-        <div class="identity-buttons">
-            <button class="identity-btn me" onclick="selectIdentity('me')">I'm Me (Her)</button>
-            <button class="identity-btn you" onclick="selectIdentity('you')">I'm You (Him)</button>
-        </div>
-        <p class="identity-selected" id="identity-selected"></p>
-    </div>
-
-    <!-- Live Status Display -->
-    <div class="live-status">
-        <div class="live-status-card me-card">
-            <div class="live-status-name">Me (Her)</div>
-            <div class="live-status-mood" id="live-mood-me">No status yet</div>
-            <div class="live-status-time" id="live-time-me"></div>
-        </div>
-        <div class="live-status-card you-card">
-            <div class="live-status-name">You (Him)</div>
-            <div class="live-status-mood" id="live-mood-you">No status yet</div>
-            <div class="live-status-time" id="live-time-you"></div>
-        </div>
-    </div>
-
-    <!-- Combo Alert (when both moods indicate tension) -->
-    <div class="combo-alert" id="combo-alert">
-        <div class="combo-alert-title">💫 A Familiar Moment</div>
-        <div class="combo-alert-text" id="combo-alert-text"></div>
-    </div>
-
-    <!-- Partner's Message (shows when partner updates) -->
-    <div class="partner-message" id="partner-message">
-        <div class="partner-message-label" id="partner-message-label">Message from your partner</div>
-        <div class="partner-message-text" id="partner-message-text"></div>
-    </div>
-
-    <!-- Signal Section -->
-    <div class="signal-section" id="signal-section" style="display: none;">
-        <div class="signal-header">How are you feeling right now?</div>
-        <div class="signal-buttons-grid" id="signal-buttons">
-            <!-- Buttons will be populated based on identity -->
-        </div>
-        
-        <div class="custom-message-box" id="custom-message-box" style="display: none;">
-            <label for="custom-message">Add a personal note (optional):</label>
-            <textarea id="custom-message" placeholder="Anything else you want to share..."></textarea>
-            <div class="message-actions">
-                <button class="ai-helper-btn" onclick="improveMessage()">✨ Help me say this better</button>
-                <button class="send-message-btn" onclick="sendCustomMessage()">Send Note</button>
+    <!-- 1. ROOM BAR (Sticky) -->
+    <div class="room-bar" id="room-bar">
+        <div class="room-bar-top">
+            <div class="room-identity">
+                <div class="connection-dot" id="connection-dot"></div>
+                <div class="room-name-display">
+                    <span class="room-name" id="room-name">Our Space</span>
+                    <button class="room-name-edit" onclick="editRoomName()">✏️</button>
+                    <input type="text" class="room-name-input" id="room-name-input" maxlength="20" onblur="saveRoomName()" onkeypress="if(event.key==='Enter')saveRoomName()">
+                </div>
+                <span class="identity-badge" id="identity-badge" style="display: none;"></span>
             </div>
-            <div class="ai-suggestion" id="ai-suggestion" style="display: none;">
+            <div class="share-actions">
+                <button class="share-btn" onclick="openShareModal()">📤 Share</button>
+                <button class="share-btn" onclick="createNewRoom()">+ New Room</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div class="share-modal" id="share-modal">
+        <div class="share-modal-content">
+            <div class="share-modal-title">Share This Space</div>
+            <div class="share-modal-subtitle">Send this link to your partner so you can connect</div>
+            <div class="qr-code" id="qr-code"></div>
+            <div class="share-link-box">
+                <input type="text" class="share-link-input" id="share-link" readonly>
+                <button class="copy-link-btn" onclick="copyLink()">Copy</button>
+            </div>
+            <div class="share-options">
+                <button class="share-option-btn" onclick="shareViaText()">💬 Text</button>
+                <button class="share-option-btn" onclick="shareViaEmail()">📧 Email</button>
+            </div>
+            <button class="close-modal-btn" onclick="closeShareModal()">Done</button>
+        </div>
+    </div>
+
+    <!-- 2. WELCOME / IDENTITY SELECTOR -->
+    <div class="welcome-card" id="welcome-card">
+        <div class="welcome-title">Welcome</div>
+        <div class="welcome-subtitle">Who's checking in?</div>
+        <div class="identity-buttons">
+            <button class="identity-btn me" onclick="selectIdentity('me')">I'm Her</button>
+            <button class="identity-btn you" onclick="selectIdentity('you')">I'm Him</button>
+        </div>
+        <div class="returning-user-note" id="returning-note">
+            ✓ Welcome back! We remembered your room.
+        </div>
+    </div>
+
+    <!-- 3. LIVE STATUS CARDS -->
+    <div class="status-section">
+        <div class="live-status">
+            <div class="live-status-card me-card">
+                <div class="live-status-name">Her</div>
+                <div class="live-status-mood" id="live-mood-me">No status yet</div>
+                <div class="live-status-time" id="live-time-me"></div>
+            </div>
+            <div class="live-status-card you-card">
+                <div class="live-status-name">Him</div>
+                <div class="live-status-mood" id="live-mood-you">No status yet</div>
+                <div class="live-status-time" id="live-time-you"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. MOOD SELECTOR -->
+    <div class="mood-section" id="mood-section">
+        <div class="mood-header">How are you feeling right now?</div>
+        <div class="mood-buttons" id="mood-buttons"></div>
+        
+        <div class="note-box" id="note-box">
+            <label>Add a personal note (optional)</label>
+            <textarea id="note-input" placeholder="Anything else you want to share..."></textarea>
+            <div class="note-actions">
+                <button class="ai-rephrase-btn" onclick="improveMessage()">✨ Help me say this better</button>
+                <button class="send-note-btn" onclick="sendNote()">Send Note</button>
+            </div>
+            <div class="ai-suggestion" id="ai-suggestion">
                 <div class="ai-suggestion-label">💭 Suggested rephrasing:</div>
                 <div class="ai-suggestion-text" id="ai-suggestion-text"></div>
-                <div class="ai-suggestion-actions">
-                    <button class="use-suggestion-btn" onclick="useSuggestion()">Use this</button>
-                    <button class="dismiss-suggestion-btn" onclick="dismissSuggestion()">Keep mine</button>
+                <div class="suggestion-actions">
+                    <button class="use-btn" onclick="useSuggestion()">Use this</button>
+                    <button class="dismiss-btn" onclick="dismissSuggestion()">Keep mine</button>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- 5. ALERTS & PARTNER MESSAGE -->
+    <div class="alert-section" id="alert-section">
+        <div class="combo-alert" id="combo-alert">
+            <div class="combo-alert-title">💫 A Familiar Moment</div>
+            <div class="combo-alert-text" id="combo-alert-text"></div>
+        </div>
         
-        <!-- Help Me Understand Button -->
-        <div class="understand-section" id="understand-section" style="display: none;">
-            <button class="understand-btn" onclick="helpMeUnderstand()">
-                🤔 Help me understand their mood
-            </button>
-            <div class="understand-response" id="understand-response" style="display: none;">
+        <div class="partner-message" id="partner-message">
+            <div class="partner-message-label" id="partner-message-label">Message from your partner</div>
+            <div class="partner-message-text" id="partner-message-text"></div>
+            <button class="understand-btn" onclick="helpMeUnderstand()">🤔 Help me understand</button>
+            <div class="understand-response" id="understand-response">
                 <div class="understand-text" id="understand-text"></div>
-                <button class="dismiss-understand" onclick="dismissUnderstand()">✕</button>
             </div>
         </div>
     </div>
 
-    <!-- AI Insights Panel -->
-    <div class="ai-insights-panel" id="ai-insights-panel">
-        <div class="ai-insights-header">
-            <span class="ai-insights-icon">✨</span>
-            <span class="ai-insights-title">Pattern Insights</span>
-            <button class="refresh-insights-btn" onclick="generateInsights()">Refresh</button>
+    <!-- 6. CONTEXTUAL INSIGHT -->
+    <div class="insight-panel" id="insight-panel">
+        <div class="insight-header">
+            <div class="insight-title" id="insight-title">Understanding This Moment</div>
+            <button class="insight-close" onclick="closeInsight()">✕</button>
         </div>
-        <div class="ai-insights-content" id="ai-insights-content">
-            <div class="ai-loading" id="insights-loading" style="display: none;">
-                <span class="loading-dot"></span>
-                <span class="loading-dot"></span>
-                <span class="loading-dot"></span>
+        <div class="insight-grid">
+            <div class="insight-card for-me">
+                <h4 id="insight-label-1">Reminder for Me</h4>
+                <p id="insight-text-1"></p>
             </div>
-            <div class="ai-insights-text" id="ai-insights-text">
-                Select your identity to see personalized insights from your mood history.
-            </div>
-        </div>
-    </div>
-
-    <!-- Weekly Reflection -->
-    <div class="weekly-reflection" id="weekly-reflection">
-        <div class="weekly-header">
-            <span class="weekly-icon">📝</span>
-            <span class="weekly-title">This Week Together</span>
-        </div>
-        <div class="weekly-content" id="weekly-content">
-            <div class="ai-loading" id="weekly-loading" style="display: none;">
-                <span class="loading-dot"></span>
-                <span class="loading-dot"></span>
-                <span class="loading-dot"></span>
-            </div>
-            <div class="weekly-text" id="weekly-text">
-                Your weekly reflection will appear here once you have some mood history.
+            <div class="insight-card for-you">
+                <h4 id="insight-label-2">What They'll See</h4>
+                <p id="insight-text-2"></p>
             </div>
         </div>
     </div>
 
-    <!-- Mood Insight Panel -->
-    <div class="mood-insight" id="mood-insight">
-        <div class="mood-insight-header">
-            <div class="mood-insight-title" id="insight-title">Understanding This Moment</div>
-            <button class="mood-close" onclick="closeInsight()">✕</button>
-        </div>
-        <div class="mood-insight-grid">
-            <div class="mood-insight-card for-me">
-                <h4>What I Can Do</h4>
-                <p id="insight-me"></p>
+    <!-- 7. AI INSIGHTS & WEEKLY -->
+    <div class="ai-section">
+        <div class="ai-card">
+            <div class="ai-card-header">
+                <span class="ai-card-icon">✨</span>
+                <span class="ai-card-title">Pattern Insights</span>
+                <button class="refresh-btn" onclick="generateInsights()">Refresh</button>
             </div>
-            <div class="mood-insight-card for-you">
-                <h4>What Would Help From You</h4>
-                <p id="insight-you"></p>
+            <div class="ai-loading" id="insights-loading">
+                <span class="loading-dot"></span>
+                <span class="loading-dot"></span>
+                <span class="loading-dot"></span>
             </div>
-        </div>
-    </div>
-
-    <!-- Venn Diagram -->
-    <div class="venn-container">
-        <div class="circle circle-me"></div>
-        <div class="circle circle-you"></div>
-
-        <div class="content-card card-me">
-            <div class="card-title">Me</div>
-            <div class="card-subtitle">Connection-Seeking · Expressive</div>
-            <ul class="traits">
-                <li>Thrives on emotional closeness</li>
-                <li>Processes feelings through conversation</li>
-                <li>Finds security in consistent connection</li>
-                <li>Can over-focus on relationship dynamics</li>
-                <li>May feel unsettled by silence</li>
-            </ul>
-            <div class="section-divider">
-                <span class="section-label">Feels loved through</span>
-                <div class="section-content">Acts of service, words of affirmation</div>
-            </div>
-            <div class="section-divider">
-                <span class="section-label">When uncertain</span>
-                <div class="section-content">Seeks clarity, wants to reconnect</div>
-            </div>
-            <div class="section-divider">
-                <span class="section-label">Working on</span>
-                <div class="growth-item">Trusting that space ≠ rejection<br>Self soothing before reaching out</div>
+            <div class="ai-card-content" id="ai-insights-text">
+                Select your identity to see personalized insights.
             </div>
         </div>
-
-        <div class="overlap-card">
-            <div class="overlap-title">Shared Space</div>
-            <span class="overlap-icon">♡</span>
-            <ul class="overlap-traits">
-                <li>Physical presence settles us both</li>
-                <li>Walls come down when we're together</li>
-                <li>Same need, different languages</li>
-                <li>Both more invested than we show</li>
-                <li>We thrive in quiet, unplanned moments</li>
-                <li>Capable of real intimacy when we feel safe</li>
-            </ul>
-            <div class="shared-lang">
-                <span class="shared-lang-label">Shared love languages</span>
-                Words of affirmation & acts of service
+        <div class="ai-card weekly">
+            <div class="ai-card-header">
+                <span class="ai-card-icon">📝</span>
+                <span class="ai-card-title">This Week</span>
             </div>
-        </div>
-
-        <div class="content-card card-you">
-            <div class="card-title">You</div>
-            <div class="card-subtitle">Autonomy-Valuing · Reflective</div>
-            <ul class="traits">
-                <li>Feels deeply, processes internally</li>
-                <li>Recharges through solitude</li>
-                <li>Values independence within connection</li>
-                <li>Sensitive to expectations</li>
-                <li>Shows care through presence and actions</li>
-            </ul>
-            <div class="section-divider">
-                <span class="section-label">Feels loved through</span>
-                <div class="section-content">Words of affirmation, acts of service, physical touch</div>
+            <div class="ai-loading" id="weekly-loading">
+                <span class="loading-dot"></span>
+                <span class="loading-dot"></span>
+                <span class="loading-dot"></span>
             </div>
-            <div class="section-divider">
-                <span class="section-label">When overwhelmed</span>
-                <div class="section-content">Needs space, returns when settled</div>
-            </div>
-            <div class="section-divider">
-                <span class="section-label">What helps</span>
-                <div class="growth-item">Naming the return: "I need a break, but I'll be back"</div>
+            <div class="ai-card-content" id="weekly-text">
+                Your weekly reflection will appear once you have some mood history.
             </div>
         </div>
     </div>
 
-    <!-- Mood History Calendar -->
-    <div class="mood-history-section" id="mood-history-section">
-        <div class="mood-history-title">Our Mood History</div>
-        <div class="mood-history-legend">
-            <span class="legend-item"><span class="emoji">🌿</span> Space</span>
-            <span class="legend-item"><span class="emoji">🌊</span> Anxious/Overwhelmed</span>
-            <span class="legend-item"><span class="emoji">🌫️</span> Disconnected</span>
-            <span class="legend-item"><span class="emoji">🌸</span> Reconnect</span>
-            <span class="legend-item"><span class="emoji">☀️</span> All Good</span>
+    <!-- 8. MOOD CALENDAR (Collapsible) -->
+    <div class="collapsible-section">
+        <div class="collapsible-header" onclick="toggleSection(this)">
+            <div class="collapsible-header-left">
+                <span class="collapsible-icon">📅</span>
+                <span class="collapsible-title">Mood History</span>
+            </div>
+            <span class="collapsible-toggle">▼</span>
         </div>
-        <div class="mood-calendar" id="mood-calendar">
-            <!-- Calendar entries will be populated here -->
+        <div class="collapsible-content">
+            <div class="collapsible-inner">
+                <div class="calendar-legend">
+                    <span class="legend-item"><span class="emoji">🌿</span> Space</span>
+                    <span class="legend-item"><span class="emoji">🌊</span> Anxious/Overwhelmed</span>
+                    <span class="legend-item"><span class="emoji">🌫️</span> Disconnected</span>
+                    <span class="legend-item"><span class="emoji">🌸</span> Reconnect</span>
+                    <span class="legend-item"><span class="emoji">☀️</span> All Good</span>
+                </div>
+                <div class="calendar-container" id="mood-calendar">
+                    <div class="no-history">No mood history yet. Start sharing how you feel!</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- What Helps Us -->
-    <div class="helps-section">
-        <div class="helps-title">What Helps Us</div>
-        <div class="helps-grid">
-            <div class="helps-column">
-                <h3>For Me</h3>
-                <ul>
-                    <li>Trust that you'll come back</li>
-                    <li>Self-soothe before reaching out</li>
-                    <li>Build a rich life outside us</li>
-                    <li>Your space isn't about me</li>
-                </ul>
+    <!-- 9. VENN DIAGRAM (Collapsible) -->
+    <div class="collapsible-section">
+        <div class="collapsible-header" onclick="toggleSection(this)">
+            <div class="collapsible-header-left">
+                <span class="collapsible-icon">♡</span>
+                <span class="collapsible-title">About Us</span>
             </div>
-            <div class="helps-column">
-                <h3>For Us</h3>
-                <ul>
-                    <li>"I feel..." instead of "You always..."</li>
-                    <li>20 min to cool off, then reconnect</li>
-                    <li>Weekly check-ins reduce surprises</li>
-                    <li>Balance "us time" and "me time"</li>
-                </ul>
+            <span class="collapsible-toggle">▼</span>
+        </div>
+        <div class="collapsible-content">
+            <div class="collapsible-inner">
+                <div class="venn-container">
+                    <div class="circle circle-me"></div>
+                    <div class="circle circle-you"></div>
+
+                    <div class="content-card card-me">
+                        <div class="card-title">Me</div>
+                        <div class="card-subtitle">Connection Seeking · Expressive</div>
+                        <ul class="traits">
+                            <li>Thrives on emotional closeness</li>
+                            <li>Processes feelings through conversation</li>
+                            <li>Finds security in consistent connection</li>
+                            <li>May feel unsettled by silence</li>
+                        </ul>
+                        <div class="section-divider">
+                            <span class="section-label">Feels loved through</span>
+                            <div class="section-content">Acts of service, words of affirmation</div>
+                        </div>
+                        <div class="section-divider">
+                            <span class="section-label">Working on</span>
+                            <div class="growth-item">Trusting that space ≠ rejection</div>
+                        </div>
+                    </div>
+
+                    <div class="overlap-card">
+                        <div class="overlap-title">Shared Space</div>
+                        <span class="overlap-icon">♡</span>
+                        <ul class="overlap-traits">
+                            <li>Physical presence settles us both</li>
+                            <li>Walls come down when we're together</li>
+                            <li>Same need, different languages</li>
+                            <li>Both more invested than we show</li>
+                            <li>We thrive in quiet, unplanned moments</li>
+                        </ul>
+                        <div class="shared-lang">
+                            <span class="shared-lang-label">Shared love languages</span>
+                            Words of affirmation & acts of service
+                        </div>
+                    </div>
+
+                    <div class="content-card card-you">
+                        <div class="card-title">You</div>
+                        <div class="card-subtitle">Autonomy Valuing · Reflective</div>
+                        <ul class="traits">
+                            <li>Feels deeply, processes internally</li>
+                            <li>Recharges through solitude</li>
+                            <li>Values independence within connection</li>
+                            <li>Shows care through presence and actions</li>
+                        </ul>
+                        <div class="section-divider">
+                            <span class="section-label">Feels loved through</span>
+                            <div class="section-content">Words of affirmation, physical touch</div>
+                        </div>
+                        <div class="section-divider">
+                            <span class="section-label">What helps</span>
+                            <div class="growth-item">Naming the return: "I'll be back"</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="helps-column">
-                <h3>For You</h3>
-                <ul>
-                    <li>Small, consistent gestures matter</li>
-                    <li>Name when you're coming back</li>
-                    <li>Proactive reassurance builds trust</li>
-                    <li>Stay 10% longer in hard moments</li>
-                </ul>
+        </div>
+    </div>
+
+    <!-- 10. WHAT HELPS US (Collapsible) -->
+    <div class="collapsible-section">
+        <div class="collapsible-header" onclick="toggleSection(this)">
+            <div class="collapsible-header-left">
+                <span class="collapsible-icon">💡</span>
+                <span class="collapsible-title">What Helps Us</span>
+            </div>
+            <span class="collapsible-toggle">▼</span>
+        </div>
+        <div class="collapsible-content">
+            <div class="collapsible-inner">
+                <div class="helps-grid">
+                    <div class="helps-column">
+                        <h3>For Her</h3>
+                        <ul>
+                            <li>Trust that he'll come back</li>
+                            <li>Self soothe before reaching out</li>
+                            <li>Build a rich life outside us</li>
+                            <li>His space isn't about me</li>
+                        </ul>
+                    </div>
+                    <div class="helps-column">
+                        <h3>For Us</h3>
+                        <ul>
+                            <li>"I feel..." instead of "You always..."</li>
+                            <li>20 min to cool off, then reconnect</li>
+                            <li>Weekly check ins reduce surprises</li>
+                            <li>Balance "us time" and "me time"</li>
+                        </ul>
+                    </div>
+                    <div class="helps-column">
+                        <h3>For Him</h3>
+                        <ul>
+                            <li>Small, consistent gestures matter</li>
+                            <li>Name when you're coming back</li>
+                            <li>Proactive reassurance builds trust</li>
+                            <li>Stay 10% longer in hard moments</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1785,6 +1801,9 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <!-- QR Code Library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 
     <script>
         // ============ FIREBASE CONFIG ============
@@ -1795,11 +1814,9 @@
             projectId: "attachmentstyles-b807c",
             storageBucket: "attachmentstyles-b807c.firebasestorage.app",
             messagingSenderId: "619137221036",
-            appId: "1:619137221036:web:905bcdec602659048d7a09",
-            measurementId: "G-QKBXCNN831"
+            appId: "1:619137221036:web:905bcdec602659048d7a09"
         };
 
-        // Check if Firebase is configured
         const isFirebaseConfigured = !firebaseConfig.apiKey.includes("YOUR_");
 
         let db = null;
@@ -1808,8 +1825,10 @@
         let currentIdentity = null;
         let roomId = null;
         let currentMoodKey = null;
+        let previousData = {};
+        let moodHistory = [];
 
-        // ============ MOOD EMOJIS ============
+        // ============ MOOD DATA ============
         const moodEmojis = {
             space: '🌿',
             anxious: '🌊',
@@ -1819,43 +1838,42 @@
             good: '☀️'
         };
 
-        // ============ MOOD DATA ============
         const moodData = {
             me: {
                 space: {
                     label: "Need space, but okay",
                     message: "I just need a little quiet time to recharge. This isn't about you. I'll be back soon.",
                     insightTitle: "When I Need Space",
-                    insightMe: "This is healthy! Take this time to do something that fills your cup. Trust that wanting space doesn't make you avoidant. It makes you balanced.",
-                    insightYou: "She's practicing self-regulation. A simple 'take your time, I'm here' would mean a lot."
+                    insightMe: "This is healthy! Take this time to do something that fills your cup.",
+                    insightYou: "She's practicing self regulation. A simple 'take your time' means a lot."
                 },
                 anxious: {
                     label: "Feeling anxious",
                     message: "I'm feeling a bit anxious right now. I don't need you to fix it. Just knowing you're there helps.",
                     insightTitle: "When I'm Feeling Anxious",
-                    insightMe: "Notice this feeling without acting on it immediately. Try 5 deep breaths, then ask 'what do I actually need right now?'",
-                    insightYou: "She's being vulnerable by naming this. A heart emoji or 'I'm here' goes far. You don't need to solve anything."
+                    insightMe: "Notice this feeling without acting on it. Try 5 deep breaths first.",
+                    insightYou: "She's being vulnerable. A heart emoji or 'I'm here' goes far."
                 },
                 disconnected: {
                     label: "Feeling disconnected",
-                    message: "I'm feeling a bit distant from us lately. I'd love some quality time when you're ready. Nothing heavy.",
+                    message: "I'm feeling a bit distant from us. I'd love some quality time when you're ready.",
                     insightTitle: "When I Feel Disconnected",
-                    insightMe: "Before reaching out, ask: am I seeking connection or seeking reassurance? Genuine connection requests land better.",
-                    insightYou: "She's missing you. Low pressure togetherness would help. A walk, watching something together, just presence."
+                    insightMe: "Ask: am I seeking connection or seeking reassurance?",
+                    insightYou: "She's missing you. Low pressure togetherness would help."
                 },
                 reconnect: {
                     label: "Ready to reconnect",
-                    message: "I'm feeling open and ready to connect. No pressure, just wanted you to know I'm here. ♡",
+                    message: "I'm feeling open and ready to connect. No pressure, just wanted you to know. ♡",
                     insightTitle: "Ready to Reconnect",
-                    insightMe: "Beautiful. Stay open without attaching to a specific outcome. Let him come at his pace.",
-                    insightYou: "This is an invitation, not a demand. If you're feeling open too, now's a good moment."
+                    insightMe: "Stay open without attaching to a specific outcome.",
+                    insightYou: "This is an invitation, not a demand. Now's a good moment."
                 },
                 good: {
                     label: "All good ♡",
-                    message: "Feeling good and settled. Just wanted you to know all is well over here. ♡",
+                    message: "Feeling good and settled. Just wanted you to know all is well. ♡",
                     insightTitle: "All Good",
-                    insightMe: "Enjoy this! Notice what contributed to this feeling so you can return to it.",
-                    insightYou: "She's content. No action needed. Just receive this peace."
+                    insightMe: "Notice what contributed to this feeling.",
+                    insightYou: "She's content. No action needed. Just receive this."
                 }
             },
             you: {
@@ -1863,29 +1881,29 @@
                     label: "Need space, but okay",
                     message: "I'm taking some time to recharge. This isn't distance, it's how I process. I'll be back.",
                     insightTitle: "When He Needs Space",
-                    insightMe: "This is his way of regulating, not rejecting. Repeat: his space is not about me. Do something nourishing for yourself.",
-                    insightYou: "Thank you for naming this. If you can, naming when you'll return helps her nervous system settle."
+                    insightMe: "His space is not about me. Do something nourishing for yourself.",
+                    insightYou: "Naming when you'll return helps her nervous system settle."
                 },
                 overwhelmed: {
                     label: "Feeling overwhelmed",
-                    message: "Feeling a bit overwhelmed right now. I need to step back and recalibrate. It's not about us.",
+                    message: "Feeling a bit overwhelmed right now. I need to step back and recalibrate.",
                     insightTitle: "When He's Overwhelmed",
-                    insightMe: "His withdrawal isn't punishment, it's protection. Give him room. Don't chase. Trust his return.",
-                    insightYou: "When you're ready to re-emerge, a small gesture bridges the gap. Even 'I'm feeling better' helps."
+                    insightMe: "His withdrawal isn't punishment, it's protection. Don't chase.",
+                    insightYou: "A small gesture when you're ready bridges the gap."
                 },
                 disconnected: {
                     label: "Feeling disconnected",
-                    message: "I've been in my own world lately. It's not intentional distance. I want to find our way back.",
+                    message: "I've been in my own world lately. It's not intentional. I want to find our way back.",
                     insightTitle: "When He Feels Disconnected",
-                    insightMe: "He's naming it, that's huge. Don't rush to fix it. Let him lead the reconnection at his pace.",
-                    insightYou: "She'll appreciate you naming this. Even small moves toward connection will mean a lot."
+                    insightMe: "He's naming it, that's huge. Let him lead the reconnection.",
+                    insightYou: "She'll appreciate you naming this."
                 },
                 reconnect: {
                     label: "Ready to reconnect",
                     message: "I'm feeling open and ready to be close. Just wanted you to know I'm here.",
                     insightTitle: "When He's Ready to Reconnect",
-                    insightMe: "Receive this. Don't overwhelm the moment. Match his pace. Enjoy the closeness.",
-                    insightYou: "She's been waiting for this. Your presence is the gift."
+                    insightMe: "Receive this. Don't overwhelm the moment. Match his pace.",
+                    insightYou: "Your presence is the gift."
                 },
                 good: {
                     label: "All good ♡",
@@ -1899,61 +1917,63 @@
 
         // ============ INITIALIZATION ============
         function init() {
-            // Get or create room ID from URL
+            // Check for saved room first
+            const savedRoom = localStorage.getItem('lastRoom');
             const urlParams = new URLSearchParams(window.location.search);
-            roomId = urlParams.get('room') || generateRoomId();
             
-            // Update URL if new room
-            if (!urlParams.get('room')) {
-                window.history.replaceState({}, '', `?room=${roomId}`);
+            // Priority: URL param > saved room > new room
+            if (urlParams.get('room')) {
+                roomId = urlParams.get('room');
+            } else if (savedRoom) {
+                roomId = savedRoom;
+                document.getElementById('returning-note').classList.add('visible');
+            } else {
+                roomId = generateRoomId();
             }
             
-            document.getElementById('room-code').textContent = roomId;
+            // Update URL and save
+            window.history.replaceState({}, '', `?room=${roomId}`);
+            localStorage.setItem('lastRoom', roomId);
+            
+            // Load room name
+            const savedName = localStorage.getItem('roomName_' + roomId);
+            document.getElementById('room-name').textContent = savedName || 'Our Space';
+            
+            // Update share link
+            document.getElementById('share-link').value = window.location.href;
 
             if (isFirebaseConfigured) {
-                // Initialize Firebase
                 firebase.initializeApp(firebaseConfig);
                 db = firebase.database();
                 roomRef = db.ref('rooms/' + roomId);
                 historyRef = db.ref('history/' + roomId);
                 
-                // Listen for changes, THIS IS THE REAL TIME LISTENER
                 roomRef.on('value', (snapshot) => {
                     const data = snapshot.val() || {};
                     updateLiveStatus(data);
+                    checkForComboAlert(data);
+                });
+
+                historyRef.orderByChild('timestamp').limitToLast(50).on('value', (snapshot) => {
+                    const history = [];
+                    snapshot.forEach((child) => history.push(child.val()));
+                    moodHistory = history;
+                    updateMoodCalendar(history);
                     
-                    // Re-highlight active mood button if identity is selected
-                    if (currentIdentity && data[currentIdentity]) {
-                        highlightActiveMood(data[currentIdentity]);
+                    if (currentIdentity && history.length >= 3) {
+                        setTimeout(generateInsights, 500);
+                        setTimeout(generateWeeklyReflection, 1000);
                     }
                 });
 
-                // Listen for history changes
-                historyRef.orderByChild('timestamp').limitToLast(50).on('value', (snapshot) => {
-                    const history = [];
-                    snapshot.forEach((child) => {
-                        history.push(child.val());
-                    });
-                    updateMoodCalendar(history);
+                db.ref('.info/connected').on('value', (snap) => {
+                    const dot = document.getElementById('connection-dot');
+                    dot.classList.toggle('connected', snap.val());
                 });
-
-                // Update connection status
-                const connectedRef = db.ref('.info/connected');
-                connectedRef.on('value', (snap) => {
-                    updateConnectionStatus(snap.val());
-                });
-            } else {
-                // Demo mode - no Firebase
-                updateConnectionStatus(false);
-                document.getElementById('status-text').textContent = 'Demo Mode (see setup instructions)';
-                
-                // Load from localStorage for demo
-                const savedData = JSON.parse(localStorage.getItem('relationshipMoods_' + roomId) || '{}');
-                updateLiveStatus(savedData);
             }
 
-            // Check for saved identity
-            const savedIdentity = localStorage.getItem('relationshipIdentity_' + roomId);
+            // Load saved identity
+            const savedIdentity = localStorage.getItem('identity_' + roomId);
             if (savedIdentity) {
                 selectIdentity(savedIdentity, true);
             }
@@ -1963,128 +1983,147 @@
             return Math.random().toString(36).substring(2, 8).toUpperCase();
         }
 
-        function updateConnectionStatus(connected) {
-            const dot = document.getElementById('status-dot');
-            const text = document.getElementById('status-text');
+        // ============ ROOM MANAGEMENT ============
+        function editRoomName() {
+            const display = document.getElementById('room-name');
+            const input = document.getElementById('room-name-input');
+            input.value = display.textContent;
+            display.style.display = 'none';
+            input.style.display = 'inline-block';
+            input.focus();
+        }
+
+        function saveRoomName() {
+            const display = document.getElementById('room-name');
+            const input = document.getElementById('room-name-input');
+            const name = input.value.trim() || 'Our Space';
+            display.textContent = name;
+            display.style.display = 'inline';
+            input.style.display = 'none';
+            localStorage.setItem('roomName_' + roomId, name);
+        }
+
+        function openShareModal() {
+            const modal = document.getElementById('share-modal');
+            modal.classList.add('visible');
             
-            if (connected) {
-                dot.classList.add('connected');
-                dot.classList.remove('disconnected');
-                text.textContent = 'Connected & syncing';
-            } else {
-                dot.classList.remove('connected');
-                dot.classList.add('disconnected');
-                if (isFirebaseConfigured) {
-                    text.textContent = 'Disconnected';
-                }
+            // Generate QR code
+            const qrContainer = document.getElementById('qr-code');
+            qrContainer.innerHTML = '';
+            if (typeof QRCode !== 'undefined') {
+                QRCode.toCanvas(window.location.href, { width: 160, margin: 2 }, (err, canvas) => {
+                    if (!err) qrContainer.appendChild(canvas);
+                });
             }
         }
 
-        // ============ IDENTITY SELECTION ============
+        function closeShareModal() {
+            document.getElementById('share-modal').classList.remove('visible');
+        }
+
+        function copyLink() {
+            const link = document.getElementById('share-link').value;
+            navigator.clipboard.writeText(link).then(() => {
+                const btn = document.querySelector('.copy-link-btn');
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
+
+        function shareViaText() {
+            const link = window.location.href;
+            const name = document.getElementById('room-name').textContent;
+            window.open(`sms:?body=Join our relationship space "${name}": ${link}`);
+        }
+
+        function shareViaEmail() {
+            const link = window.location.href;
+            const name = document.getElementById('room-name').textContent;
+            window.open(`mailto:?subject=Join our space&body=Here's our relationship check-in space "${name}": ${link}`);
+        }
+
+        function createNewRoom() {
+            if (confirm('Create a new room? You can always come back to this one using the link.')) {
+                localStorage.removeItem('lastRoom');
+                localStorage.removeItem('identity_' + roomId);
+                window.location.href = window.location.pathname;
+            }
+        }
+
+        // ============ IDENTITY ============
         function selectIdentity(identity, silent = false) {
             currentIdentity = identity;
-            localStorage.setItem('relationshipIdentity_' + roomId, identity);
+            localStorage.setItem('identity_' + roomId, identity);
 
             // Update UI
             document.querySelectorAll('.identity-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`.identity-btn.${identity}`).classList.add('active');
             
-            const selectedText = document.getElementById('identity-selected');
-            selectedText.textContent = `You're set as "${identity === 'me' ? 'Me (Her)' : 'You (Him)'}" and your partner will see your updates`;
-            selectedText.classList.add('visible');
+            // Show badge
+            const badge = document.getElementById('identity-badge');
+            badge.textContent = identity === 'me' ? 'Her' : 'Him';
+            badge.className = `identity-badge ${identity}`;
+            badge.style.display = 'inline-block';
 
-            // Show signal section
-            document.getElementById('signal-section').style.display = 'block';
-            
-            // Populate signal buttons
-            populateSignalButtons();
+            // Hide welcome after selection
+            if (!silent) {
+                document.getElementById('welcome-card').style.display = 'none';
+            }
+
+            // Show mood section
+            document.getElementById('mood-section').classList.add('visible');
+            populateMoodButtons();
 
             if (!silent) {
-                document.getElementById('signal-section').scrollIntoView({ behavior: 'smooth' });
+                document.getElementById('mood-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
 
-        function populateSignalButtons() {
-            const container = document.getElementById('signal-buttons');
+        function populateMoodButtons() {
+            const container = document.getElementById('mood-buttons');
             const moods = moodData[currentIdentity];
-            
             container.innerHTML = '';
             
-            // Get current mood from Firebase data if available
-            let currentMoodFromData = null;
+            // Check for existing mood today
+            let todayMood = null;
             if (previousData && previousData[currentIdentity]) {
-                const timestamp = previousData[currentIdentity].timestamp;
-                const moodDate = new Date(timestamp).toDateString();
-                const today = new Date().toDateString();
-                
-                // If mood was set today, show it as active
-                if (moodDate === today) {
-                    currentMoodFromData = previousData[currentIdentity].mood;
-                    currentMoodKey = currentMoodFromData;
-                    
-                    // Show custom message box since there's an active mood
-                    document.getElementById('custom-message-box').style.display = 'block';
+                const ts = previousData[currentIdentity].timestamp;
+                if (new Date(ts).toDateString() === new Date().toDateString()) {
+                    todayMood = previousData[currentIdentity].mood;
+                    currentMoodKey = todayMood;
+                    document.getElementById('note-box').classList.add('visible');
                 }
             }
-            
-            Object.keys(moods).forEach(moodKey => {
+
+            Object.keys(moods).forEach(key => {
                 const btn = document.createElement('button');
-                btn.className = 'signal-btn';
-                btn.textContent = moods[moodKey].label;
-                btn.onclick = function() { selectMood(moodKey, this); };
-                
-                // Highlight if this is the current mood for today
-                if (moodKey === currentMoodFromData) {
+                btn.className = 'mood-btn';
+                btn.textContent = moods[key].label;
+                btn.onclick = function() { selectMood(key, this); };
+                if (key === todayMood) {
                     btn.classList.add(currentIdentity === 'me' ? 'active-me' : 'active-you');
                 }
-                
                 container.appendChild(btn);
             });
         }
 
-        // Helper to highlight active mood when data updates
-        function highlightActiveMood(personData) {
-            if (!currentIdentity || !personData) return;
-            
-            const timestamp = personData.timestamp;
-            const moodDate = new Date(timestamp).toDateString();
-            const today = new Date().toDateString();
-            
-            // Only highlight if mood was set today
-            if (moodDate !== today) return;
-            
-            const moodKey = personData.mood;
-            const buttons = document.querySelectorAll('#signal-buttons .signal-btn');
-            const moods = moodData[currentIdentity];
-            const moodKeys = Object.keys(moods);
-            
-            buttons.forEach((btn, index) => {
-                btn.classList.remove('active-me', 'active-you');
-                if (moodKeys[index] === moodKey) {
-                    btn.classList.add(currentIdentity === 'me' ? 'active-me' : 'active-you');
-                    currentMoodKey = moodKey;
-                    document.getElementById('custom-message-box').style.display = 'block';
-                }
-            });
-        }
-
         // ============ MOOD SELECTION ============
-        function selectMood(moodKey, buttonElement) {
+        function selectMood(moodKey, btn) {
             currentMoodKey = moodKey;
             const mood = moodData[currentIdentity][moodKey];
-            
-            // Update button states
-            document.querySelectorAll('#signal-buttons .signal-btn').forEach(btn => {
-                btn.classList.remove('active-me', 'active-you');
-            });
-            buttonElement.classList.add(currentIdentity === 'me' ? 'active-me' : 'active-you');
 
-            // Show custom message box
-            document.getElementById('custom-message-box').style.display = 'block';
-            document.getElementById('custom-message').value = '';
-            document.getElementById('custom-message').placeholder = 'Anything else you want to share...';
+            // Update buttons
+            document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active-me', 'active-you'));
+            btn.classList.add(currentIdentity === 'me' ? 'active-me' : 'active-you');
 
-            // Create update object
+            // Show note box
+            document.getElementById('note-box').classList.add('visible');
+            document.getElementById('note-input').value = '';
+
+            // Floating hearts for "good"
+            if (moodKey === 'good') createFloatingHearts(btn);
+
+            // Save
             const update = {
                 mood: moodKey,
                 label: mood.label,
@@ -2093,594 +2132,350 @@
                 timestamp: Date.now()
             };
 
-            // Trigger floating hearts for "all good"
-            if (moodKey === 'good') {
-                createFloatingHearts(buttonElement);
-            }
-
-            // Save to Firebase
-            if (isFirebaseConfigured && roomRef) {
-                roomRef.child(currentIdentity).set(update)
-                    .then(() => console.log('Mood saved to Firebase'))
-                    .catch((err) => console.error('Firebase error:', err));
-                
-                // Also save to history
-                const historyEntry = {
+            if (roomRef) {
+                roomRef.child(currentIdentity).set(update);
+                historyRef.push({
                     person: currentIdentity,
                     mood: moodKey,
                     label: mood.label,
                     emoji: moodEmojis[moodKey],
                     timestamp: Date.now()
-                };
-                historyRef.push(historyEntry);
-            } else {
-                const data = JSON.parse(localStorage.getItem('relationshipMoods_' + roomId) || '{}');
-                data[currentIdentity] = update;
-                localStorage.setItem('relationshipMoods_' + roomId, JSON.stringify(data));
-                updateLiveStatus(data);
+                });
             }
 
-            // Show insight panel (not a partner update - YOU clicked this)
             showInsight(currentIdentity, moodKey, false);
         }
 
-        // ============ FLOATING HEARTS ANIMATION ============
-        function createFloatingHearts(element) {
-            const rect = element.getBoundingClientRect();
+        function sendNote() {
+            const note = document.getElementById('note-input').value.trim();
+            if (!currentMoodKey) return;
+
+            const mood = moodData[currentIdentity][currentMoodKey];
+            const update = {
+                mood: currentMoodKey,
+                label: mood.label,
+                message: mood.message,
+                customNote: note,
+                timestamp: Date.now()
+            };
+
+            if (roomRef) {
+                roomRef.child(currentIdentity).set(update).then(() => {
+                    document.getElementById('note-input').value = '';
+                    document.getElementById('note-input').placeholder = 'Sent! ♡';
+                    setTimeout(() => {
+                        document.getElementById('note-input').placeholder = 'Anything else you want to share...';
+                    }, 2000);
+                });
+            }
+        }
+
+        function createFloatingHearts(el) {
+            const rect = el.getBoundingClientRect();
             const container = document.createElement('div');
             container.className = 'floating-hearts';
             container.style.left = rect.left + rect.width / 2 + 'px';
             container.style.top = rect.top + 'px';
             document.body.appendChild(container);
 
-            const hearts = ['♡', '💕', '✨', '💗', '♥'];
-            
-            for (let i = 0; i < 8; i++) {
+            const hearts = ['♡', '💕', '✨', '💗'];
+            for (let i = 0; i < 6; i++) {
                 setTimeout(() => {
                     const heart = document.createElement('span');
                     heart.className = 'floating-heart';
                     heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
-                    heart.style.left = (Math.random() - 0.5) * 60 + 'px';
-                    heart.style.animationDuration = (1.5 + Math.random()) + 's';
+                    heart.style.left = (Math.random() - 0.5) * 50 + 'px';
                     container.appendChild(heart);
-                    
                     setTimeout(() => heart.remove(), 2000);
-                }, i * 100);
+                }, i * 80);
             }
-
-            setTimeout(() => container.remove(), 3000);
+            setTimeout(() => container.remove(), 2500);
         }
 
-        function sendCustomMessage() {
-            const customNote = document.getElementById('custom-message').value.trim();
-            if (!currentMoodKey) return;
-
-            const mood = moodData[currentIdentity][currentMoodKey];
-
-            const update = {
-                mood: currentMoodKey,
-                label: mood.label,
-                message: mood.message,
-                customNote: customNote,
-                timestamp: Date.now()
-            };
-
-            if (isFirebaseConfigured && roomRef) {
-                roomRef.child(currentIdentity).set(update)
-                    .then(() => {
-                        console.log('Custom message saved');
-                        document.getElementById('custom-message').value = '';
-                        document.getElementById('custom-message').placeholder = 'Message sent! ♡';
-                        setTimeout(() => {
-                            document.getElementById('custom-message').placeholder = 'Anything else you want to share...';
-                        }, 2000);
-                    })
-                    .catch((err) => console.error('Firebase error:', err));
-            } else {
-                const data = JSON.parse(localStorage.getItem('relationshipMoods_' + roomId) || '{}');
-                data[currentIdentity] = update;
-                localStorage.setItem('relationshipMoods_' + roomId, JSON.stringify(data));
-                updateLiveStatus(data);
-                document.getElementById('custom-message').value = '';
-            }
-        }
-
-        // ============ LIVE STATUS UPDATE ============
-        let previousData = {};
-        
+        // ============ LIVE STATUS ============
         function updateLiveStatus(data) {
             ['me', 'you'].forEach(person => {
                 const moodEl = document.getElementById(`live-mood-${person}`);
                 const timeEl = document.getElementById(`live-time-${person}`);
-                const cardEl = moodEl.closest('.live-status-card');
+                const card = moodEl.closest('.live-status-card');
 
                 if (data && data[person]) {
-                    // Check if this is a new update
-                    const isNewUpdate = !previousData[person] || 
-                        previousData[person].timestamp !== data[person].timestamp;
+                    const isNew = !previousData[person] || previousData[person].timestamp !== data[person].timestamp;
                     
                     moodEl.textContent = data[person].label;
                     moodEl.classList.add('active');
-                    cardEl.classList.add('has-mood');
+                    card.classList.add('has-mood');
                     
-                    // Trigger pulse animation on new update
-                    if (isNewUpdate) {
-                        cardEl.classList.remove('just-updated');
-                        void cardEl.offsetWidth; // Force reflow
-                        cardEl.classList.add('just-updated');
+                    if (isNew) {
+                        card.classList.remove('just-updated');
+                        void card.offsetWidth;
+                        card.classList.add('just-updated');
                     }
-                    
-                    const time = new Date(data[person].timestamp);
-                    timeEl.textContent = `Updated ${formatTime(time)}`;
 
-                    // If this is the partner's update, show their message
+                    timeEl.textContent = formatTime(new Date(data[person].timestamp));
+
                     if (currentIdentity && person !== currentIdentity) {
-                        showPartnerMessage(person, data[person]);
+                        showPartnerMessage(data[person]);
                     }
                 } else {
                     moodEl.textContent = 'No status yet';
                     moodEl.classList.remove('active');
-                    cardEl.classList.remove('has-mood');
+                    card.classList.remove('has-mood');
                     timeEl.textContent = '';
                 }
             });
-            
             previousData = JSON.parse(JSON.stringify(data || {}));
         }
 
         function formatTime(date) {
-            const now = new Date();
-            const diff = now - date;
-            
+            const diff = Date.now() - date;
             if (diff < 60000) return 'just now';
             if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
             if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
             return date.toLocaleDateString();
         }
 
-        function showPartnerMessage(person, data) {
+        function showPartnerMessage(data) {
             const container = document.getElementById('partner-message');
             const label = document.getElementById('partner-message-label');
             const text = document.getElementById('partner-message-text');
+            const partnerIs = currentIdentity === 'me' ? 'Him' : 'Her';
 
-            label.textContent = person === 'me' ? "Message from Her" : "Message from Him";
-            
-            let messageHtml = data.message;
+            label.textContent = `Message from ${partnerIs}`;
+            let html = data.message;
             if (data.customNote) {
-                messageHtml += `<div class="custom-note"><span class="custom-note-label">Personal note:</span>${data.customNote}</div>`;
+                html += `<div class="custom-note"><span class="custom-note-label">Added:</span>${data.customNote}</div>`;
             }
-            text.innerHTML = messageHtml;
+            text.innerHTML = html;
             container.classList.add('visible');
-
-            // Show insight for partner's mood (IS a partner update)
-            showInsight(person, data.mood, true);
+            
+            // Show insight for partner's mood
+            const partnerIdentity = currentIdentity === 'me' ? 'you' : 'me';
+            showInsight(partnerIdentity, data.mood, true);
         }
 
-        // ============ INSIGHT PANEL ============
-        function showInsight(person, moodKey, isPartnerUpdate = false) {
+        // ============ INSIGHTS ============
+        function showInsight(person, moodKey, isPartner = false) {
             const mood = moodData[person] && moodData[person][moodKey];
             if (!mood) return;
 
-            const titleEl = document.getElementById('insight-title');
-            const card1 = document.querySelector('.mood-insight-card.for-me');
-            const card2 = document.querySelector('.mood-insight-card.for-you');
-            const insightMeEl = document.getElementById('insight-me');
-            const insightYouEl = document.getElementById('insight-you');
-
-            titleEl.textContent = mood.insightTitle;
-
-            if (isPartnerUpdate) {
-                // PARTNER updated their mood, show what THEY need and what YOU can do
-                const partnerName = person === 'me' ? 'She' : 'He';
-                
-                card1.querySelector('h4').textContent = `What ${partnerName}'s Saying`;
-                card2.querySelector('h4').textContent = 'How I Can Help';
-                
-                insightMeEl.textContent = mood.message;
-                // If partner is 'me' (her), show insightYou (guidance for him)
-                // If partner is 'you' (him), show insightMe (guidance for her)
-                insightYouEl.textContent = person === 'me' ? mood.insightYou : mood.insightMe;
-            } else {
-                // YOU updated your own mood, show YOUR self guidance
-                card1.querySelector('h4').textContent = 'Reminder for Me';
-                card2.querySelector('h4').textContent = 'What They\'ll See';
-                
-                // If you're 'me' (her), your guidance is insightMe
-                // If you're 'you' (him), your guidance is insightYou
-                const selfGuidance = person === 'me' ? mood.insightMe : mood.insightYou;
-                const partnerGuidance = person === 'me' ? mood.insightYou : mood.insightMe;
-                const partnerName = person === 'me' ? 'He' : 'She';
-                
-                insightMeEl.textContent = selfGuidance;
-                insightYouEl.textContent = `${partnerName}'ll receive: "${mood.message}"`;
-            }
+            document.getElementById('insight-title').textContent = mood.insightTitle;
             
-            document.getElementById('mood-insight').classList.add('visible');
+            const label1 = document.getElementById('insight-label-1');
+            const label2 = document.getElementById('insight-label-2');
+            const text1 = document.getElementById('insight-text-1');
+            const text2 = document.getElementById('insight-text-2');
+
+            if (isPartner) {
+                const who = person === 'me' ? 'She' : 'He';
+                label1.textContent = `What ${who}'s Saying`;
+                label2.textContent = 'How I Can Help';
+                text1.textContent = mood.message;
+                text2.textContent = person === 'me' ? mood.insightYou : mood.insightMe;
+            } else {
+                label1.textContent = 'Reminder for Me';
+                label2.textContent = 'What They\'ll See';
+                text1.textContent = person === 'me' ? mood.insightMe : mood.insightYou;
+                text2.textContent = mood.message;
+            }
+
+            document.getElementById('insight-panel').classList.add('visible');
         }
 
         function closeInsight() {
-            document.getElementById('mood-insight').classList.remove('visible');
+            document.getElementById('insight-panel').classList.remove('visible');
         }
 
-        // ============ MOOD HISTORY CALENDAR ============
-        let lastHistoryTimestamp = 0;
-        
-        function updateMoodCalendar(history) {
-            const calendar = document.getElementById('mood-calendar');
-            
-            if (!history || history.length === 0) {
-                calendar.innerHTML = '<div class="no-history">No mood history yet. Start sharing how you feel!</div>';
-                return;
-            }
+        // ============ COMBO ALERTS ============
+        function checkForComboAlert(data) {
+            if (!data.me || !data.you) return;
 
-            // Find newest entry timestamp
-            const newestTimestamp = Math.max(...history.map(h => h.timestamp));
-            const hasNewEntry = newestTimestamp > lastHistoryTimestamp;
+            const alert = document.getElementById('combo-alert');
+            const text = document.getElementById('combo-alert-text');
+            const tension = ['anxious', 'overwhelmed', 'disconnected'];
 
-            // Group by date
-            const grouped = {};
-            history.forEach(entry => {
-                const date = new Date(entry.timestamp);
-                const dateKey = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-                if (!grouped[dateKey]) {
-                    grouped[dateKey] = [];
-                }
-                grouped[dateKey].push(entry);
-            });
-
-            // Sort dates (newest first)
-            const sortedDates = Object.keys(grouped).sort((a, b) => {
-                const dateA = new Date(grouped[a][0].timestamp);
-                const dateB = new Date(grouped[b][0].timestamp);
-                return dateB - dateA;
-            });
-
-            // Render
-            let html = '';
-            sortedDates.forEach(dateKey => {
-                const entries = grouped[dateKey].sort((a, b) => b.timestamp - a.timestamp);
-                
-                html += `<div class="calendar-day">
-                    <div class="calendar-date">${dateKey}</div>
-                    <div class="calendar-moods">`;
-                
-                entries.forEach(entry => {
-                    const time = new Date(entry.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-                    const personClass = entry.person === 'me' ? 'me' : 'you';
-                    const personLabel = entry.person === 'me' ? 'Her' : 'Him';
-                    const isNew = hasNewEntry && entry.timestamp === newestTimestamp;
-                    const newClass = isNew ? 'new-entry' : '';
-                    
-                    html += `<div class="calendar-mood-entry ${personClass} ${newClass}">
-                        <span class="entry-emoji">${entry.emoji || moodEmojis[entry.mood] || '💭'}</span>
-                        <span class="entry-label">${personLabel}</span>
-                        <span class="entry-time">${time}</span>
-                    </div>`;
-                });
-                
-                html += `</div></div>`;
-            });
-
-            calendar.innerHTML = html;
-            lastHistoryTimestamp = newestTimestamp;
-        }
-
-        // ============ ROOM MANAGEMENT ============
-        function copyRoomLink() {
-            const link = window.location.href;
-            navigator.clipboard.writeText(link).then(() => {
-                const btn = document.querySelector('.copy-btn');
-                btn.textContent = 'Copied!';
-                btn.classList.add('copied');
-                setTimeout(() => {
-                    btn.textContent = 'Copy Link';
-                    btn.classList.remove('copied');
-                }, 2000);
-            });
-        }
-
-        function createNewRoom() {
-            if (confirm('Create a new room? You\'ll need to share the new link.')) {
-                localStorage.removeItem('relationshipIdentity_' + roomId);
-                localStorage.removeItem('relationshipMoods_' + roomId);
-                window.location.href = window.location.pathname;
+            if (tension.includes(data.me.mood) && tension.includes(data.you.mood)) {
+                alert.classList.add('visible');
+                text.textContent = "You're both in a tender spot. Try the 20 minute rule: take space, then come back with curiosity. You've navigated this before.";
+            } else if (data.me.mood === 'anxious' && (data.you.mood === 'space' || data.you.mood === 'overwhelmed')) {
+                alert.classList.add('visible');
+                text.textContent = "A familiar dance: she's reaching, he's retreating. His space isn't rejection, her reaching isn't pressure. Give it an hour.";
+            } else if (data.me.mood === 'good' && data.you.mood === 'good') {
+                alert.classList.add('visible');
+                text.textContent = "☀️ You're both feeling good. Soak it in. This is what you're building toward.";
+                setTimeout(() => alert.classList.remove('visible'), 5000);
+            } else {
+                alert.classList.remove('visible');
             }
         }
 
-        // Initialize on load
-        init();
-
-        // ============ AI HELPER FUNCTIONS ============
-        
-        const AI_CONTEXT = `You are a relationship communication coach helping a couple with anxious-avoidant attachment dynamics. 
-        She (Me/Her) is anxious-leaning: connection-seeking, expressive, needs reassurance.
-        He (You/Him) is avoidant-leaning: values autonomy, processes internally, needs space without pressure.
-        Keep responses warm, brief (2-3 sentences max), and actionable.`;
+        // ============ AI FEATURES ============
+        const AI_CONTEXT = `You are a warm relationship coach helping an anxious-avoidant couple. 
+        She is anxious-leaning (needs reassurance). He is avoidant-leaning (needs space).
+        Keep responses brief (2-3 sentences), warm, and actionable.`;
 
         async function callAI(prompt) {
             try {
                 const response = await fetch("https://api.anthropic.com/v1/messages", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         model: "claude-sonnet-4-20250514",
-                        max_tokens: 300,
-                        messages: [
-                            { role: "user", content: prompt }
-                        ],
-                        system: AI_CONTEXT
+                        max_tokens: 250,
+                        system: AI_CONTEXT,
+                        messages: [{ role: "user", content: prompt }]
                     })
                 });
-                
                 const data = await response.json();
-                return data.content[0].text;
-            } catch (error) {
-                console.error('AI call error:', error);
+                return data.content?.[0]?.text || null;
+            } catch (e) {
+                console.error('AI error:', e);
                 return null;
             }
         }
 
-        // 1. MESSAGE HELPER - Rephrase notes to land better
         let currentSuggestion = '';
-        
+
         async function improveMessage() {
-            const messageInput = document.getElementById('custom-message');
-            const originalMessage = messageInput.value.trim();
-            
-            if (!originalMessage) {
-                messageInput.placeholder = 'Write something first, then I can help rephrase it';
-                setTimeout(() => {
-                    messageInput.placeholder = 'Anything else you want to share...';
-                }, 2000);
+            const input = document.getElementById('note-input');
+            const text = input.value.trim();
+            if (!text) {
+                input.placeholder = 'Write something first';
+                setTimeout(() => input.placeholder = 'Anything else you want to share...', 2000);
                 return;
             }
 
-            const suggestionBox = document.getElementById('ai-suggestion');
+            const box = document.getElementById('ai-suggestion');
             const suggestionText = document.getElementById('ai-suggestion-text');
-            
-            suggestionBox.style.display = 'block';
+            box.classList.add('visible');
             suggestionText.textContent = 'Thinking...';
 
-            const targetStyle = currentIdentity === 'me' 
-                ? 'an avoidant partner who needs space and dislikes pressure'
-                : 'an anxious partner who needs reassurance and clarity';
-
-            const prompt = `Rephrase this message to land better with ${targetStyle}. 
-            Keep the core meaning but make it feel safer to receive.
-            Original: "${originalMessage}"
-            Just give the rephrased message, nothing else.`;
-
-            const suggestion = await callAI(prompt);
+            const target = currentIdentity === 'me' ? 'an avoidant partner' : 'an anxious partner';
+            const result = await callAI(`Rephrase this to land better with ${target}: "${text}". Just the rephrased message.`);
             
-            if (suggestion) {
-                currentSuggestion = suggestion;
-                suggestionText.textContent = suggestion;
+            if (result) {
+                currentSuggestion = result;
+                suggestionText.textContent = result;
             } else {
-                suggestionText.textContent = "Couldn't generate a suggestion right now. Your message is fine as is!";
-                setTimeout(() => suggestionBox.style.display = 'none', 2000);
+                box.classList.remove('visible');
             }
         }
 
         function useSuggestion() {
-            if (currentSuggestion) {
-                document.getElementById('custom-message').value = currentSuggestion;
-            }
+            if (currentSuggestion) document.getElementById('note-input').value = currentSuggestion;
             dismissSuggestion();
         }
 
         function dismissSuggestion() {
-            document.getElementById('ai-suggestion').style.display = 'none';
+            document.getElementById('ai-suggestion').classList.remove('visible');
             currentSuggestion = '';
         }
 
-        // 2. HELP ME UNDERSTAND - Explain partner's mood
         async function helpMeUnderstand() {
-            const partnerIdentity = currentIdentity === 'me' ? 'you' : 'me';
-            const partnerData = previousData[partnerIdentity];
-            
-            if (!partnerData) {
-                document.getElementById('understand-response').style.display = 'block';
-                document.getElementById('understand-text').textContent = "Your partner hasn't shared their mood yet. When they do, I can help you understand what they might need.";
+            const response = document.getElementById('understand-response');
+            const text = document.getElementById('understand-text');
+            response.classList.add('visible');
+            text.textContent = 'Thinking...';
+
+            const partner = currentIdentity === 'me' ? 'you' : 'me';
+            const data = previousData[partner];
+            if (!data) {
+                text.textContent = "Your partner hasn't shared yet.";
                 return;
             }
 
-            const responseBox = document.getElementById('understand-response');
-            const responseText = document.getElementById('understand-text');
-            
-            responseBox.style.display = 'block';
-            responseText.textContent = 'Thinking...';
-
-            const partnerType = partnerIdentity === 'me' 
-                ? 'anxious-leaning (she needs connection and reassurance)'
-                : 'avoidant-leaning (he needs space and low pressure)';
-            
-            const yourType = currentIdentity === 'me'
-                ? 'anxious-leaning'
-                : 'avoidant-leaning';
-
-            const prompt = `My partner (${partnerType}) just shared they're feeling "${partnerData.label}". 
-            Their message was: "${partnerData.message}"
-            ${partnerData.customNote ? `They also added: "${partnerData.customNote}"` : ''}
-            
-            As someone who is ${yourType}, help me understand what they might actually need right now and one small thing I could do.
-            Be warm and specific. 2-3 sentences.`;
-
-            const insight = await callAI(prompt);
-            
-            if (insight) {
-                responseText.textContent = insight;
-            } else {
-                responseText.textContent = "I couldn't process that right now. Based on their mood, try giving them what their message asks for directly.";
-            }
+            const type = partner === 'me' ? 'anxious-leaning (she)' : 'avoidant-leaning (he)';
+            const result = await callAI(`My ${type} partner shared: "${data.label}". Message: "${data.message}". ${data.customNote ? `Note: "${data.customNote}"` : ''} What do they need and what's one thing I can do?`);
+            text.textContent = result || "Try responding to what they asked for directly.";
         }
 
-        function dismissUnderstand() {
-            document.getElementById('understand-response').style.display = 'none';
-        }
-
-        // 3. PATTERN INSIGHTS - Analyze mood history
-        let moodHistory = [];
-        
         async function generateInsights() {
-            if (!currentIdentity) {
-                document.getElementById('ai-insights-text').textContent = 'Select your identity first to see personalized insights.';
+            if (!currentIdentity || moodHistory.length < 3) {
+                document.getElementById('ai-insights-text').textContent = 'Keep logging moods to see patterns!';
                 return;
             }
 
-            if (moodHistory.length < 3) {
-                document.getElementById('ai-insights-text').textContent = 'Keep logging moods! After a few entries, I\'ll spot patterns and offer insights.';
-                return;
-            }
+            document.getElementById('insights-loading').classList.add('visible');
+            document.getElementById('ai-insights-text').style.display = 'none';
 
-            const loadingEl = document.getElementById('insights-loading');
+            const summary = moodHistory.slice(-15).map(h => `${h.person === 'me' ? 'Her' : 'Him'}: ${h.label}`).join(', ');
+            const who = currentIdentity === 'me' ? 'Her (anxious)' : 'Him (avoidant)';
+            
+            const result = await callAI(`Mood history: ${summary}. I'm ${who}. One encouraging pattern insight. Start with emoji.`);
+            
+            document.getElementById('insights-loading').classList.remove('visible');
             const textEl = document.getElementById('ai-insights-text');
-            
-            loadingEl.style.display = 'flex';
-            textEl.style.display = 'none';
-
-            // Prepare history summary
-            const historySummary = moodHistory.slice(-20).map(h => ({
-                who: h.person === 'me' ? 'Her' : 'Him',
-                mood: h.label,
-                when: new Date(h.timestamp).toLocaleDateString('en-US', { weekday: 'short', hour: 'numeric' })
-            }));
-
-            const iAm = currentIdentity === 'me' ? 'Her (anxious-leaning)' : 'Him (avoidant-leaning)';
-
-            const prompt = `Here's our recent mood history: ${JSON.stringify(historySummary)}
-            
-            I am ${iAm}. Based on this data, give me ONE specific, encouraging insight about our pattern.
-            Maybe a trend you notice, a strength, or a gentle suggestion.
-            Keep it warm and under 3 sentences. Start with an emoji.`;
-
-            const insight = await callAI(prompt);
-            
-            loadingEl.style.display = 'none';
             textEl.style.display = 'block';
-            
-            if (insight) {
-                textEl.textContent = insight;
-            } else {
-                textEl.textContent = "✨ You're both showing up and sharing. That's the foundation of secure connection.";
-            }
+            textEl.textContent = result || "✨ You're both showing up. That's the foundation.";
         }
 
-        // 4. WEEKLY REFLECTION
         async function generateWeeklyReflection() {
-            if (moodHistory.length < 5) {
-                document.getElementById('weekly-text').textContent = 'Your weekly reflection will appear after you\'ve logged a few more moods together.';
+            const week = moodHistory.filter(h => h.timestamp > Date.now() - 7 * 24 * 60 * 60 * 1000);
+            if (week.length < 3) {
+                document.getElementById('weekly-text').textContent = 'Keep checking in to see your weekly reflection!';
                 return;
             }
 
-            const loadingEl = document.getElementById('weekly-loading');
+            document.getElementById('weekly-loading').classList.add('visible');
+            document.getElementById('weekly-text').style.display = 'none';
+
+            const good = week.filter(h => h.mood === 'good' || h.mood === 'reconnect').length;
+            const hard = week.filter(h => ['anxious', 'overwhelmed', 'disconnected'].includes(h.mood)).length;
+            
+            const result = await callAI(`This week: ${good} good moments, ${hard} harder ones. Write a warm 2 sentence reflection. Start with emoji.`);
+            
+            document.getElementById('weekly-loading').classList.remove('visible');
             const textEl = document.getElementById('weekly-text');
-            
-            loadingEl.style.display = 'flex';
-            textEl.style.display = 'none';
+            textEl.style.display = 'block';
+            textEl.textContent = result || `📝 ${good} good moments this week. You're showing up for each other.`;
+        }
 
-            // Filter to last 7 days
-            const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
-            const weekHistory = moodHistory.filter(h => h.timestamp > oneWeekAgo);
-
-            if (weekHistory.length < 3) {
-                loadingEl.style.display = 'none';
-                textEl.style.display = 'block';
-                textEl.textContent = 'Not enough data from this week yet. Keep checking in with each other!';
+        // ============ MOOD CALENDAR ============
+        function updateMoodCalendar(history) {
+            const container = document.getElementById('mood-calendar');
+            if (!history || history.length === 0) {
+                container.innerHTML = '<div class="no-history">No mood history yet.</div>';
                 return;
             }
 
-            const summary = weekHistory.map(h => `${h.person === 'me' ? 'Her' : 'Him'}: ${h.label}`).join(', ');
-            
-            const goodCount = weekHistory.filter(h => h.mood === 'good').length;
-            const reconnectCount = weekHistory.filter(h => h.mood === 'reconnect').length;
-            const spaceCount = weekHistory.filter(h => h.mood === 'space' || h.mood === 'overwhelmed').length;
-            const tensionCount = weekHistory.filter(h => h.mood === 'anxious' || h.mood === 'disconnected').length;
+            const grouped = {};
+            history.forEach(h => {
+                const key = new Date(h.timestamp).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                if (!grouped[key]) grouped[key] = [];
+                grouped[key].push(h);
+            });
 
-            const prompt = `Weekly relationship check-in summary:
-            - ${goodCount} "all good" moments
-            - ${reconnectCount} "ready to reconnect" signals  
-            - ${spaceCount} space/recharge needs
-            - ${tensionCount} anxious/disconnected moments
-            
-            Moods this week: ${summary}
-            
-            Write a warm, encouraging 2-3 sentence weekly reflection. Acknowledge what went well.
-            If there was tension, normalize it gently. End with something hopeful. Start with an emoji.`;
+            const sorted = Object.keys(grouped).sort((a, b) => 
+                new Date(grouped[b][0].timestamp) - new Date(grouped[a][0].timestamp)
+            );
 
-            const reflection = await callAI(prompt);
-            
-            loadingEl.style.display = 'none';
-            textEl.style.display = 'block';
-            
-            if (reflection) {
-                textEl.textContent = reflection;
-            } else {
-                textEl.textContent = `📝 This week: ${goodCount + reconnectCount} positive moments, ${tensionCount} harder ones. You're both still showing up. That's what matters.`;
-            }
+            let html = '';
+            sorted.slice(0, 10).forEach((day, i) => {
+                const entries = grouped[day].sort((a, b) => b.timestamp - a.timestamp);
+                html += `<div class="calendar-day" style="animation-delay: ${i * 0.05}s">
+                    <div class="calendar-date">${day}</div>
+                    <div class="calendar-moods">`;
+                entries.forEach(e => {
+                    const time = new Date(e.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                    html += `<div class="calendar-mood-entry ${e.person}">
+                        <span class="entry-emoji">${e.emoji || moodEmojis[e.mood]}</span>
+                        <span>${e.person === 'me' ? 'Her' : 'Him'}</span>
+                        <span class="entry-time">${time}</span>
+                    </div>`;
+                });
+                html += '</div></div>';
+            });
+            container.innerHTML = html;
         }
 
-        // 5. COMBO ALERT - When both moods indicate tension
-        function checkForComboAlert(data) {
-            if (!data.me || !data.you) return;
-
-            const tensionMoods = ['anxious', 'overwhelmed', 'disconnected'];
-            const herMood = data.me.mood;
-            const hisMood = data.you.mood;
-
-            // Check if both are in tension states
-            const herTense = tensionMoods.includes(herMood);
-            const hisTense = tensionMoods.includes(hisMood);
-
-            const comboAlert = document.getElementById('combo-alert');
-            const comboText = document.getElementById('combo-alert-text');
-
-            if (herTense && hisTense) {
-                // Both feeling tension
-                comboAlert.classList.add('visible');
-                comboText.textContent = "You're both in a tender spot right now. This is normal for your dynamic. Try the 20 minute rule: take space, then come back with curiosity instead of solutions. You've navigated this before.";
-            } else if (herMood === 'anxious' && (hisMood === 'space' || hisMood === 'overwhelmed')) {
-                // Classic anxious-avoidant moment
-                comboAlert.classList.add('visible');
-                comboText.textContent = "This is a familiar dance: she's reaching, he's retreating. Remember: his space isn't rejection, her reaching isn't pressure. Give it an hour. Trust the return.";
-            } else if (data.me.mood === 'good' && data.you.mood === 'good') {
-                // Both good!
-                comboAlert.classList.add('visible');
-                comboText.textContent = "☀️ You're both feeling good right now. Soak it in. This is what you're building toward.";
-                setTimeout(() => comboAlert.classList.remove('visible'), 5000);
-            } else {
-                comboAlert.classList.remove('visible');
-            }
+        // ============ COLLAPSIBLE SECTIONS ============
+        function toggleSection(header) {
+            header.classList.toggle('open');
+            header.nextElementSibling.classList.toggle('open');
         }
 
-        // Update the live status function to check for combos and show understand button
-        const originalUpdateLiveStatus = updateLiveStatus;
-        updateLiveStatus = function(data) {
-            originalUpdateLiveStatus(data);
-            
-            // Check for combo situations
-            checkForComboAlert(data);
-            
-            // Show "help me understand" if partner has a mood
-            const partnerIdentity = currentIdentity === 'me' ? 'you' : 'me';
-            if (currentIdentity && data && data[partnerIdentity]) {
-                document.getElementById('understand-section').style.display = 'block';
-            }
-        };
-
-        // Update mood calendar to store history for AI analysis
-        const originalUpdateMoodCalendar = updateMoodCalendar;
-        updateMoodCalendar = function(history) {
-            moodHistory = history || [];
-            originalUpdateMoodCalendar(history);
-            
-            // Generate insights after data loads
-            if (moodHistory.length >= 3 && currentIdentity) {
-                setTimeout(generateInsights, 500);
-                setTimeout(generateWeeklyReflection, 1000);
-            }
-        };
+        // Initialize
+        init();
     </script>
 </body>
 </html>
