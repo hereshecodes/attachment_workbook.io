@@ -949,17 +949,15 @@
 
     <script>
         // ============ FIREBASE CONFIG ============
-        // Replace with your Firebase config (instructions below)
         const firebaseConfig = {
-    apiKey: "AIzaSyDivrvDQijdlHP6nFOBlQB7eAOf8WFo_GA",
-    authDomain: "attachmentstyles-b807c.firebaseapp.com",
-    databaseURL: "https://attachmentstyles-b807c-default-rtdb.firebaseio.com",
-    projectId: "attachmentstyles-b807c",
-    storageBucket: "attachmentstyles-b807c.firebasestorage.app",
-    messagingSenderId: "619137221036",
-    appId: "1:619137221036:web:905bcdec602659048d7a09",
-    measurementId: "G-QKBXCNN831"
-  };
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+            projectId: "YOUR_PROJECT",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
 
         // Check if Firebase is configured
         const isFirebaseConfigured = !firebaseConfig.apiKey.includes("YOUR_");
@@ -968,6 +966,7 @@
         let roomRef = null;
         let currentIdentity = null;
         let roomId = null;
+        let localData = {}; // Store data locally for immediate UI updates
 
         // ============ MOOD DATA ============
         const moodData = {
@@ -1060,31 +1059,39 @@
             
             document.getElementById('room-code').textContent = roomId;
 
-            if (isFirebaseConfigured) {
-                // Initialize Firebase
-                firebase.initializeApp(firebaseConfig);
-                db = firebase.database();
-                roomRef = db.ref('rooms/' + roomId);
-                
-                // Listen for changes
-                roomRef.on('value', (snapshot) => {
-                    const data = snapshot.val() || {};
-                    updateLiveStatus(data);
-                });
+            // Load local data first
+            localData = JSON.parse(localStorage.getItem('relationshipMoods_' + roomId) || '{}');
+            updateLiveStatus(localData);
 
-                // Update connection status
-                const connectedRef = db.ref('.info/connected');
-                connectedRef.on('value', (snap) => {
-                    updateConnectionStatus(snap.val());
-                });
+            if (isFirebaseConfigured) {
+                try {
+                    // Initialize Firebase
+                    firebase.initializeApp(firebaseConfig);
+                    db = firebase.database();
+                    roomRef = db.ref('rooms/' + roomId);
+                    
+                    // Listen for changes
+                    roomRef.on('value', (snapshot) => {
+                        const data = snapshot.val() || {};
+                        localData = data;
+                        localStorage.setItem('relationshipMoods_' + roomId, JSON.stringify(data));
+                        updateLiveStatus(data);
+                    });
+
+                    // Update connection status
+                    const connectedRef = db.ref('.info/connected');
+                    connectedRef.on('value', (snap) => {
+                        updateConnectionStatus(snap.val());
+                    });
+                } catch (error) {
+                    console.error('Firebase init error:', error);
+                    updateConnectionStatus(false);
+                    document.getElementById('status-text').textContent = 'Firebase error - using local mode';
+                }
             } else {
                 // Demo mode - no Firebase
                 updateConnectionStatus(false);
-                document.getElementById('status-text').textContent = 'Demo Mode (see setup instructions)';
-                
-                // Load from localStorage for demo
-                const savedData = JSON.parse(localStorage.getItem('relationshipMoods_' + roomId) || '{}');
-                updateLiveStatus(savedData);
+                document.getElementById('status-text').textContent = 'Local mode (set up Firebase to sync)';
             }
 
             // Check for saved identity
@@ -1110,7 +1117,7 @@
                 dot.classList.remove('connected');
                 dot.classList.add('disconnected');
                 if (isFirebaseConfigured) {
-                    text.textContent = 'Disconnected';
+                    text.textContent = 'Reconnecting...';
                 }
             }
         }
@@ -1148,23 +1155,37 @@
             Object.keys(moods).forEach(moodKey => {
                 const btn = document.createElement('button');
                 btn.className = 'signal-btn';
+                btn.dataset.mood = moodKey;
                 btn.textContent = moods[moodKey].label;
-                btn.onclick = () => selectMood(moodKey);
+                btn.addEventListener('click', function() {
+                    selectMood(moodKey, this);
+                });
+                
+                // Check if this mood is currently active
+                if (localData[currentIdentity] && localData[currentIdentity].mood === moodKey) {
+                    btn.classList.add(currentIdentity === 'me' ? 'active-me' : 'active-you');
+                }
+                
                 container.appendChild(btn);
             });
         }
 
         // ============ MOOD SELECTION ============
-        function selectMood(moodKey) {
+        function selectMood(moodKey, buttonElement) {
+            if (!currentIdentity) {
+                alert('Please select who you are first!');
+                return;
+            }
+
             const mood = moodData[currentIdentity][moodKey];
             
             // Update button states
             document.querySelectorAll('#signal-buttons .signal-btn').forEach(btn => {
                 btn.classList.remove('active-me', 'active-you');
             });
-            event.target.classList.add(currentIdentity === 'me' ? 'active-me' : 'active-you');
+            buttonElement.classList.add(currentIdentity === 'me' ? 'active-me' : 'active-you');
 
-            // Save to Firebase or localStorage
+            // Create update object
             const update = {
                 mood: moodKey,
                 label: mood.label,
@@ -1172,14 +1193,22 @@
                 timestamp: Date.now()
             };
 
+            // Update local data immediately for instant UI feedback
+            localData[currentIdentity] = update;
+            localStorage.setItem('relationshipMoods_' + roomId, JSON.stringify(localData));
+            
+            // Update UI immediately
+            updateLiveStatus(localData);
+
+            // Save to Firebase if configured
             if (isFirebaseConfigured && roomRef) {
-                roomRef.child(currentIdentity).set(update);
-            } else {
-                // Demo mode - use localStorage
-                const data = JSON.parse(localStorage.getItem('relationshipMoods_' + roomId) || '{}');
-                data[currentIdentity] = update;
-                localStorage.setItem('relationshipMoods_' + roomId, JSON.stringify(data));
-                updateLiveStatus(data);
+                roomRef.child(currentIdentity).set(update)
+                    .then(() => {
+                        console.log('Saved to Firebase');
+                    })
+                    .catch((error) => {
+                        console.error('Firebase save error:', error);
+                    });
             }
 
             // Show insight panel
@@ -1193,7 +1222,7 @@
                 const timeEl = document.getElementById(`live-time-${person}`);
                 const cardEl = moodEl.closest('.live-status-card');
 
-                if (data[person]) {
+                if (data && data[person]) {
                     moodEl.textContent = data[person].label;
                     moodEl.classList.add('active');
                     cardEl.classList.add('has-mood');
@@ -1239,7 +1268,7 @@
 
         // ============ INSIGHT PANEL ============
         function showInsight(person, moodKey) {
-            const mood = moodData[person][moodKey];
+            const mood = moodData[person] && moodData[person][moodKey];
             if (!mood) return;
 
             document.getElementById('insight-title').textContent = mood.insightTitle;
@@ -1266,6 +1295,7 @@
         function createNewRoom() {
             if (confirm('Create a new room? You\'ll need to share the new link.')) {
                 localStorage.removeItem('relationshipIdentity_' + roomId);
+                localStorage.removeItem('relationshipMoods_' + roomId);
                 window.location.href = window.location.pathname;
             }
         }
@@ -1273,29 +1303,5 @@
         // Initialize on load
         init();
     </script>
-
-    <!-- 
-    ╔═══════════════════════════════════════════════════════════════╗
-    ║                    FIREBASE SETUP INSTRUCTIONS                 ║
-    ╠═══════════════════════════════════════════════════════════════╣
-    ║                                                               ║
-    ║  To enable real-time sync between your devices:               ║
-    ║                                                               ║
-    ║  1. Go to https://console.firebase.google.com                 ║
-    ║  2. Click "Create a project" (name it anything)               ║
-    ║  3. Skip Google Analytics when asked                          ║
-    ║  4. Once created, click "Realtime Database" in sidebar        ║
-    ║  5. Click "Create Database"                                   ║
-    ║  6. Choose your region, select "Start in test mode"           ║
-    ║  7. Click the gear icon → "Project settings"                  ║
-    ║  8. Scroll down to "Your apps" → click web icon (</>)         ║
-    ║  9. Name it anything, click "Register app"                    ║
-    ║  10. Copy the firebaseConfig object                           ║
-    ║  11. Replace the config at the top of the <script> section    ║
-    ║                                                               ║
-    ║  That's it! The page will sync in real-time between devices.  ║
-    ║                                                               ║
-    ╚═══════════════════════════════════════════════════════════════╝
-    -->
 </body>
 </html>
