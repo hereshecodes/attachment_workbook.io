@@ -1149,20 +1149,20 @@
                 const btn = document.createElement('button');
                 btn.className = 'signal-btn';
                 btn.textContent = moods[moodKey].label;
-                btn.onclick = () => selectMood(moodKey);
+                btn.onclick = function() { selectMood(moodKey, this); };
                 container.appendChild(btn);
             });
         }
 
         // ============ MOOD SELECTION ============
-        function selectMood(moodKey) {
-            const mood = moodData[currentIdentity][moodKey];
-            
-            // Update button states
-            document.querySelectorAll('#signal-buttons .signal-btn').forEach(btn => {
-                btn.classList.remove('active-me', 'active-you');
-            });
-            event.target.classList.add(currentIdentity === 'me' ? 'active-me' : 'active-you');
+        function selectMood(moodKey, buttonElement) {
+    const mood = moodData[currentIdentity][moodKey];
+    
+    // Update button states
+    document.querySelectorAll('#signal-buttons .signal-btn').forEach(btn => {
+        btn.classList.remove('active-me', 'active-you');
+    });
+    buttonElement.classList.add(currentIdentity === 'me' ? 'active-me' : 'active-you');
 
             // Save to Firebase or localStorage
             const update = {
