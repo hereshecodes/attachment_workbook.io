@@ -451,44 +451,66 @@
         </div>
     </div>
 
-    <!-- 10. WHAT HELPS US (Collapsible) -->
+    <!-- 10. SYSTEM OPTIMIZATION PROTOCOLS (Collapsible) -->
     <div class="collapsible-section">
         <div class="collapsible-header" onclick="toggleSection(this)">
             <div class="collapsible-header-left">
-                <span class="collapsible-icon">💡</span>
-                <span class="collapsible-title">What Helps Us</span>
+                <span class="collapsible-icon">⚙️</span>
+                <span class="collapsible-title">System Optimization Protocols</span>
             </div>
             <span class="collapsible-toggle">▼</span>
         </div>
         <div class="collapsible-content">
             <div class="collapsible-inner">
+                <div style="background: rgba(138, 106, 154, 0.05); padding: 16px; border-radius: 12px; margin-bottom: 20px; font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.6; color: #5a4a6a;">
+                    <div style="margin-bottom: 12px; font-weight: 600; color: #4a3a5a;">📊 Coupled Systems Architecture</div>
+                    <pre style="margin: 0; white-space: pre; overflow-x: auto;">
+┌─────────────┐                    ┌─────────────┐
+│   Node A    │◄──────────────────►│   Node B    │
+│  (Her/Dev)  │    Bidirectional   │ (Him/Engr)  │
+│             │   Feedback Loop    │             │
+└──────┬──────┘                    └──────┬──────┘
+       │                                  │
+       ├─► Signal Processing              ├─► Buffer Space
+       ├─► State Validation               ├─► Async Handling
+       └─► Load Balancing ◄───────────────┘</pre>
+                    <div style="margin-top: 12px; font-size: 0.8rem; font-style: italic;">Two autonomous systems optimizing for shared throughput</div>
+                </div>
+
                 <div class="helps-grid">
                     <div class="helps-column">
-                        <h3>For Her</h3>
+                        <h3>Node A Optimizations</h3>
                         <ul>
-                            <li>Give space when needed, knowing we're solid</li>
-                            <li>Share feelings without needing fixing</li>
-                            <li>Trust my own rhythm and needs</li>
-                            <li>We both need processing time sometimes</li>
+                            <li><strong>Allow async processing:</strong> His buffer space prevents system overload</li>
+                            <li><strong>Emit status updates:</strong> Broadcast state without expecting ACK</li>
+                            <li><strong>Trust the handshake:</strong> Connection persists through idle cycles</li>
+                            <li><strong>Parallel processing:</strong> Both nodes need independent compute time</li>
                         </ul>
                     </div>
                     <div class="helps-column">
-                        <h3>For Us</h3>
+                        <h3>System-Wide Protocols</h3>
                         <ul>
-                            <li>"I feel..." instead of "You always..."</li>
-                            <li>Take breaks when needed, reconnect when ready</li>
-                            <li>Regular check-ins keep us connected</li>
-                            <li>Balance togetherness and independence</li>
+                            <li><strong>Use descriptive logging:</strong> "STATUS: feeling X" vs "ERROR: you always Y"</li>
+                            <li><strong>Implement graceful degradation:</strong> Temporary disconnects don't crash the system</li>
+                            <li><strong>Schedule health checks:</strong> Regular pings maintain connection stability</li>
+                            <li><strong>Load balancing:</strong> Distribute processing across both nodes</li>
                         </ul>
                     </div>
                     <div class="helps-column">
-                        <h3>For Him</h3>
+                        <h3>Node B Optimizations</h3>
                         <ul>
-                            <li>Simple gestures go a long way</li>
-                            <li>A quick heads-up helps us both relax</li>
-                            <li>Sharing your thoughts strengthens us</li>
-                            <li>Being present matters more than perfection</li>
+                            <li><strong>Send keepalive packets:</strong> Small signals maintain connection health</li>
+                            <li><strong>Broadcast intent:</strong> Quick ETA reduces timeout anxiety</li>
+                            <li><strong>Share debug logs:</strong> Internal state visibility builds trust</li>
+                            <li><strong>Presence > perfection:</strong> Uptime matters more than flawless output</li>
                         </ul>
+                    </div>
+                </div>
+
+                <div style="margin-top: 24px; padding: 16px; background: linear-gradient(135deg, #fff9e6 0%, #fff5d9 100%); border-radius: 12px; border-left: 4px solid #f0c040;">
+                    <div style="font-weight: 600; color: #6a5a4a; margin-bottom: 8px;">💡 Engineering Note:</div>
+                    <div style="font-size: 0.9rem; color: #6a5a4a; line-height: 1.6;">
+                        This isn't about fixing bugs in each other—it's about optimizing the interface between two well-functioning systems. When Node A signals high load, Node B doesn't need to debug Node A's internals. Just acknowledge the signal and allow async processing. Both systems remain stable independently.
                     </div>
                 </div>
             </div>
