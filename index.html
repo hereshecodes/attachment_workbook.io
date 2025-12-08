@@ -377,7 +377,7 @@
         .custom-note {
             margin-top: 12px;
             padding-top: 12px;
-            border-top: 1px dashed rgba(0,0,0,0.1);
+            border-top: 1px dotted rgba(0,0,0,0.1);
             font-size: 0.85rem;
             color: #555;
         }
@@ -860,11 +860,11 @@
         }
 
         .helps-column li::before {
-            content: '→';
+            content: '•';
             position: absolute;
             left: 0;
             opacity: 0.4;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
         }
 
         /* ============ ANIMATIONS ============ */
@@ -1324,11 +1324,11 @@
             </div>
             <div class="section-divider">
                 <span class="section-label">When uncertain</span>
-                <div class="section-content">Seeks clarity → wants to reconnect</div>
+                <div class="section-content">Seeks clarity, wants to reconnect</div>
             </div>
             <div class="section-divider">
                 <span class="section-label">Working on</span>
-                <div class="growth-item">Trusting that space ≠ rejection<br>Self-soothing before reaching out</div>
+                <div class="growth-item">Trusting that space ≠ rejection<br>Self soothing before reaching out</div>
             </div>
         </div>
 
@@ -1365,7 +1365,7 @@
             </div>
             <div class="section-divider">
                 <span class="section-label">When overwhelmed</span>
-                <div class="section-content">Needs space → returns when settled</div>
+                <div class="section-content">Needs space, returns when settled</div>
             </div>
             <div class="section-divider">
                 <span class="section-label">What helps</span>
@@ -1465,28 +1465,28 @@
             me: {
                 space: {
                     label: "Need space, but okay",
-                    message: "I just need a little quiet time to recharge. This isn't about you — I'll be back soon.",
+                    message: "I just need a little quiet time to recharge. This isn't about you. I'll be back soon.",
                     insightTitle: "When I Need Space",
-                    insightMe: "This is healthy! Take this time to do something that fills your cup. Trust that wanting space doesn't make you avoidant — it makes you balanced.",
+                    insightMe: "This is healthy! Take this time to do something that fills your cup. Trust that wanting space doesn't make you avoidant. It makes you balanced.",
                     insightYou: "She's practicing self-regulation. A simple 'take your time, I'm here' would mean a lot."
                 },
                 anxious: {
                     label: "Feeling anxious",
-                    message: "I'm feeling a bit anxious right now. I don't need you to fix it — just knowing you're there helps.",
+                    message: "I'm feeling a bit anxious right now. I don't need you to fix it. Just knowing you're there helps.",
                     insightTitle: "When I'm Feeling Anxious",
                     insightMe: "Notice this feeling without acting on it immediately. Try 5 deep breaths, then ask 'what do I actually need right now?'",
                     insightYou: "She's being vulnerable by naming this. A heart emoji or 'I'm here' goes far. You don't need to solve anything."
                 },
                 disconnected: {
                     label: "Feeling disconnected",
-                    message: "I'm feeling a bit distant from us lately. I'd love some quality time when you're ready — nothing heavy.",
+                    message: "I'm feeling a bit distant from us lately. I'd love some quality time when you're ready. Nothing heavy.",
                     insightTitle: "When I Feel Disconnected",
                     insightMe: "Before reaching out, ask: am I seeking connection or seeking reassurance? Genuine connection requests land better.",
-                    insightYou: "She's missing you. Low-pressure togetherness would help — a walk, watching something together, just presence."
+                    insightYou: "She's missing you. Low pressure togetherness would help. A walk, watching something together, just presence."
                 },
                 reconnect: {
                     label: "Ready to reconnect",
-                    message: "I'm feeling open and ready to connect. No pressure — just wanted you to know I'm here. ♡",
+                    message: "I'm feeling open and ready to connect. No pressure, just wanted you to know I'm here. ♡",
                     insightTitle: "Ready to Reconnect",
                     insightMe: "Beautiful. Stay open without attaching to a specific outcome. Let him come at his pace.",
                     insightYou: "This is an invitation, not a demand. If you're feeling open too, now's a good moment."
@@ -1496,13 +1496,13 @@
                     message: "Feeling good and settled. Just wanted you to know all is well over here. ♡",
                     insightTitle: "All Good",
                     insightMe: "Enjoy this! Notice what contributed to this feeling so you can return to it.",
-                    insightYou: "She's content. No action needed — just receive this peace."
+                    insightYou: "She's content. No action needed. Just receive this peace."
                 }
             },
             you: {
                 space: {
                     label: "Need space, but okay",
-                    message: "I'm taking some time to recharge. This isn't distance — it's how I process. I'll be back.",
+                    message: "I'm taking some time to recharge. This isn't distance, it's how I process. I'll be back.",
                     insightTitle: "When He Needs Space",
                     insightMe: "This is his way of regulating, not rejecting. Repeat: his space is not about me. Do something nourishing for yourself.",
                     insightYou: "Thank you for naming this. If you can, naming when you'll return helps her nervous system settle."
@@ -1511,14 +1511,14 @@
                     label: "Feeling overwhelmed",
                     message: "Feeling a bit overwhelmed right now. I need to step back and recalibrate. It's not about us.",
                     insightTitle: "When He's Overwhelmed",
-                    insightMe: "His withdrawal isn't punishment — it's protection. Give him room. Don't chase. Trust his return.",
+                    insightMe: "His withdrawal isn't punishment, it's protection. Give him room. Don't chase. Trust his return.",
                     insightYou: "When you're ready to re-emerge, a small gesture bridges the gap. Even 'I'm feeling better' helps."
                 },
                 disconnected: {
                     label: "Feeling disconnected",
                     message: "I've been in my own world lately. It's not intentional distance. I want to find our way back.",
                     insightTitle: "When He Feels Disconnected",
-                    insightMe: "He's naming it — that's huge. Don't rush to fix it. Let him lead the reconnection at his pace.",
+                    insightMe: "He's naming it, that's huge. Don't rush to fix it. Let him lead the reconnection at his pace.",
                     insightYou: "She'll appreciate you naming this. Even small moves toward connection will mean a lot."
                 },
                 reconnect: {
@@ -1558,10 +1558,15 @@
                 roomRef = db.ref('rooms/' + roomId);
                 historyRef = db.ref('history/' + roomId);
                 
-                // Listen for changes - THIS IS THE REAL-TIME LISTENER
+                // Listen for changes, THIS IS THE REAL TIME LISTENER
                 roomRef.on('value', (snapshot) => {
                     const data = snapshot.val() || {};
                     updateLiveStatus(data);
+                    
+                    // Re-highlight active mood button if identity is selected
+                    if (currentIdentity && data[currentIdentity]) {
+                        highlightActiveMood(data[currentIdentity]);
+                    }
                 });
 
                 // Listen for history changes
@@ -1626,7 +1631,7 @@
             document.querySelector(`.identity-btn.${identity}`).classList.add('active');
             
             const selectedText = document.getElementById('identity-selected');
-            selectedText.textContent = `You're set as "${identity === 'me' ? 'Me (Her)' : 'You (Him)'}" — your partner will see your updates`;
+            selectedText.textContent = `You're set as "${identity === 'me' ? 'Me (Her)' : 'You (Him)'}" and your partner will see your updates`;
             selectedText.classList.add('visible');
 
             // Show signal section
@@ -1646,12 +1651,61 @@
             
             container.innerHTML = '';
             
+            // Get current mood from Firebase data if available
+            let currentMoodFromData = null;
+            if (previousData && previousData[currentIdentity]) {
+                const timestamp = previousData[currentIdentity].timestamp;
+                const moodDate = new Date(timestamp).toDateString();
+                const today = new Date().toDateString();
+                
+                // If mood was set today, show it as active
+                if (moodDate === today) {
+                    currentMoodFromData = previousData[currentIdentity].mood;
+                    currentMoodKey = currentMoodFromData;
+                    
+                    // Show custom message box since there's an active mood
+                    document.getElementById('custom-message-box').style.display = 'block';
+                }
+            }
+            
             Object.keys(moods).forEach(moodKey => {
                 const btn = document.createElement('button');
                 btn.className = 'signal-btn';
                 btn.textContent = moods[moodKey].label;
                 btn.onclick = function() { selectMood(moodKey, this); };
+                
+                // Highlight if this is the current mood for today
+                if (moodKey === currentMoodFromData) {
+                    btn.classList.add(currentIdentity === 'me' ? 'active-me' : 'active-you');
+                }
+                
                 container.appendChild(btn);
+            });
+        }
+
+        // Helper to highlight active mood when data updates
+        function highlightActiveMood(personData) {
+            if (!currentIdentity || !personData) return;
+            
+            const timestamp = personData.timestamp;
+            const moodDate = new Date(timestamp).toDateString();
+            const today = new Date().toDateString();
+            
+            // Only highlight if mood was set today
+            if (moodDate !== today) return;
+            
+            const moodKey = personData.mood;
+            const buttons = document.querySelectorAll('#signal-buttons .signal-btn');
+            const moods = moodData[currentIdentity];
+            const moodKeys = Object.keys(moods);
+            
+            buttons.forEach((btn, index) => {
+                btn.classList.remove('active-me', 'active-you');
+                if (moodKeys[index] === moodKey) {
+                    btn.classList.add(currentIdentity === 'me' ? 'active-me' : 'active-you');
+                    currentMoodKey = moodKey;
+                    document.getElementById('custom-message-box').style.display = 'block';
+                }
             });
         }
 
@@ -1857,7 +1911,7 @@
             titleEl.textContent = mood.insightTitle;
 
             if (isPartnerUpdate) {
-                // PARTNER updated their mood - show what THEY need and what YOU can do
+                // PARTNER updated their mood, show what THEY need and what YOU can do
                 const partnerName = person === 'me' ? 'She' : 'He';
                 
                 card1.querySelector('h4').textContent = `What ${partnerName}'s Saying`;
@@ -1868,7 +1922,7 @@
                 // If partner is 'you' (him), show insightMe (guidance for her)
                 insightYouEl.textContent = person === 'me' ? mood.insightYou : mood.insightMe;
             } else {
-                // YOU updated your own mood - show YOUR self-guidance
+                // YOU updated your own mood, show YOUR self guidance
                 card1.querySelector('h4').textContent = 'Reminder for Me';
                 card2.querySelector('h4').textContent = 'What They\'ll See';
                 
