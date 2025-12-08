@@ -56,9 +56,9 @@
 
     <!-- Image Modal for Server Illustration -->
     <div class="image-modal" id="image-modal" onclick="closeImageModal()">
-        <div class="image-modal-content">
-            <button class="close-modal-btn" onclick="closeImageModal()" style="position: absolute; top: 20px; right: 20px; z-index: 10;">✕ Close</button>
-            <img src="server-illustration.svg" alt="Two-Node Server Architecture" style="max-width: 95%; max-height: 95vh; width: auto; height: auto;">
+        <div class="image-modal-content" onclick="event.stopPropagation()">
+            <button class="close-modal-btn" onclick="closeImageModal()" style="margin-bottom: 16px;">✕ Close</button>
+            <img src="server-illustration.svg" alt="Two-Node Server Architecture" style="width: 100%; max-width: 800px; height: auto; display: block;">
         </div>
     </div>
 
