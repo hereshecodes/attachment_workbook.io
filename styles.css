@@ -1883,15 +1883,34 @@ h1 {
     pre {
         overflow-x: auto;
         white-space: pre;
-        font-size: 0.7rem !important;
-        padding: 12px !important;
+        font-size: 0.65rem !important;
+        padding: 10px !important;
         margin: 0 !important;
+        max-width: 100%;
     }
 
     /* Ensure collapsible content doesn't overflow */
     .collapsible-inner {
         padding: 16px 12px;
         overflow-x: hidden;
+    }
+
+    /* Make diagram containers scrollable on mobile */
+    .collapsible-inner > div[style*="background"] {
+        overflow-x: auto;
+        max-width: 100%;
+    }
+
+    /* Adjust padding and font for network flow boxes */
+    .collapsible-inner > div[style*="Courier New"] {
+        font-size: 0.7rem !important;
+        padding: 12px !important;
+    }
+
+    /* Server illustration container */
+    .collapsible-inner > div img {
+        max-width: 100%;
+        height: auto;
     }
 
     /* Month navigation buttons - stack on mobile */
