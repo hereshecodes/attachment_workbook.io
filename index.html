@@ -29,6 +29,7 @@
                 <span class="identity-badge" id="identity-badge" style="display: none;"></span>
             </div>
             <div class="share-actions">
+                <button class="share-btn" onclick="openPersonalizationSettings()">⚙️ Settings</button>
                 <button class="share-btn" onclick="openShareModal()">📤 Share</button>
                 <button class="share-btn" onclick="createNewRoom()">+ New Room</button>
             </div>
@@ -50,6 +51,86 @@
                 <button class="share-option-btn" onclick="shareViaEmail()">📧 Email</button>
             </div>
             <button class="close-modal-btn" onclick="closeShareModal()">Done</button>
+        </div>
+    </div>
+
+    <!-- First-Time User Tutorial -->
+    <div class="tutorial-modal" id="tutorial-modal" style="display: none;">
+        <div class="tutorial-content">
+            <button class="skip-tutorial-btn" onclick="skipTutorial()">Skip</button>
+
+            <div class="tutorial-step" id="tutorial-step-1">
+                <div class="tutorial-icon">💕</div>
+                <div class="tutorial-title">Welcome to Your Shared Space</div>
+                <div class="tutorial-text">
+                    This is a private space designed to help you and your partner communicate emotional needs in real-time—especially during difficult moments when finding the right words feels hard.
+                </div>
+                <div class="tutorial-progress">
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+                <button class="tutorial-next-btn" onclick="nextTutorialStep()">Next</button>
+            </div>
+
+            <div class="tutorial-step" id="tutorial-step-2" style="display: none;">
+                <div class="tutorial-icon">🌊</div>
+                <div class="tutorial-title">Share How You Feel</div>
+                <div class="tutorial-text">
+                    Tap a mood button to instantly let your partner know how you're feeling. They'll see your update on their device in real-time, along with guidance on how to support you.
+                </div>
+                <div class="tutorial-example">
+                    <div class="example-mood">😰 "Feeling anxious"</div>
+                    <div class="example-arrow">→</div>
+                    <div class="example-result">Partner sees: "She's being vulnerable. A heart emoji or 'I'm here' goes far."</div>
+                </div>
+                <div class="tutorial-progress">
+                    <span class="dot"></span>
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+                <button class="tutorial-next-btn" onclick="nextTutorialStep()">Next</button>
+            </div>
+
+            <div class="tutorial-step" id="tutorial-step-3" style="display: none;">
+                <div class="tutorial-icon">📅</div>
+                <div class="tutorial-title">Track Patterns Together</div>
+                <div class="tutorial-text">
+                    Your mood history calendar shows patterns over time. The AI can analyze these patterns to give you insights about your relationship dynamics and celebrate your growth.
+                </div>
+                <div class="tutorial-features">
+                    <div class="feature-item">✨ AI-powered insights</div>
+                    <div class="feature-item">📊 Weekly reflections</div>
+                    <div class="feature-item">💬 Message helper</div>
+                </div>
+                <div class="tutorial-progress">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                </div>
+                <button class="tutorial-next-btn" onclick="nextTutorialStep()">Next</button>
+            </div>
+
+            <div class="tutorial-step" id="tutorial-step-4" style="display: none;">
+                <div class="tutorial-icon">🔗</div>
+                <div class="tutorial-title">Share With Your Partner</div>
+                <div class="tutorial-text">
+                    This room is just for the two of you. Share the link with your partner so you can both check in and see each other's status. Your data stays private to your unique room.
+                </div>
+                <div class="tutorial-tip">
+                    💡 Tip: Bookmark this page so you can easily come back to it!
+                </div>
+                <div class="tutorial-progress">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot active"></span>
+                </div>
+                <button class="tutorial-done-btn" onclick="closeTutorial()">Get Started</button>
+            </div>
         </div>
     </div>
 
@@ -127,14 +208,35 @@
                 <div class="setting-section">
                     <div class="setting-label">Display Names</div>
                     <div class="name-inputs">
-                        <input type="text" class="name-input" id="my-name-input" placeholder="Your name (e.g., Her)" maxlength="15">
-                        <input type="text" class="name-input" id="partner-name-input" placeholder="Partner's name (e.g., Him)" maxlength="15">
+                        <input type="text" class="name-input" id="my-name-input" placeholder="Your name (e.g., Alex)" maxlength="15">
+                        <input type="text" class="name-input" id="partner-name-input" placeholder="Partner's name (e.g., Sam)" maxlength="15">
                     </div>
-                    <button class="save-names-btn" onclick="saveDisplayNames()">Save Names</button>
+                </div>
+
+                <div class="setting-section">
+                    <div class="setting-label">Your Pronouns</div>
+                    <select class="pronoun-select" id="my-pronoun-select">
+                        <option value="she/her">she/her</option>
+                        <option value="he/him">he/him</option>
+                        <option value="they/them">they/them</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                    <input type="text" class="custom-pronoun-input" id="my-custom-pronoun" placeholder="Enter custom pronouns" style="display: none;" maxlength="20">
+                </div>
+
+                <div class="setting-section">
+                    <div class="setting-label">Partner's Pronouns</div>
+                    <select class="pronoun-select" id="partner-pronoun-select">
+                        <option value="she/her">she/her</option>
+                        <option value="he/him">he/him</option>
+                        <option value="they/them">they/them</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                    <input type="text" class="custom-pronoun-input" id="partner-custom-pronoun" placeholder="Enter custom pronouns" style="display: none;" maxlength="20">
                 </div>
             </div>
 
-            <button class="save-settings-btn" onclick="saveAttachmentSettings()">Save Changes</button>
+            <button class="save-settings-btn" onclick="savePersonalizationSettings()">Save Changes</button>
         </div>
     </div>
 
@@ -513,10 +615,19 @@
 
         // ============ INITIALIZATION ============
         function init() {
+            // Check for first-time user
+            const hasSeenTutorial = localStorage.getItem('hasSeenTutorial');
+            if (!hasSeenTutorial) {
+                // Show tutorial after a brief delay
+                setTimeout(() => {
+                    document.getElementById('tutorial-modal').style.display = 'flex';
+                }, 500);
+            }
+
             // Check for saved room first
             const savedRoom = localStorage.getItem('lastRoom');
             const urlParams = new URLSearchParams(window.location.search);
-            
+
             // Priority: URL param > saved room > new room
             if (urlParams.get('room')) {
                 roomId = urlParams.get('room');
@@ -526,7 +637,7 @@
             } else {
                 roomId = generateRoomId();
             }
-            
+
             // Update URL and save
             window.history.replaceState({}, '', `?room=${roomId}`);
             localStorage.setItem('lastRoom', roomId);
@@ -1175,6 +1286,131 @@
             header.classList.toggle('open');
             header.nextElementSibling.classList.toggle('open');
         }
+
+        // ============ TUTORIAL FUNCTIONS ============
+        let currentTutorialStep = 1;
+
+        function nextTutorialStep() {
+            document.getElementById(`tutorial-step-${currentTutorialStep}`).style.display = 'none';
+            currentTutorialStep++;
+            document.getElementById(`tutorial-step-${currentTutorialStep}`).style.display = 'block';
+        }
+
+        function skipTutorial() {
+            localStorage.setItem('hasSeenTutorial', 'true');
+            document.getElementById('tutorial-modal').style.display = 'none';
+            currentTutorialStep = 1;
+        }
+
+        function closeTutorial() {
+            localStorage.setItem('hasSeenTutorial', 'true');
+            document.getElementById('tutorial-modal').style.display = 'none';
+            currentTutorialStep = 1;
+        }
+
+        function showTutorialAgain() {
+            currentTutorialStep = 1;
+            document.getElementById('tutorial-step-1').style.display = 'block';
+            document.getElementById('tutorial-step-2').style.display = 'none';
+            document.getElementById('tutorial-step-3').style.display = 'none';
+            document.getElementById('tutorial-step-4').style.display = 'none';
+            document.getElementById('tutorial-modal').style.display = 'flex';
+        }
+
+        // ============ PERSONALIZATION SETTINGS ============
+        function openPersonalizationSettings() {
+            const modal = document.getElementById('attachment-settings-modal');
+            modal.style.display = 'flex';
+
+            // Load saved settings
+            const myName = localStorage.getItem('myName') || '';
+            const partnerName = localStorage.getItem('partnerName') || '';
+            const myPronouns = localStorage.getItem('myPronouns') || 'she/her';
+            const partnerPronouns = localStorage.getItem('partnerPronouns') || 'he/him';
+
+            document.getElementById('my-name-input').value = myName;
+            document.getElementById('partner-name-input').value = partnerName;
+            document.getElementById('my-pronoun-select').value = myPronouns;
+            document.getElementById('partner-pronoun-select').value = partnerPronouns;
+
+            // Handle custom pronouns
+            if (myPronouns === 'custom' || !['she/her', 'he/him', 'they/them'].includes(myPronouns)) {
+                document.getElementById('my-pronoun-select').value = 'custom';
+                document.getElementById('my-custom-pronoun').style.display = 'block';
+                document.getElementById('my-custom-pronoun').value = myPronouns;
+            }
+            if (partnerPronouns === 'custom' || !['she/her', 'he/him', 'they/them'].includes(partnerPronouns)) {
+                document.getElementById('partner-pronoun-select').value = 'custom';
+                document.getElementById('partner-custom-pronoun').style.display = 'block';
+                document.getElementById('partner-custom-pronoun').value = partnerPronouns;
+            }
+        }
+
+        function closeAttachmentSettings() {
+            document.getElementById('attachment-settings-modal').style.display = 'none';
+        }
+
+        function savePersonalizationSettings() {
+            const myName = document.getElementById('my-name-input').value.trim() || 'Partner 1';
+            const partnerName = document.getElementById('partner-name-input').value.trim() || 'Partner 2';
+
+            let myPronouns = document.getElementById('my-pronoun-select').value;
+            let partnerPronouns = document.getElementById('partner-pronoun-select').value;
+
+            if (myPronouns === 'custom') {
+                myPronouns = document.getElementById('my-custom-pronoun').value.trim() || 'they/them';
+            }
+            if (partnerPronouns === 'custom') {
+                partnerPronouns = document.getElementById('partner-custom-pronoun').value.trim() || 'they/them';
+            }
+
+            // Save to localStorage
+            localStorage.setItem('myName', myName);
+            localStorage.setItem('partnerName', partnerName);
+            localStorage.setItem('myPronouns', myPronouns);
+            localStorage.setItem('partnerPronouns', partnerPronouns);
+
+            // Update display names throughout the app
+            updateDisplayNames();
+
+            closeAttachmentSettings();
+        }
+
+        function updateDisplayNames() {
+            const myName = localStorage.getItem('myName') || 'Her';
+            const partnerName = localStorage.getItem('partnerName') || 'Him';
+
+            // Update live status cards
+            document.querySelectorAll('.live-status-name').forEach((el, index) => {
+                el.textContent = index === 0 ? myName : partnerName;
+            });
+
+            // Update identity buttons
+            document.querySelectorAll('.identity-btn').forEach((btn, index) => {
+                if (index === 0) btn.textContent = `I'm ${myName}`;
+                else btn.textContent = `I'm ${partnerName}`;
+            });
+        }
+
+        // Add pronoun select change handlers
+        document.addEventListener('DOMContentLoaded', () => {
+            const myPronounSelect = document.getElementById('my-pronoun-select');
+            const partnerPronounSelect = document.getElementById('partner-pronoun-select');
+
+            if (myPronounSelect) {
+                myPronounSelect.addEventListener('change', (e) => {
+                    const customInput = document.getElementById('my-custom-pronoun');
+                    customInput.style.display = e.target.value === 'custom' ? 'block' : 'none';
+                });
+            }
+
+            if (partnerPronounSelect) {
+                partnerPronounSelect.addEventListener('change', (e) => {
+                    const customInput = document.getElementById('partner-custom-pronoun');
+                    customInput.style.display = e.target.value === 'custom' ? 'block' : 'none';
+                });
+            }
+        });
 
         // Initialize
         init();
