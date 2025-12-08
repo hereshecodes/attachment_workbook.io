@@ -241,31 +241,34 @@ This allows anyone with your room link to read/write, but only to their specific
 
 The app consists of two files (`index.html` and `styles.css`) — host them anywhere together!
 
-### Option 1: Netlify Drop (Easiest — 30 seconds)
+### Option 1: Netlify Drop (Easiest — 30 seconds) ⭐ RECOMMENDED
 
 1. Go to [app.netlify.com/drop](https://app.netlify.com/drop)
-2. Create a folder with `index.html`, `styles.css`, and `config.js` (if using AI)
+2. Create a folder with `index.html`, `styles.css`, and `config.js`
 3. Drag the entire folder onto the page
 4. Done! You get a live URL instantly
 5. (Optional) Click "Site settings" to customize the URL
 
-**Note:** For production deployments, consider using environment variables instead of `config.js`
+**Security Note:** Your API key will be visible in the browser source code to anyone who visits your site. To minimize risk:
+- Set spending limits in your [Anthropic Console](https://console.anthropic.com) (Settings → Billing)
+- Monitor your API usage regularly
+- This is acceptable for personal couple use, but not for public-facing apps
 
-### Option 2: GitHub Pages (Free & Permanent)
+### Option 2: GitHub Pages (Your Current Setup)
 
-1. Create a [GitHub](https://github.com) account
-2. Create a new repository
-3. Upload `index.html`, `styles.css`, and `config.js` to the repository
-   - **Warning:** Your API key will be public if you upload `config.js`!
-   - For public repos, consider using a backend proxy for API keys
-4. Go to **Settings → Pages**
-5. Under "Source", select your branch and click Save
-6. Your site will be live at `yourusername.github.io/reponame`
+**Important:** Since `config.js` is in `.gitignore`, it won't be pushed to GitHub. Here's how to deploy:
 
-**Security Note:** If hosting publicly, anyone can view your source code and API keys. Consider:
-- Making the repository private, OR
-- Using a backend service to proxy API calls, OR
-- Accepting that your API key is public and monitoring usage
+1. Push your code to GitHub (config.js will NOT be included - this is intentional)
+2. Go to **Settings → Pages** in your repository
+3. Under "Source", select your branch and click Save
+4. **After deployment**, you'll need to manually add `config.js`:
+   - Go to your repository on GitHub
+   - Click "Add file" → "Create new file"
+   - Name it `config.js`
+   - Paste your config.js content
+   - Commit directly to main branch
+
+**Note:** This makes your API key publicly visible on GitHub, but keeps it out of git history. Set spending limits in your Anthropic Console for safety.
 
 ### Option 3: Vercel
 

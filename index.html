@@ -6,7 +6,11 @@
     <title>Relationship Room</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <script src="config.js"></script>
+    <script>
+        // Initialize CONFIG - will be overridden by config.js if it loads
+        var CONFIG = { ANTHROPIC_API_KEY: "YOUR_ANTHROPIC_API_KEY_HERE" };
+    </script>
+    <script src="config.js" onerror="console.log('Note: config.js not loaded (this is normal when opening file directly). AI features will use embedded config or be disabled.')"></script>
 </head>
 <body>
     <h1>Relationship Styles</h1>
@@ -519,15 +523,42 @@
         function openShareModal() {
             const modal = document.getElementById('share-modal');
             modal.classList.add('visible');
-            
+
             // Generate QR code
             const qrContainer = document.getElementById('qr-code');
             qrContainer.innerHTML = '';
-            if (typeof QRCode !== 'undefined') {
-                QRCode.toCanvas(window.location.href, { width: 160, margin: 2 }, (err, canvas) => {
-                    if (!err) qrContainer.appendChild(canvas);
-                });
-            }
+
+            // Add a small delay to ensure library is loaded
+            setTimeout(() => {
+                try {
+                    if (typeof QRCode !== 'undefined') {
+                        // Create canvas element
+                        const canvas = document.createElement('canvas');
+                        QRCode.toCanvas(canvas, window.location.href, {
+                            width: 160,
+                            margin: 2,
+                            color: {
+                                dark: '#4a4a5a',
+                                light: '#ffffff'
+                            }
+                        }, (error) => {
+                            if (error) {
+                                console.error('QR generation error:', error);
+                                qrContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; font-size: 0.8rem; text-align: center; padding: 20px;">QR Code generation failed<br><span style="font-size: 0.7rem;">(Copy link below instead)</span></div>';
+                            } else {
+                                qrContainer.appendChild(canvas);
+                            }
+                        });
+                    } else {
+                        // Library not loaded - show fallback
+                        qrContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; font-size: 0.8rem; text-align: center; padding: 20px;">QR Code library loading...<br><span style="font-size: 0.7rem;">(Use link below)</span></div>';
+                        console.warn('QRCode library not loaded. Check internet connection.');
+                    }
+                } catch (e) {
+                    console.error('QR Code error:', e);
+                    qrContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; font-size: 0.8rem; text-align: center; padding: 20px;">Error generating QR code<br><span style="font-size: 0.7rem;">(Copy link below)</span></div>';
+                }
+            }, 100);
         }
 
         function closeShareModal() {
