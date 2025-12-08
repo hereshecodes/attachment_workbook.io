@@ -677,17 +677,25 @@
                 timestamp: timestamp
             };
 
-            if (roomRef) {
+            if (roomRef && historyRef) {
+                // Update current mood status
                 roomRef.child(currentIdentity).set(update);
 
                 // Save to history - always save so history reflects mood changes
-                historyRef.push({
+                const historyEntry = {
                     person: currentIdentity,
                     mood: moodKey,
                     label: mood.label,
                     emoji: moodEmojis[moodKey],
                     timestamp: timestamp
+                };
+                historyRef.push(historyEntry).then(() => {
+                    console.log('Mood saved to history:', historyEntry);
+                }).catch(err => {
+                    console.error('Failed to save mood to history:', err);
                 });
+            } else {
+                console.warn('Firebase not initialized - mood not saved');
             }
 
             showInsight(currentIdentity, moodKey, false);
