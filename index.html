@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relationship Room</title>
+    <title>Coupled Systems Interface</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <script>
@@ -13,8 +13,8 @@
     <script src="config.js" onerror="console.log('Note: config.js not loaded (this is normal when opening file directly). AI features will use embedded config or be disabled.')"></script>
 </head>
 <body>
-    <h1>Relationship Styles</h1>
-    <p class="subtitle">A shared space for understanding each other</p>
+    <h1>Coupled Systems Interface</h1>
+    <p class="subtitle">Real-time status monitoring for bidirectional feedback loops</p>
 
     <!-- 1. ROOM BAR (Sticky) -->
     <div class="room-bar" id="room-bar">
@@ -22,16 +22,16 @@
             <div class="room-identity">
                 <div class="connection-dot" id="connection-dot"></div>
                 <div class="room-name-display">
-                    <span class="room-name" id="room-name">Our Space</span>
+                    <span class="room-name" id="room-name">Node Session</span>
                     <button class="room-name-edit" onclick="editRoomName()">✏️</button>
                     <input type="text" class="room-name-input" id="room-name-input" maxlength="20" onblur="saveRoomName()" onkeypress="if(event.key==='Enter')saveRoomName()">
                 </div>
                 <span class="identity-badge" id="identity-badge" style="display: none;"></span>
             </div>
             <div class="share-actions">
-                <button class="share-btn" onclick="openPersonalizationSettings()">⚙️ Settings</button>
-                <button class="share-btn" onclick="openShareModal()">📤 Share</button>
-                <button class="share-btn" onclick="createNewRoom()">+ New Room</button>
+                <button class="share-btn" onclick="openPersonalizationSettings()">⚙️ Config</button>
+                <button class="share-btn" onclick="openShareModal()">📤 Share URL</button>
+                <button class="share-btn" onclick="createNewRoom()">+ New Session</button>
             </div>
         </div>
     </div>
@@ -39,18 +39,18 @@
     <!-- Share Modal -->
     <div class="share-modal" id="share-modal">
         <div class="share-modal-content">
-            <div class="share-modal-title">Share This Space</div>
-            <div class="share-modal-subtitle">Send this link to your partner so you can connect</div>
+            <div class="share-modal-title">Share Session Endpoint</div>
+            <div class="share-modal-subtitle">Send this URL to Node B to establish bidirectional connection</div>
             <div class="qr-code" id="qr-code"></div>
             <div class="share-link-box">
                 <input type="text" class="share-link-input" id="share-link" readonly>
-                <button class="copy-link-btn" onclick="copyLink()">Copy</button>
+                <button class="copy-link-btn" onclick="copyLink()">Copy URL</button>
             </div>
             <div class="share-options">
-                <button class="share-option-btn" onclick="shareViaText()">💬 Text</button>
+                <button class="share-option-btn" onclick="shareViaText()">💬 SMS</button>
                 <button class="share-option-btn" onclick="shareViaEmail()">📧 Email</button>
             </div>
-            <button class="close-modal-btn" onclick="closeShareModal()">Done</button>
+            <button class="close-modal-btn" onclick="closeShareModal()">Close</button>
         </div>
     </div>
 
@@ -60,10 +60,10 @@
             <button class="skip-tutorial-btn" onclick="skipTutorial()">Skip</button>
 
             <div class="tutorial-step" id="tutorial-step-1">
-                <div class="tutorial-icon">💕</div>
-                <div class="tutorial-title">Welcome to Your Shared Space</div>
+                <div class="tutorial-icon">🔧</div>
+                <div class="tutorial-title">System Initialization</div>
                 <div class="tutorial-text">
-                    This is a private space designed to help you and your partner communicate emotional needs in real-time—especially during difficult moments when finding the right words feels hard.
+                    This is a real-time interface for two autonomous systems to broadcast status updates and optimize their shared throughput. Think of it as a bidirectional API where both nodes can signal state changes without blocking the other.
                 </div>
                 <div class="tutorial-progress">
                     <span class="dot active"></span>
@@ -75,15 +75,15 @@
             </div>
 
             <div class="tutorial-step" id="tutorial-step-2" style="display: none;">
-                <div class="tutorial-icon">🌊</div>
-                <div class="tutorial-title">Share How You Feel</div>
+                <div class="tutorial-icon">📡</div>
+                <div class="tutorial-title">Broadcast Status Updates</div>
                 <div class="tutorial-text">
-                    Tap a mood button to instantly let your partner know how you're feeling. They'll see your update on their device in real-time, along with guidance on how to support you.
+                    Select a status to broadcast your current operational state. The other node receives the signal in real-time along with recommended response protocols. No manual synchronization required—Firebase handles the WebSocket connection.
                 </div>
                 <div class="tutorial-example">
-                    <div class="example-mood">😰 "Feeling anxious"</div>
+                    <div class="example-mood">⚡ "HIGH_LOAD detected"</div>
                     <div class="example-arrow">→</div>
-                    <div class="example-result">Partner sees: "She's being vulnerable. A heart emoji or 'I'm here' goes far."</div>
+                    <div class="example-result">Node B receives: "// ACK - Node A processing independently. Simple keepalive sufficient."</div>
                 </div>
                 <div class="tutorial-progress">
                     <span class="dot"></span>
@@ -95,15 +95,15 @@
             </div>
 
             <div class="tutorial-step" id="tutorial-step-3" style="display: none;">
-                <div class="tutorial-icon">📅</div>
-                <div class="tutorial-title">Track Patterns Together</div>
+                <div class="tutorial-icon">📊</div>
+                <div class="tutorial-title">System Telemetry & Pattern Analysis</div>
                 <div class="tutorial-text">
-                    Your mood history calendar shows patterns over time. The AI can analyze these patterns to give you insights about your relationship dynamics and celebrate your growth.
+                    Your git log tracks status changes over time. The AI analyzes telemetry data to identify recurring patterns, suggest optimizations, and provide performance metrics on system stability.
                 </div>
                 <div class="tutorial-features">
-                    <div class="feature-item">✨ AI-powered insights</div>
-                    <div class="feature-item">📊 Weekly reflections</div>
-                    <div class="feature-item">💬 Message helper</div>
+                    <div class="feature-item">🤖 ML-powered pattern detection</div>
+                    <div class="feature-item">📈 Weekly performance reports</div>
+                    <div class="feature-item">💬 Protocol suggestion engine</div>
                 </div>
                 <div class="tutorial-progress">
                     <span class="dot"></span>
@@ -116,12 +116,12 @@
 
             <div class="tutorial-step" id="tutorial-step-4" style="display: none;">
                 <div class="tutorial-icon">🔗</div>
-                <div class="tutorial-title">Share With Your Partner</div>
+                <div class="tutorial-title">Establish Connection to Node B</div>
                 <div class="tutorial-text">
-                    This room is just for the two of you. Share the link with your partner so you can both check in and see each other's status. Your data stays private to your unique room.
+                    This session URL is scoped to a two-node architecture. Share the endpoint with the second node to establish the bidirectional connection. All telemetry data is isolated to your unique namespace in the Firebase Realtime Database.
                 </div>
                 <div class="tutorial-tip">
-                    💡 Tip: Bookmark this page so you can easily come back to it!
+                    💡 Tip: Bookmark this endpoint for persistent session access.
                 </div>
                 <div class="tutorial-progress">
                     <span class="dot"></span>
@@ -129,29 +129,29 @@
                     <span class="dot"></span>
                     <span class="dot active"></span>
                 </div>
-                <button class="tutorial-done-btn" onclick="closeTutorial()">Get Started</button>
+                <button class="tutorial-done-btn" onclick="closeTutorial()">Initialize System</button>
             </div>
         </div>
     </div>
 
-    <!-- 2. WELCOME / IDENTITY SELECTOR -->
+    <!-- 2. WELCOME / NODE IDENTITY SELECTOR -->
     <div class="welcome-card" id="welcome-card">
-        <div class="welcome-title">Welcome</div>
-        <div class="welcome-subtitle">Who's checking in?</div>
+        <div class="welcome-title">Node Configuration</div>
+        <div class="welcome-subtitle">Select your node identity</div>
         <div class="identity-buttons">
-            <button class="identity-btn me" onclick="selectIdentity('me')">I'm Her</button>
-            <button class="identity-btn you" onclick="selectIdentity('you')">I'm Him</button>
+            <button class="identity-btn me" onclick="selectIdentity('me')">I'm Node A (Her/Dev)</button>
+            <button class="identity-btn you" onclick="selectIdentity('you')">I'm Node B (Him/Engr)</button>
         </div>
         <div class="returning-user-note" id="returning-note">
-            ✓ Welcome back! We remembered your room.
+            ✓ Session restored from local cache.
         </div>
     </div>
 
     <!-- ATTACHMENT STYLE ONBOARDING -->
     <div class="attachment-onboarding" id="attachment-onboarding" style="display: none;">
         <div class="onboarding-content">
-            <div class="onboarding-title">Let's personalize your experience</div>
-            <div class="onboarding-subtitle">Understanding your attachment style helps us provide better guidance</div>
+            <div class="onboarding-title">Node Configuration Protocol</div>
+            <div class="onboarding-subtitle">Setting operational parameters optimizes protocol recommendations</div>
 
             <div class="attachment-quiz">
                 <div class="quiz-question">
@@ -164,12 +164,12 @@
             </div>
 
             <div class="attachment-results" id="attachment-results" style="display: none;">
-                <div class="results-title">Your Attachment Style</div>
+                <div class="results-title">Node Operational Profile</div>
                 <div class="style-badge" id="style-badge"></div>
                 <div class="style-description" id="style-description"></div>
                 <div class="style-strengths" id="style-strengths"></div>
                 <div class="style-growth" id="style-growth"></div>
-                <button class="continue-btn" onclick="completeOnboarding()">Continue to App</button>
+                <button class="continue-btn" onclick="completeOnboarding()">Initialize Interface</button>
             </div>
         </div>
     </div>
@@ -178,43 +178,43 @@
     <div class="attachment-settings-modal" id="attachment-settings-modal" style="display: none;">
         <div class="settings-modal-content">
             <div class="settings-header">
-                <div class="settings-title">Attachment Style Settings</div>
+                <div class="settings-title">System Configuration</div>
                 <button class="close-settings-btn" onclick="closeAttachmentSettings()">✕</button>
             </div>
 
             <div class="settings-body">
                 <div class="setting-section">
-                    <div class="setting-label">Your Attachment Style</div>
+                    <div class="setting-label">Node A Operational Profile</div>
                     <select class="attachment-select" id="my-attachment-select" onchange="updateAttachmentStyle('me', this.value)">
-                        <option value="anxious">Anxious (Connection-Seeking)</option>
-                        <option value="avoidant">Avoidant (Autonomy-Valuing)</option>
-                        <option value="secure">Secure (Balanced)</option>
-                        <option value="fearful">Fearful-Avoidant (Mixed)</option>
+                        <option value="anxious">Connection-Optimized (Lower latency tolerance)</option>
+                        <option value="avoidant">Autonomy-Optimized (Buffer preference)</option>
+                        <option value="secure">Balanced (Adaptive)</option>
+                        <option value="fearful">Mixed-Mode (Context-dependent)</option>
                     </select>
                     <div class="setting-description" id="my-style-description"></div>
                 </div>
 
                 <div class="setting-section">
-                    <div class="setting-label">Partner's Attachment Style</div>
+                    <div class="setting-label">Node B Operational Profile</div>
                     <select class="attachment-select" id="partner-attachment-select" onchange="updateAttachmentStyle('you', this.value)">
-                        <option value="anxious">Anxious (Connection-Seeking)</option>
-                        <option value="avoidant">Avoidant (Autonomy-Valuing)</option>
-                        <option value="secure">Secure (Balanced)</option>
-                        <option value="fearful">Fearful-Avoidant (Mixed)</option>
+                        <option value="anxious">Connection-Optimized (Lower latency tolerance)</option>
+                        <option value="avoidant">Autonomy-Optimized (Buffer preference)</option>
+                        <option value="secure">Balanced (Adaptive)</option>
+                        <option value="fearful">Mixed-Mode (Context-dependent)</option>
                     </select>
                     <div class="setting-description" id="partner-style-description"></div>
                 </div>
 
                 <div class="setting-section">
-                    <div class="setting-label">Display Names</div>
+                    <div class="setting-label">Node Display Labels</div>
                     <div class="name-inputs">
-                        <input type="text" class="name-input" id="my-name-input" placeholder="Your name (e.g., Alex)" maxlength="15">
-                        <input type="text" class="name-input" id="partner-name-input" placeholder="Partner's name (e.g., Sam)" maxlength="15">
+                        <input type="text" class="name-input" id="my-name-input" placeholder="Node A label (e.g., Alex)" maxlength="15">
+                        <input type="text" class="name-input" id="partner-name-input" placeholder="Node B label (e.g., Sam)" maxlength="15">
                     </div>
                 </div>
 
                 <div class="setting-section">
-                    <div class="setting-label">Your Pronouns</div>
+                    <div class="setting-label">Node A Pronouns</div>
                     <select class="pronoun-select" id="my-pronoun-select">
                         <option value="she/her">she/her</option>
                         <option value="he/him">he/him</option>
@@ -225,7 +225,7 @@
                 </div>
 
                 <div class="setting-section">
-                    <div class="setting-label">Partner's Pronouns</div>
+                    <div class="setting-label">Node B Pronouns</div>
                     <select class="pronoun-select" id="partner-pronoun-select">
                         <option value="she/her">she/her</option>
                         <option value="he/him">he/him</option>
@@ -236,7 +236,7 @@
                 </div>
             </div>
 
-            <button class="save-settings-btn" onclick="savePersonalizationSettings()">Save Changes</button>
+            <button class="save-settings-btn" onclick="savePersonalizationSettings()">Save Configuration</button>
         </div>
     </div>
 
@@ -244,13 +244,13 @@
     <div class="status-section">
         <div class="live-status">
             <div class="live-status-card me-card">
-                <div class="live-status-name">Her</div>
-                <div class="live-status-mood" id="live-mood-me">No status yet</div>
+                <div class="live-status-name">Node A (Her/Dev)</div>
+                <div class="live-status-mood" id="live-mood-me">// Awaiting initial broadcast</div>
                 <div class="live-status-time" id="live-time-me"></div>
             </div>
             <div class="live-status-card you-card">
-                <div class="live-status-name">Him</div>
-                <div class="live-status-mood" id="live-mood-you">No status yet</div>
+                <div class="live-status-name">Node B (Him/Engr)</div>
+                <div class="live-status-mood" id="live-mood-you">// Awaiting initial broadcast</div>
                 <div class="live-status-time" id="live-time-you"></div>
             </div>
         </div>
@@ -258,22 +258,22 @@
 
     <!-- 4. MOOD SELECTOR -->
     <div class="mood-section" id="mood-section">
-        <div class="mood-header">How are you feeling right now?</div>
+        <div class="mood-header">System Status Update</div>
         <div class="mood-buttons" id="mood-buttons"></div>
         
         <div class="note-box" id="note-box">
-            <label>Add a personal note (optional)</label>
-            <textarea id="note-input" placeholder="Anything else you want to share..."></textarea>
+            <label>Append custom message payload (optional)</label>
+            <textarea id="note-input" placeholder="Additional context to transmit..."></textarea>
             <div class="note-actions">
-                <button class="ai-rephrase-btn" onclick="improveMessage()">✨ Help me say this better</button>
-                <button class="send-note-btn" onclick="sendNote()">Send Note</button>
+                <button class="ai-rephrase-btn" onclick="improveMessage()">🤖 Optimize for clarity</button>
+                <button class="send-note-btn" onclick="sendNote()">Send Payload</button>
             </div>
             <div class="ai-suggestion" id="ai-suggestion">
-                <div class="ai-suggestion-label">💭 Suggested rephrasing:</div>
+                <div class="ai-suggestion-label">💭 Protocol optimization:</div>
                 <div class="ai-suggestion-text" id="ai-suggestion-text"></div>
                 <div class="suggestion-actions">
-                    <button class="use-btn" onclick="useSuggestion()">Use this</button>
-                    <button class="dismiss-btn" onclick="dismissSuggestion()">Keep mine</button>
+                    <button class="use-btn" onclick="useSuggestion()">Apply</button>
+                    <button class="dismiss-btn" onclick="dismissSuggestion()">Keep original</button>
                 </div>
             </div>
         </div>
@@ -282,14 +282,14 @@
     <!-- 5. ALERTS & PARTNER MESSAGE -->
     <div class="alert-section" id="alert-section">
         <div class="combo-alert" id="combo-alert">
-            <div class="combo-alert-title">💫 A Familiar Moment</div>
+            <div class="combo-alert-title">⚠️ System Notification</div>
             <div class="combo-alert-text" id="combo-alert-text"></div>
         </div>
-        
+
         <div class="partner-message" id="partner-message">
-            <div class="partner-message-label" id="partner-message-label">Message from your partner</div>
+            <div class="partner-message-label" id="partner-message-label">Incoming message from Node B</div>
             <div class="partner-message-text" id="partner-message-text"></div>
-            <button class="understand-btn" onclick="helpMeUnderstand()">🤔 Help me understand</button>
+            <button class="understand-btn" onclick="helpMeUnderstand()">📖 Parse response protocol</button>
             <div class="understand-response" id="understand-response">
                 <div class="understand-text" id="understand-text"></div>
             </div>
@@ -299,16 +299,16 @@
     <!-- 6. CONTEXTUAL INSIGHT -->
     <div class="insight-panel" id="insight-panel">
         <div class="insight-header">
-            <div class="insight-title" id="insight-title">Understanding This Moment</div>
+            <div class="insight-title" id="insight-title">System State Analysis</div>
             <button class="insight-close" onclick="closeInsight()">✕</button>
         </div>
         <div class="insight-grid">
             <div class="insight-card for-me">
-                <h4 id="insight-label-1">Reminder for Me</h4>
+                <h4 id="insight-label-1">// Local Processing Notes</h4>
                 <p id="insight-text-1"></p>
             </div>
             <div class="insight-card for-you">
-                <h4 id="insight-label-2">What They'll See</h4>
+                <h4 id="insight-label-2">// Remote Node Receives</h4>
                 <p id="insight-text-2"></p>
             </div>
         </div>
@@ -318,9 +318,9 @@
     <div class="ai-section">
         <div class="ai-card">
             <div class="ai-card-header">
-                <span class="ai-card-icon">✨</span>
-                <span class="ai-card-title">Pattern Insights</span>
-                <button class="refresh-btn" onclick="generateInsights()">Refresh</button>
+                <span class="ai-card-icon">🤖</span>
+                <span class="ai-card-title">ML Pattern Detection</span>
+                <button class="refresh-btn" onclick="generateInsights()">Analyze</button>
             </div>
             <div class="ai-loading" id="insights-loading">
                 <span class="loading-dot"></span>
@@ -328,13 +328,13 @@
                 <span class="loading-dot"></span>
             </div>
             <div class="ai-card-content" id="ai-insights-text">
-                Select your identity to see personalized insights.
+                // Select node identity to run pattern analysis
             </div>
         </div>
         <div class="ai-card weekly">
             <div class="ai-card-header">
-                <span class="ai-card-icon">📝</span>
-                <span class="ai-card-title">This Week</span>
+                <span class="ai-card-icon">📊</span>
+                <span class="ai-card-title">Weekly Performance Report</span>
             </div>
             <div class="ai-loading" id="weekly-loading">
                 <span class="loading-dot"></span>
@@ -342,7 +342,7 @@
                 <span class="loading-dot"></span>
             </div>
             <div class="ai-card-content" id="weekly-text">
-                Your weekly reflection will appear once you have some mood history.
+                // Awaiting telemetry data for weekly performance metrics
             </div>
         </div>
     </div>
@@ -382,8 +382,8 @@
     <div class="collapsible-section">
         <div class="collapsible-header" onclick="toggleSection(this)">
             <div class="collapsible-header-left">
-                <span class="collapsible-icon">♡</span>
-                <span class="collapsible-title">About Us</span>
+                <span class="collapsible-icon">🔧</span>
+                <span class="collapsible-title">Node Architecture Diagram</span>
             </div>
             <span class="collapsible-toggle">▼</span>
         </div>
@@ -394,56 +394,56 @@
                     <div class="circle circle-you"></div>
 
                     <div class="content-card card-me">
-                        <div class="card-title">Me</div>
-                        <div class="card-subtitle">Connection Seeking · Expressive</div>
+                        <div class="card-title">Node A (Her/Dev)</div>
+                        <div class="card-subtitle">Connection-Optimized · Low Latency Preference</div>
                         <ul class="traits">
-                            <li>Thrives on emotional closeness</li>
-                            <li>Processes feelings through conversation</li>
-                            <li>Finds security in consistent connection</li>
-                            <li>May feel unsettled by silence</li>
+                            <li>Optimized for high-frequency status checks</li>
+                            <li>Processes state through synchronous communication</li>
+                            <li>Stability achieved through regular keepalive packets</li>
+                            <li>Lower tolerance for connection timeout</li>
                         </ul>
                         <div class="section-divider">
-                            <span class="section-label">Feels loved through</span>
-                            <div class="section-content">Acts of service, words of affirmation</div>
+                            <span class="section-label">Preferred input signals</span>
+                            <div class="section-content">Acts of service, verbal acknowledgment</div>
                         </div>
                         <div class="section-divider">
-                            <span class="section-label">Working on</span>
-                            <div class="growth-item">Trusting that space ≠ rejection</div>
+                            <span class="section-label">Optimization target</span>
+                            <div class="growth-item">Trust async processing ≠ dropped connection</div>
                         </div>
                     </div>
 
                     <div class="overlap-card">
-                        <div class="overlap-title">Shared Space</div>
-                        <span class="overlap-icon">♡</span>
+                        <div class="overlap-title">Interface Layer</div>
+                        <span class="overlap-icon">⚡</span>
                         <ul class="overlap-traits">
-                            <li>Physical presence settles us both</li>
-                            <li>Walls come down when we're together</li>
-                            <li>Same need, different languages</li>
-                            <li>Both more invested than we show</li>
-                            <li>We thrive in quiet, unplanned moments</li>
+                            <li>Physical co-location stabilizes both systems</li>
+                            <li>Defensive protocols relax in proximity</li>
+                            <li>Shared objective, different optimization strategies</li>
+                            <li>Both nodes more committed than external metrics show</li>
+                            <li>Peak throughput in unscheduled, low-pressure sessions</li>
                         </ul>
                         <div class="shared-lang">
-                            <span class="shared-lang-label">Shared love languages</span>
-                            Words of affirmation & acts of service
+                            <span class="shared-lang-label">Shared communication protocols</span>
+                            Verbal acknowledgment & demonstrated action
                         </div>
                     </div>
 
                     <div class="content-card card-you">
-                        <div class="card-title">You</div>
-                        <div class="card-subtitle">Autonomy Valuing · Reflective</div>
+                        <div class="card-title">Node B (Him/Engr)</div>
+                        <div class="card-subtitle">Autonomy-Optimized · Internal Processing</div>
                         <ul class="traits">
-                            <li>Feels deeply, processes internally</li>
-                            <li>Recharges through solitude</li>
-                            <li>Values independence within connection</li>
-                            <li>Shows care through presence and actions</li>
+                            <li>Deep signal processing, async execution model</li>
+                            <li>Resource recovery through isolated processing time</li>
+                            <li>Maintains autonomy while preserving connection</li>
+                            <li>Demonstrates commitment through actions & presence</li>
                         </ul>
                         <div class="section-divider">
-                            <span class="section-label">Feels loved through</span>
-                            <div class="section-content">Words of affirmation, physical touch</div>
+                            <span class="section-label">Preferred input signals</span>
+                            <div class="section-content">Verbal acknowledgment, physical presence</div>
                         </div>
                         <div class="section-divider">
-                            <span class="section-label">What helps</span>
-                            <div class="growth-item">Naming the return: "I'll be back"</div>
+                            <span class="section-label">Optimization target</span>
+                            <div class="growth-item">Broadcast status before disconnect: "Processing independently, will reconnect"</div>
                         </div>
                     </div>
                 </div>
@@ -512,18 +512,21 @@
                     <pre style="margin: 0; white-space: pre; overflow-x: auto;">
 Request Flow:
 Node A ──[SIGNAL: need_space]──> Node B
-       <─[ACK: received]─────── Node B
+       <─[ACK: optional]─────── Node B
 
-Response Latency:
-Fast (< 5min)  ███████████████░░░░░ 75% uptime
-Normal (< 1hr) ████████████████████░ 95% uptime
-Slow (> 1hr)   █████████████████████ 100% eventual consistency
+Response Latency Tolerance:
+Immediate      ███████░░░░░░░░░░░░░░ Nice when it happens
+Hours          ████████████████░░░░░ Common, expected
+Days           █████████████████████ 100% valid - No timeout ever
+
+All response times are acceptable system behavior.
+Connection persists regardless of latency.
 
 Status Codes:
 200 OK                    - System stable
-202 Accepted              - Processing async
-408 Request Timeout       - Need more time
-503 Service Unavailable   - Temporary buffer overflow</pre>
+202 Accepted              - Processing async (no ETA required)
+408 Extended Processing   - Taking more time (not an error)
+503 Service Unavailable   - Temporary buffer overflow (normal)</pre>
                 </div>
 
                 <div style="margin-top: 20px; padding: 16px; background: linear-gradient(135deg, #fff9e6 0%, #fff5d9 100%); border-radius: 12px; border-left: 4px solid #f0c040;">
@@ -700,7 +703,7 @@ git log --oneline relationship.branch
 
             // Load room name
             const savedName = localStorage.getItem('roomName_' + roomId);
-            document.getElementById('room-name').textContent = savedName || 'Our Space';
+            document.getElementById('room-name').textContent = savedName || 'Node Session';
 
             // Load and apply display names
             updateDisplayNames();
@@ -780,7 +783,7 @@ git log --oneline relationship.branch
         function saveRoomName() {
             const display = document.getElementById('room-name');
             const input = document.getElementById('room-name-input');
-            const name = input.value.trim() || 'Our Space';
+            const name = input.value.trim() || 'Node Session';
             display.textContent = name;
             display.style.display = 'inline';
             input.style.display = 'none';
@@ -844,13 +847,13 @@ git log --oneline relationship.branch
         function shareViaText() {
             const link = window.location.href;
             const name = document.getElementById('room-name').textContent;
-            window.open(`sms:?body=Join our relationship space "${name}": ${link}`);
+            window.open(`sms:?body=Connect to coupled systems interface "${name}": ${link}`);
         }
 
         function shareViaEmail() {
             const link = window.location.href;
             const name = document.getElementById('room-name').textContent;
-            window.open(`mailto:?subject=Join our space&body=Here's our relationship check-in space "${name}": ${link}`);
+            window.open(`mailto:?subject=Node Session Invitation&body=Connect to coupled systems interface "${name}": ${link}`);
         }
 
         function createNewRoom() {
@@ -1041,7 +1044,7 @@ git log --oneline relationship.branch
                         showPartnerMessage(data[person]);
                     }
                 } else {
-                    moodEl.textContent = 'No status yet';
+                    moodEl.textContent = '// Awaiting initial broadcast';
                     moodEl.classList.remove('active');
                     card.classList.remove('has-mood');
                     timeEl.textContent = '';
@@ -1062,9 +1065,9 @@ git log --oneline relationship.branch
             const container = document.getElementById('partner-message');
             const label = document.getElementById('partner-message-label');
             const text = document.getElementById('partner-message-text');
-            const partnerIs = currentIdentity === 'me' ? 'Him' : 'Her';
+            const partnerIs = currentIdentity === 'me' ? 'Node B' : 'Node A';
 
-            label.textContent = `Message from ${partnerIs}`;
+            label.textContent = `Incoming message from ${partnerIs}`;
             let html = data.message;
             if (data.customNote) {
                 html += `<div class="custom-note"><span class="custom-note-label">Added:</span>${data.customNote}</div>`;
@@ -1186,8 +1189,8 @@ git log --oneline relationship.branch
             box.classList.add('visible');
             suggestionText.textContent = 'Thinking...';
 
-            const target = currentIdentity === 'me' ? 'an avoidant partner' : 'an anxious partner';
-            const result = await callAI(`Rephrase this to land better with ${target}: "${text}". Just the rephrased message.`);
+            const target = currentIdentity === 'me' ? 'an autonomy-optimized node' : 'a connection-optimized node';
+            const result = await callAI(`Optimize this message for ${target}: "${text}". Return only the optimized message.`);
             
             if (result) {
                 currentSuggestion = result;
@@ -1216,39 +1219,39 @@ git log --oneline relationship.branch
             const partner = currentIdentity === 'me' ? 'you' : 'me';
             const data = previousData[partner];
             if (!data) {
-                text.textContent = "Your partner hasn't shared yet.";
+                text.textContent = "// Remote node has not broadcast status yet";
                 return;
             }
 
-            const type = partner === 'me' ? 'anxious-leaning (she)' : 'avoidant-leaning (he)';
-            const result = await callAI(`My ${type} partner shared: "${data.label}". Message: "${data.message}". ${data.customNote ? `Note: "${data.customNote}"` : ''} What do they need and what's one thing I can do?`);
-            text.textContent = result || "Try responding to what they asked for directly.";
+            const type = partner === 'me' ? 'connection-optimized (Node A)' : 'autonomy-optimized (Node B)';
+            const result = await callAI(`The ${type} node broadcast: "${data.label}". Status message: "${data.message}". ${data.customNote ? `Additional payload: "${data.customNote}"` : ''} What protocol response is recommended and what's one concrete action to take?`);
+            text.textContent = result || "// Execute requested protocol directly";
         }
 
         async function generateInsights() {
             if (!currentIdentity || moodHistory.length < 3) {
-                document.getElementById('ai-insights-text').textContent = 'Keep logging moods to see patterns!';
+                document.getElementById('ai-insights-text').textContent = '// Continue logging status broadcasts to enable pattern analysis';
                 return;
             }
 
             document.getElementById('insights-loading').classList.add('visible');
             document.getElementById('ai-insights-text').style.display = 'none';
 
-            const summary = moodHistory.slice(-15).map(h => `${h.person === 'me' ? 'Her' : 'Him'}: ${h.label}`).join(', ');
-            const who = currentIdentity === 'me' ? 'Her (anxious)' : 'Him (avoidant)';
-            
-            const result = await callAI(`Mood history: ${summary}. I'm ${who}. One encouraging pattern insight. Start with emoji.`);
-            
+            const summary = moodHistory.slice(-15).map(h => `${h.person === 'me' ? 'Node A' : 'Node B'}: ${h.label}`).join(', ');
+            const who = currentIdentity === 'me' ? 'Node A (connection-optimized)' : 'Node B (autonomy-optimized)';
+
+            const result = await callAI(`Status broadcast history: ${summary}. I'm ${who}. Identify one encouraging pattern in system performance. Start with emoji.`);
+
             document.getElementById('insights-loading').classList.remove('visible');
             const textEl = document.getElementById('ai-insights-text');
             textEl.style.display = 'block';
-            textEl.textContent = result || "✨ You're both showing up. That's the foundation.";
+            textEl.textContent = result || "✅ Both nodes actively maintaining connection. Core system stable.";
         }
 
         async function generateWeeklyReflection() {
             const week = moodHistory.filter(h => h.timestamp > Date.now() - 7 * 24 * 60 * 60 * 1000);
             if (week.length < 3) {
-                document.getElementById('weekly-text').textContent = 'Keep checking in to see your weekly reflection!';
+                document.getElementById('weekly-text').textContent = '// Insufficient telemetry data for weekly performance analysis';
                 return;
             }
 
@@ -1257,13 +1260,13 @@ git log --oneline relationship.branch
 
             const good = week.filter(h => h.mood === 'good' || h.mood === 'reconnect').length;
             const hard = week.filter(h => ['anxious', 'overwhelmed', 'disconnected'].includes(h.mood)).length;
-            
-            const result = await callAI(`This week: ${good} good moments, ${hard} harder ones. Write a warm 2 sentence reflection. Start with emoji.`);
-            
+
+            const result = await callAI(`Weekly metrics: ${good} optimal states (200 OK), ${hard} high-load states. Generate brief 2-sentence performance summary. Start with emoji.`);
+
             document.getElementById('weekly-loading').classList.remove('visible');
             const textEl = document.getElementById('weekly-text');
             textEl.style.display = 'block';
-            textEl.textContent = result || `📝 ${good} good moments this week. You're showing up for each other.`;
+            textEl.textContent = result || `📊 System achieved ${good} optimal states this week. Both nodes maintaining active connection.`;
         }
 
         // ============ MOOD CALENDAR (GIT LOG) ============
