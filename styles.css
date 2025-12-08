@@ -1256,6 +1256,43 @@ h1 {
     border-radius: 3px;
 }
 
+.month-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+}
+
+.month-nav-btn {
+    padding: 8px 16px;
+    background: rgba(140, 120, 150, 0.1);
+    border: 1px solid rgba(140, 120, 150, 0.2);
+    border-radius: 6px;
+    color: #5a4a6a;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.month-nav-btn:hover {
+    background: rgba(140, 120, 150, 0.2);
+    border-color: rgba(140, 120, 150, 0.3);
+}
+
+.month-nav-btn:active {
+    transform: scale(0.98);
+}
+
+.current-month {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #5a4a6a;
+}
+
 .calendar-legend {
     display: flex;
     flex-wrap: wrap;

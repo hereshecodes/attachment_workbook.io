@@ -191,6 +191,11 @@
                     <span class="legend-item"><span class="emoji">🌸</span> Reconnect</span>
                     <span class="legend-item"><span class="emoji">☀️</span> All Good</span>
                 </div>
+                <div class="month-navigation">
+                    <button class="month-nav-btn" onclick="previousMonth()">◀ Previous</button>
+                    <span class="current-month" id="current-month">December 2025</span>
+                    <button class="month-nav-btn" onclick="nextMonth()">Next ▶</button>
+                </div>
                 <div class="calendar-container" id="mood-calendar">
                     <div class="no-history">No mood history yet. Start sharing how you feel!</div>
                 </div>
@@ -344,6 +349,7 @@
         let currentMoodKey = null;
         let previousData = {};
         let moodHistory = [];
+        let currentMonthOffset = 0; // 0 = current month, -1 = last month, etc.
 
         // ============ MOOD DATA ============
         const moodEmojis = {
@@ -1009,8 +1015,30 @@
                 return;
             }
 
+            // Calculate the target month
+            const now = new Date();
+            const targetDate = new Date(now.getFullYear(), now.getMonth() + currentMonthOffset, 1);
+            const targetYear = targetDate.getFullYear();
+            const targetMonth = targetDate.getMonth();
+
+            // Update month display
+            document.getElementById('current-month').textContent =
+                targetDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+            // Filter history for the target month
+            const monthHistory = history.filter(h => {
+                const d = new Date(h.timestamp);
+                return d.getFullYear() === targetYear && d.getMonth() === targetMonth;
+            });
+
+            if (monthHistory.length === 0) {
+                container.innerHTML = `<div class="no-history">No mood history for ${targetDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</div>`;
+                return;
+            }
+
+            // Group by day
             const grouped = {};
-            history.forEach(h => {
+            monthHistory.forEach(h => {
                 const key = new Date(h.timestamp).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
                 if (!grouped[key]) grouped[key] = [];
                 grouped[key].push(h);
@@ -1018,12 +1046,14 @@
 
             console.log('Grouped calendar data:', grouped);
 
-            const sorted = Object.keys(grouped).sort((a, b) => 
+            // Sort days in descending order (newest first)
+            const sorted = Object.keys(grouped).sort((a, b) =>
                 new Date(grouped[b][0].timestamp) - new Date(grouped[a][0].timestamp)
             );
 
+            // Display all days in the month
             let html = '';
-            sorted.slice(0, 10).forEach((day, i) => {
+            sorted.forEach((day, i) => {
                 const entries = grouped[day].sort((a, b) => b.timestamp - a.timestamp);
                 html += `<div class="calendar-day" style="animation-delay: ${i * 0.05}s">
                     <div class="calendar-date">${day}</div>
@@ -1039,6 +1069,18 @@
                 html += '</div></div>';
             });
             container.innerHTML = html;
+        }
+
+        function previousMonth() {
+            currentMonthOffset--;
+            updateMoodCalendar(moodHistory);
+        }
+
+        function nextMonth() {
+            if (currentMonthOffset < 0) {
+                currentMonthOffset++;
+                updateMoodCalendar(moodHistory);
+            }
         }
 
         // ============ COLLAPSIBLE SECTIONS ============
