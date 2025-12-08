@@ -668,22 +668,25 @@
             if (moodKey === 'good') createFloatingHearts(btn);
 
             // Save
+            const timestamp = Date.now();
             const update = {
                 mood: moodKey,
                 label: mood.label,
                 message: mood.message,
                 customNote: '',
-                timestamp: Date.now()
+                timestamp: timestamp
             };
 
             if (roomRef) {
                 roomRef.child(currentIdentity).set(update);
+
+                // Save to history - always save so history reflects mood changes
                 historyRef.push({
                     person: currentIdentity,
                     mood: moodKey,
                     label: mood.label,
                     emoji: moodEmojis[moodKey],
-                    timestamp: Date.now()
+                    timestamp: timestamp
                 });
             }
 
@@ -711,6 +714,7 @@
                         document.getElementById('note-input').placeholder = 'Anything else you want to share...';
                     }, 2000);
                 });
+                // Don't save to history here - it was already saved in selectMood()
             }
         }
 
@@ -815,7 +819,8 @@
                 label1.textContent = `What ${who}'s Saying`;
                 label2.textContent = 'How I Can Help';
                 text1.textContent = mood.message;
-                text2.textContent = person === 'me' ? mood.insightYou : mood.insightMe;
+                // Show the insight for the CURRENT user (partner of the person who set the mood)
+                text2.textContent = currentIdentity === 'me' ? mood.insightMe : mood.insightYou;
             } else {
                 label1.textContent = 'Reminder for Me';
                 label2.textContent = 'What They\'ll See';
