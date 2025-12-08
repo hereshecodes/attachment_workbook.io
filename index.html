@@ -1155,7 +1155,8 @@
         }
 
         // ============ MOOD SELECTION ============
-        function selectMood(moodKey, buttonElement) {
+     // ============ MOOD SELECTION ============
+function selectMood(moodKey, buttonElement) {
     const mood = moodData[currentIdentity][moodKey];
     
     // Update button states
@@ -1164,27 +1165,34 @@
     });
     buttonElement.classList.add(currentIdentity === 'me' ? 'active-me' : 'active-you');
 
-            // Save to Firebase or localStorage
-            const update = {
-                mood: moodKey,
-                label: mood.label,
-                message: mood.message,
-                timestamp: Date.now()
-            };
+    // Create update object
+    const update = {
+        mood: moodKey,
+        label: mood.label,
+        message: mood.message,
+        timestamp: Date.now()
+    };
 
-            if (isFirebaseConfigured && roomRef) {
-                roomRef.child(currentIdentity).set(update);
-            } else {
-                // Demo mode - use localStorage
-                const data = JSON.parse(localStorage.getItem('relationshipMoods_' + roomId) || '{}');
-                data[currentIdentity] = update;
-                localStorage.setItem('relationshipMoods_' + roomId, JSON.stringify(data));
-                updateLiveStatus(data);
-            }
+    // Update local UI immediately (don't wait for Firebase)
+    const localData = {};
+    localData[currentIdentity] = update;
+    updateLiveStatus(localData);
 
-            // Show insight panel
-            showInsight(currentIdentity, moodKey);
-        }
+    // Save to Firebase or localStorage
+    if (isFirebaseConfigured && roomRef) {
+        roomRef.child(currentIdentity).set(update)
+            .then(() => console.log('Saved to Firebase'))
+            .catch((err) => console.error('Firebase error:', err));
+    } else {
+        // Demo mode - use localStorage
+        const data = JSON.parse(localStorage.getItem('relationshipMoods_' + roomId) || '{}');
+        data[currentIdentity] = update;
+        localStorage.setItem('relationshipMoods_' + roomId, JSON.stringify(data));
+    }
+
+    // Show insight panel
+    showInsight(currentIdentity, moodKey);
+}
 
         // ============ LIVE STATUS UPDATE ============
         function updateLiveStatus(data) {
