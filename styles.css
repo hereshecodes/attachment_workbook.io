@@ -737,6 +737,76 @@ h1 {
     color: #666;
 }
 
+/* ============ PRIVATE NOTES ============ */
+.private-note-box {
+    background: rgba(255, 248, 240, 0.6);
+    border: 2px dashed rgba(255, 140, 0, 0.3);
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 16px;
+}
+
+.private-note-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.private-icon {
+    font-size: 1.2rem;
+}
+
+.private-note-header label {
+    font-weight: 600;
+    color: #d97706;
+    font-size: 0.9rem;
+}
+
+#private-note-input {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px;
+    border: 2px solid rgba(255, 140, 0, 0.2);
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    resize: vertical;
+    background: white;
+    color: #4a4a5a;
+}
+
+#private-note-input:focus {
+    outline: none;
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+.save-private-note-btn {
+    margin-top: 12px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.save-private-note-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.private-note-saved {
+    display: inline-block;
+    margin-left: 12px;
+    color: #10b981;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
 /* ============ ALERTS & MESSAGES ============ */
 .alert-section {
     width: 100%;

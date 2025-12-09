@@ -29,6 +29,9 @@
                 <span class="identity-badge" id="identity-badge" style="display: none;"></span>
             </div>
             <div class="share-actions">
+                <button class="share-btn" onclick="togglePrivateNotes()">🔒 Private Notes</button>
+                <button class="share-btn" onclick="openTherapyExport()">📊 Therapy Export</button>
+                <button class="share-btn" onclick="openDateNightIdeas()">💝 Date Ideas</button>
                 <button class="share-btn" onclick="openPersonalizationSettings()">⚙️ Config</button>
                 <button class="share-btn" onclick="openShareModal()">📤 Share URL</button>
                 <button class="share-btn" onclick="createNewRoom()">+ New Session</button>
@@ -316,6 +319,16 @@
                     <button class="dismiss-btn" onclick="dismissSuggestion()">Keep original</button>
                 </div>
             </div>
+        </div>
+
+        <div class="private-note-box" id="private-note-box" style="display: none;">
+            <div class="private-note-header">
+                <span class="private-icon">🔒</span>
+                <label>Private Note (Only visible to you)</label>
+            </div>
+            <textarea id="private-note-input" placeholder="Personal reflection, triggers, patterns... Partner cannot see this."></textarea>
+            <button class="save-private-note-btn" onclick="savePrivateNote()">Save Private Note</button>
+            <div class="private-note-saved" id="private-note-saved" style="display: none;">✓ Saved locally</div>
         </div>
     </div>
 
@@ -1288,6 +1301,58 @@ git log --oneline relationship.branch
                     }, 2000);
                 });
                 // Don't save to history here - it was already saved in selectMood()
+            }
+        }
+
+        // ============ PRIVATE NOTES (PARTNER VISIBILITY TOGGLE) ============
+        function togglePrivateNotes() {
+            const privateBox = document.getElementById('private-note-box');
+            const isVisible = privateBox.style.display !== 'none';
+
+            if (isVisible) {
+                privateBox.style.display = 'none';
+            } else {
+                privateBox.style.display = 'block';
+                loadPrivateNote();
+            }
+        }
+
+        function savePrivateNote() {
+            const note = document.getElementById('private-note-input').value;
+            const timestamp = Date.now();
+
+            // Save to localStorage with timestamp
+            const privateNotes = JSON.parse(localStorage.getItem('privateNotes') || '[]');
+            privateNotes.push({
+                note: note,
+                timestamp: timestamp,
+                mood: currentMoodKey || 'general'
+            });
+            localStorage.setItem('privateNotes', JSON.stringify(privateNotes));
+
+            // Show saved confirmation
+            const savedIndicator = document.getElementById('private-note-saved');
+            savedIndicator.style.display = 'block';
+            setTimeout(() => {
+                savedIndicator.style.display = 'none';
+            }, 2000);
+
+            // Clear the input
+            document.getElementById('private-note-input').value = '';
+        }
+
+        function loadPrivateNote() {
+            // Load most recent private note for current mood if available
+            const privateNotes = JSON.parse(localStorage.getItem('privateNotes') || '[]');
+            if (privateNotes.length > 0 && currentMoodKey) {
+                const recentNote = privateNotes
+                    .filter(n => n.mood === currentMoodKey)
+                    .sort((a, b) => b.timestamp - a.timestamp)[0];
+
+                if (recentNote) {
+                    document.getElementById('private-note-input').placeholder =
+                        `Last note for this mood: "${recentNote.note.substring(0, 50)}${recentNote.note.length > 50 ? '...' : ''}"`;
+                }
             }
         }
 
