@@ -193,23 +193,53 @@
             <div class="settings-body">
                 <div class="setting-section">
                     <div class="setting-label">Node A Operational Profile</div>
-                    <select class="attachment-select" id="my-attachment-select" onchange="updateAttachmentStyle('me', this.value)">
-                        <option value="anxious">Connection-Optimized (Lower latency tolerance)</option>
-                        <option value="avoidant">Autonomy-Optimized (Buffer preference)</option>
-                        <option value="secure">Balanced (Adaptive)</option>
-                        <option value="fearful">Mixed-Mode (Context-dependent)</option>
-                    </select>
+                    <div class="attachment-dual-selects">
+                        <div class="attachment-primary">
+                            <label class="attachment-sublabel">Primary Style</label>
+                            <select class="attachment-select" id="my-attachment-select" onchange="updateAttachmentStyle('me', this.value)">
+                                <option value="anxious">Connection-Optimized (Lower latency tolerance)</option>
+                                <option value="avoidant">Autonomy-Optimized (Buffer preference)</option>
+                                <option value="secure">Balanced (Adaptive)</option>
+                                <option value="fearful">Mixed-Mode (Context-dependent)</option>
+                            </select>
+                        </div>
+                        <div class="attachment-secondary">
+                            <label class="attachment-sublabel">Secondary Style (Optional)</label>
+                            <select class="attachment-select" id="my-attachment-secondary-select">
+                                <option value="">None</option>
+                                <option value="anxious">Connection-Optimized</option>
+                                <option value="avoidant">Autonomy-Optimized</option>
+                                <option value="secure">Balanced</option>
+                                <option value="fearful">Mixed-Mode</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="setting-description" id="my-style-description"></div>
                 </div>
 
                 <div class="setting-section">
                     <div class="setting-label">Node B Operational Profile</div>
-                    <select class="attachment-select" id="partner-attachment-select" onchange="updateAttachmentStyle('you', this.value)">
-                        <option value="anxious">Connection-Optimized (Lower latency tolerance)</option>
-                        <option value="avoidant">Autonomy-Optimized (Buffer preference)</option>
-                        <option value="secure">Balanced (Adaptive)</option>
-                        <option value="fearful">Mixed-Mode (Context-dependent)</option>
-                    </select>
+                    <div class="attachment-dual-selects">
+                        <div class="attachment-primary">
+                            <label class="attachment-sublabel">Primary Style</label>
+                            <select class="attachment-select" id="partner-attachment-select" onchange="updateAttachmentStyle('you', this.value)">
+                                <option value="anxious">Connection-Optimized (Lower latency tolerance)</option>
+                                <option value="avoidant">Autonomy-Optimized (Buffer preference)</option>
+                                <option value="secure">Balanced (Adaptive)</option>
+                                <option value="fearful">Mixed-Mode (Context-dependent)</option>
+                            </select>
+                        </div>
+                        <div class="attachment-secondary">
+                            <label class="attachment-sublabel">Secondary Style (Optional)</label>
+                            <select class="attachment-select" id="partner-attachment-secondary-select">
+                                <option value="">None</option>
+                                <option value="anxious">Connection-Optimized</option>
+                                <option value="avoidant">Autonomy-Optimized</option>
+                                <option value="secure">Balanced</option>
+                                <option value="fearful">Mixed-Mode</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="setting-description" id="partner-style-description"></div>
                 </div>
 
@@ -916,6 +946,8 @@ git log --oneline relationship.branch
                         localStorage.setItem('partnerPronouns', data.settings.partnerPronouns || 'he/him');
                         if (data.settings.myAttachment) localStorage.setItem('myAttachment', data.settings.myAttachment);
                         if (data.settings.partnerAttachment) localStorage.setItem('partnerAttachment', data.settings.partnerAttachment);
+                        if (data.settings.myAttachmentSecondary) localStorage.setItem('myAttachmentSecondary', data.settings.myAttachmentSecondary);
+                        if (data.settings.partnerAttachmentSecondary) localStorage.setItem('partnerAttachmentSecondary', data.settings.partnerAttachmentSecondary);
                         updateDisplayNames();
                         updateVennDiagram();
                     }
@@ -1371,8 +1403,10 @@ git log --oneline relationship.branch
 
         // ============ AI FEATURES ============
         function getAIContext() {
-            const myAttachment = localStorage.getItem('myAttachment') || 'anxious';
-            const partnerAttachment = localStorage.getItem('partnerAttachment') || 'avoidant';
+            const myAttachment = localStorage.getItem('myAttachment') || 'secure';
+            const partnerAttachment = localStorage.getItem('partnerAttachment') || 'secure';
+            const myAttachmentSecondary = localStorage.getItem('myAttachmentSecondary') || '';
+            const partnerAttachmentSecondary = localStorage.getItem('partnerAttachmentSecondary') || '';
 
             const attachmentDescriptions = {
                 anxious: 'connection-optimized with lower latency tolerance',
@@ -1384,12 +1418,20 @@ git log --oneline relationship.branch
             const myDesc = attachmentDescriptions[myAttachment];
             const partnerDesc = attachmentDescriptions[partnerAttachment];
 
+            // Add secondary style context if present
+            const myFullDesc = myAttachmentSecondary
+                ? `${myDesc} with ${attachmentDescriptions[myAttachmentSecondary]} tendencies`
+                : myDesc;
+            const partnerFullDesc = partnerAttachmentSecondary
+                ? `${partnerDesc} with ${attachmentDescriptions[partnerAttachmentSecondary]} tendencies`
+                : partnerDesc;
+
             return `You are a systems engineer consulting on a coupled network architecture.
-            Node A (Her) is ${myDesc}. Node B (Him) is ${partnerDesc}.
+            Node A (Her) is ${myFullDesc}. Node B (Him) is ${partnerFullDesc}.
             Use dev/network engineering language: status codes (200, 503), async/sync, latency, throughput, buffering, keepalive packets, circuit breakers, etc.
             Keep responses brief (2-3 sentences), technical, and actionable. Frame relationship dynamics as system optimization, not emotional fixing.
             Example language: "High latency detected", "implement circuit breaker", "buffer overflow", "ACK received", "graceful degradation", "eventual consistency".
-            Consider each node's attachment profile when providing recommendations.`;
+            Consider each node's attachment profile (including secondary tendencies) when providing recommendations.`;
         }
 
         async function callAI(prompt) {
@@ -1699,8 +1741,10 @@ git log --oneline relationship.branch
             const partnerName = localStorage.getItem('partnerName') || '';
             const myPronouns = localStorage.getItem('myPronouns') || 'she/her';
             const partnerPronouns = localStorage.getItem('partnerPronouns') || 'he/him';
-            const myAttachment = localStorage.getItem('myAttachment') || 'anxious';
-            const partnerAttachment = localStorage.getItem('partnerAttachment') || 'avoidant';
+            const myAttachment = localStorage.getItem('myAttachment') || 'secure';
+            const partnerAttachment = localStorage.getItem('partnerAttachment') || 'secure';
+            const myAttachmentSecondary = localStorage.getItem('myAttachmentSecondary') || '';
+            const partnerAttachmentSecondary = localStorage.getItem('partnerAttachmentSecondary') || '';
 
             document.getElementById('my-name-input').value = myName;
             document.getElementById('partner-name-input').value = partnerName;
@@ -1708,6 +1752,8 @@ git log --oneline relationship.branch
             document.getElementById('partner-pronoun-select').value = partnerPronouns;
             document.getElementById('my-attachment-select').value = myAttachment;
             document.getElementById('partner-attachment-select').value = partnerAttachment;
+            document.getElementById('my-attachment-secondary-select').value = myAttachmentSecondary;
+            document.getElementById('partner-attachment-secondary-select').value = partnerAttachmentSecondary;
 
             // Handle custom pronouns
             if (myPronouns === 'custom' || !['she/her', 'he/him', 'they/them'].includes(myPronouns)) {
@@ -1743,6 +1789,8 @@ git log --oneline relationship.branch
             // Get attachment styles
             const myAttachment = document.getElementById('my-attachment-select').value;
             const partnerAttachment = document.getElementById('partner-attachment-select').value;
+            const myAttachmentSecondary = document.getElementById('my-attachment-secondary-select').value;
+            const partnerAttachmentSecondary = document.getElementById('partner-attachment-secondary-select').value;
 
             const settings = {
                 myName,
@@ -1750,7 +1798,9 @@ git log --oneline relationship.branch
                 myPronouns,
                 partnerPronouns,
                 myAttachment,
-                partnerAttachment
+                partnerAttachment,
+                myAttachmentSecondary,
+                partnerAttachmentSecondary
             };
 
             // Save to Firebase
@@ -1769,6 +1819,8 @@ git log --oneline relationship.branch
             localStorage.setItem('partnerPronouns', partnerPronouns);
             localStorage.setItem('myAttachment', myAttachment);
             localStorage.setItem('partnerAttachment', partnerAttachment);
+            localStorage.setItem('myAttachmentSecondary', myAttachmentSecondary);
+            localStorage.setItem('partnerAttachmentSecondary', partnerAttachmentSecondary);
 
             // Update display names throughout the app
             updateDisplayNames();
@@ -1784,6 +1836,8 @@ git log --oneline relationship.branch
             const partnerName = localStorage.getItem('partnerName') || 'Him';
             const myAttachment = localStorage.getItem('myAttachment');
             const partnerAttachment = localStorage.getItem('partnerAttachment');
+            const myAttachmentSecondary = localStorage.getItem('myAttachmentSecondary');
+            const partnerAttachmentSecondary = localStorage.getItem('partnerAttachmentSecondary');
 
             // Update live status cards
             document.querySelectorAll('.live-status-name').forEach((el, index) => {
@@ -1797,13 +1851,13 @@ git log --oneline relationship.branch
             });
 
             // Update attachment style badges
-            updateAttachmentBadge('me', myAttachment);
-            updateAttachmentBadge('you', partnerAttachment);
+            updateAttachmentBadge('me', myAttachment, myAttachmentSecondary);
+            updateAttachmentBadge('you', partnerAttachment, partnerAttachmentSecondary);
         }
 
-        function updateAttachmentBadge(person, style) {
+        function updateAttachmentBadge(person, primaryStyle, secondaryStyle) {
             const badgeEl = document.getElementById(`attachment-badge-${person}`);
-            if (!badgeEl || !style) return;
+            if (!badgeEl || !primaryStyle) return;
 
             const attachmentLabels = {
                 anxious: '🔗 Connection-Optimized',
@@ -1812,16 +1866,29 @@ git log --oneline relationship.branch
                 fearful: '🔄 Mixed-Mode'
             };
 
+            const attachmentShortLabels = {
+                anxious: 'Connection',
+                avoidant: 'Autonomy',
+                secure: 'Balanced',
+                fearful: 'Mixed-Mode'
+            };
+
             // Remove all style classes
             badgeEl.classList.remove('anxious', 'avoidant', 'secure', 'fearful');
 
-            // Add current style class for color coding
-            if (style) {
-                badgeEl.classList.add(style);
+            // Add primary style class for color coding
+            if (primaryStyle) {
+                badgeEl.classList.add(primaryStyle);
             }
 
-            badgeEl.textContent = attachmentLabels[style] || '';
-            badgeEl.style.display = style ? 'block' : 'none';
+            // Build badge text
+            let badgeText = attachmentLabels[primaryStyle] || '';
+            if (secondaryStyle) {
+                badgeText = `${attachmentShortLabels[primaryStyle]} / ${attachmentShortLabels[secondaryStyle]}`;
+            }
+
+            badgeEl.textContent = badgeText;
+            badgeEl.style.display = primaryStyle ? 'block' : 'none';
         }
 
         function updateVennDiagram() {

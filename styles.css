@@ -1840,6 +1840,26 @@ h1 {
     margin-bottom: 4px;
 }
 
+.attachment-dual-selects {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+.attachment-primary,
+.attachment-secondary {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.attachment-sublabel {
+    font-size: 0.8rem;
+    color: #888;
+    font-weight: 500;
+}
+
 .attachment-select,
 .pronoun-select {
     padding: 12px 16px;
