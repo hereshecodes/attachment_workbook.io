@@ -1390,14 +1390,14 @@ git log --oneline relationship.branch
 
                 return `
                     <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(217, 119, 6, 0.2); border-radius: 8px; padding: 12px; margin-bottom: 10px;">
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
-                            <div style="font-size: 0.75rem; color: #f59e0b;">
-                                <span style="font-weight: 600;">${moodLabel}</span>
-                                <span style="color: #94a3b8; margin-left: 8px;">${dateStr} at ${timeStr}</span>
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px; gap: 10px;">
+                            <div style="font-size: 0.75rem; color: #f59e0b; flex: 1; min-width: 0;">
+                                <div style="font-weight: 600; margin-bottom: 4px;">${moodLabel}</div>
+                                <div style="color: #94a3b8;">${dateStr} at ${timeStr}</div>
                             </div>
-                            <button onclick="deletePrivateNote(${index})" style="background: transparent; border: none; color: #ef4444; cursor: pointer; font-size: 0.875rem; padding: 0;">✕</button>
+                            <button onclick="deletePrivateNote(${index})" style="background: transparent; border: none; color: #ef4444; cursor: pointer; font-size: 0.875rem; padding: 0; flex-shrink: 0;">✕</button>
                         </div>
-                        <div style="color: #e2e8f0; font-size: 0.875rem; line-height: 1.5; white-space: pre-wrap;">${note.note}</div>
+                        <div style="color: #e2e8f0; font-size: 0.875rem; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word;">${note.note}</div>
                     </div>
                 `;
             }).join('');
