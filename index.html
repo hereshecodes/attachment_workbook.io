@@ -253,11 +253,13 @@
         <div class="live-status">
             <div class="live-status-card me-card">
                 <div class="live-status-name">Node A (Her)</div>
+                <div class="attachment-style-badge" id="attachment-badge-me"></div>
                 <div class="live-status-mood" id="live-mood-me">// Awaiting initial broadcast</div>
                 <div class="live-status-time" id="live-time-me"></div>
             </div>
             <div class="live-status-card you-card">
                 <div class="live-status-name">Node B (Him)</div>
+                <div class="attachment-style-badge" id="attachment-badge-you"></div>
                 <div class="live-status-mood" id="live-mood-you">// Awaiting initial broadcast</div>
                 <div class="live-status-time" id="live-time-you"></div>
             </div>
@@ -750,6 +752,8 @@ git log --oneline relationship.branch
                         localStorage.setItem('partnerName', data.settings.partnerName || 'Him');
                         localStorage.setItem('myPronouns', data.settings.myPronouns || 'she/her');
                         localStorage.setItem('partnerPronouns', data.settings.partnerPronouns || 'he/him');
+                        if (data.settings.myAttachment) localStorage.setItem('myAttachment', data.settings.myAttachment);
+                        if (data.settings.partnerAttachment) localStorage.setItem('partnerAttachment', data.settings.partnerAttachment);
                         updateDisplayNames();
                     }
                 });
@@ -1169,11 +1173,27 @@ git log --oneline relationship.branch
         }
 
         // ============ AI FEATURES ============
-        const AI_CONTEXT = `You are a systems engineer consulting on a coupled network architecture.
-        Node A (Her) is connection-optimizing with lower latency tolerance. Node B (Him) is autonomy-optimizing with buffer preference.
-        Use dev/network engineering language: status codes (200, 503), async/sync, latency, throughput, buffering, keepalive packets, circuit breakers, etc.
-        Keep responses brief (2-3 sentences), technical, and actionable. Frame relationship dynamics as system optimization, not emotional fixing.
-        Example language: "High latency detected", "implement circuit breaker", "buffer overflow", "ACK received", "graceful degradation", "eventual consistency".`;
+        function getAIContext() {
+            const myAttachment = localStorage.getItem('myAttachment') || 'anxious';
+            const partnerAttachment = localStorage.getItem('partnerAttachment') || 'avoidant';
+
+            const attachmentDescriptions = {
+                anxious: 'connection-optimized with lower latency tolerance',
+                avoidant: 'autonomy-optimized with buffer preference',
+                secure: 'balanced with adaptive processing',
+                fearful: 'mixed-mode with context-dependent behavior'
+            };
+
+            const myDesc = attachmentDescriptions[myAttachment];
+            const partnerDesc = attachmentDescriptions[partnerAttachment];
+
+            return `You are a systems engineer consulting on a coupled network architecture.
+            Node A (Her) is ${myDesc}. Node B (Him) is ${partnerDesc}.
+            Use dev/network engineering language: status codes (200, 503), async/sync, latency, throughput, buffering, keepalive packets, circuit breakers, etc.
+            Keep responses brief (2-3 sentences), technical, and actionable. Frame relationship dynamics as system optimization, not emotional fixing.
+            Example language: "High latency detected", "implement circuit breaker", "buffer overflow", "ACK received", "graceful degradation", "eventual consistency".
+            Consider each node's attachment profile when providing recommendations.`;
+        }
 
         async function callAI(prompt) {
             // Check if API key is configured
@@ -1193,7 +1213,7 @@ git log --oneline relationship.branch
                     body: JSON.stringify({
                         model: "claude-sonnet-4-20250514",
                         max_tokens: 250,
-                        system: AI_CONTEXT,
+                        system: getAIContext(),
                         messages: [{ role: "user", content: prompt }]
                     })
                 });
@@ -1221,9 +1241,21 @@ git log --oneline relationship.branch
             box.classList.add('visible');
             suggestionText.textContent = 'Thinking...';
 
-            const target = currentIdentity === 'me' ? 'an autonomy-optimized node' : 'a connection-optimized node';
+            // Get partner's attachment style
+            const partnerAttachment = currentIdentity === 'me'
+                ? localStorage.getItem('partnerAttachment') || 'avoidant'
+                : localStorage.getItem('myAttachment') || 'anxious';
+
+            const attachmentDescriptions = {
+                anxious: 'connection-optimized node (lower latency tolerance)',
+                avoidant: 'autonomy-optimized node (buffer preference)',
+                secure: 'balanced node (adaptive processing)',
+                fearful: 'mixed-mode node (context-dependent)'
+            };
+
+            const target = attachmentDescriptions[partnerAttachment];
             const result = await callAI(`Optimize this message for ${target}: "${text}". Return only the optimized message.`);
-            
+
             if (result) {
                 currentSuggestion = result;
                 suggestionText.textContent = result;
@@ -1255,7 +1287,19 @@ git log --oneline relationship.branch
                 return;
             }
 
-            const type = partner === 'me' ? 'connection-optimized (Node A)' : 'autonomy-optimized (Node B)';
+            // Get partner's attachment style
+            const partnerAttachment = partner === 'me'
+                ? localStorage.getItem('myAttachment') || 'anxious'
+                : localStorage.getItem('partnerAttachment') || 'avoidant';
+
+            const attachmentDescriptions = {
+                anxious: 'connection-optimized (Node A)',
+                avoidant: 'autonomy-optimized (Node B)',
+                secure: 'balanced (adaptive)',
+                fearful: 'mixed-mode (context-dependent)'
+            };
+
+            const type = attachmentDescriptions[partnerAttachment];
             const result = await callAI(`The ${type} node broadcast: "${data.label}". Status message: "${data.message}". ${data.customNote ? `Additional payload: "${data.customNote}"` : ''} What protocol response is recommended and what's one concrete action to take?`);
             text.textContent = result || "// Execute requested protocol directly";
         }
@@ -1270,7 +1314,20 @@ git log --oneline relationship.branch
             document.getElementById('ai-insights-text').style.display = 'none';
 
             const summary = moodHistory.slice(-15).map(h => `${h.person === 'me' ? 'Node A' : 'Node B'}: ${h.label}`).join(', ');
-            const who = currentIdentity === 'me' ? 'Node A (connection-optimized)' : 'Node B (autonomy-optimized)';
+
+            // Get current user's attachment style
+            const myAttachment = currentIdentity === 'me'
+                ? localStorage.getItem('myAttachment') || 'anxious'
+                : localStorage.getItem('partnerAttachment') || 'avoidant';
+
+            const attachmentDescriptions = {
+                anxious: 'Node A (connection-optimized)',
+                avoidant: 'Node B (autonomy-optimized)',
+                secure: 'balanced node (adaptive)',
+                fearful: 'mixed-mode node (context-dependent)'
+            };
+
+            const who = attachmentDescriptions[myAttachment];
 
             const result = await callAI(`Status broadcast history: ${summary}. I'm ${who}. Identify one encouraging pattern in system performance. Start with emoji.`);
 
@@ -1445,11 +1502,15 @@ git log --oneline relationship.branch
             const partnerName = localStorage.getItem('partnerName') || '';
             const myPronouns = localStorage.getItem('myPronouns') || 'she/her';
             const partnerPronouns = localStorage.getItem('partnerPronouns') || 'he/him';
+            const myAttachment = localStorage.getItem('myAttachment') || 'anxious';
+            const partnerAttachment = localStorage.getItem('partnerAttachment') || 'avoidant';
 
             document.getElementById('my-name-input').value = myName;
             document.getElementById('partner-name-input').value = partnerName;
             document.getElementById('my-pronoun-select').value = myPronouns;
             document.getElementById('partner-pronoun-select').value = partnerPronouns;
+            document.getElementById('my-attachment-select').value = myAttachment;
+            document.getElementById('partner-attachment-select').value = partnerAttachment;
 
             // Handle custom pronouns
             if (myPronouns === 'custom' || !['she/her', 'he/him', 'they/them'].includes(myPronouns)) {
@@ -1482,11 +1543,17 @@ git log --oneline relationship.branch
                 partnerPronouns = document.getElementById('partner-custom-pronoun').value.trim() || 'they/them';
             }
 
+            // Get attachment styles
+            const myAttachment = document.getElementById('my-attachment-select').value;
+            const partnerAttachment = document.getElementById('partner-attachment-select').value;
+
             const settings = {
                 myName,
                 partnerName,
                 myPronouns,
-                partnerPronouns
+                partnerPronouns,
+                myAttachment,
+                partnerAttachment
             };
 
             // Save to Firebase
@@ -1503,6 +1570,8 @@ git log --oneline relationship.branch
             localStorage.setItem('partnerName', partnerName);
             localStorage.setItem('myPronouns', myPronouns);
             localStorage.setItem('partnerPronouns', partnerPronouns);
+            localStorage.setItem('myAttachment', myAttachment);
+            localStorage.setItem('partnerAttachment', partnerAttachment);
 
             // Update display names throughout the app
             updateDisplayNames();
@@ -1513,6 +1582,8 @@ git log --oneline relationship.branch
         function updateDisplayNames() {
             const myName = localStorage.getItem('myName') || 'Her';
             const partnerName = localStorage.getItem('partnerName') || 'Him';
+            const myAttachment = localStorage.getItem('myAttachment');
+            const partnerAttachment = localStorage.getItem('partnerAttachment');
 
             // Update live status cards
             document.querySelectorAll('.live-status-name').forEach((el, index) => {
@@ -1524,6 +1595,25 @@ git log --oneline relationship.branch
                 if (index === 0) btn.textContent = `I'm ${myName}`;
                 else btn.textContent = `I'm ${partnerName}`;
             });
+
+            // Update attachment style badges
+            updateAttachmentBadge('me', myAttachment);
+            updateAttachmentBadge('you', partnerAttachment);
+        }
+
+        function updateAttachmentBadge(person, style) {
+            const badgeEl = document.getElementById(`attachment-badge-${person}`);
+            if (!badgeEl || !style) return;
+
+            const attachmentLabels = {
+                anxious: '🔗 Connection-Optimized',
+                avoidant: '🛡️ Autonomy-Optimized',
+                secure: '⚖️ Balanced',
+                fearful: '🔄 Mixed-Mode'
+            };
+
+            badgeEl.textContent = attachmentLabels[style] || '';
+            badgeEl.style.display = style ? 'block' : 'none';
         }
 
         // Add pronoun select change handlers
