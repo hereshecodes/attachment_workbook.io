@@ -1174,8 +1174,22 @@ git log --oneline relationship.branch
 
         function createNewRoom() {
             if (confirm('Create a new room? You can always come back to this one using the link.')) {
+                // Clear room-specific data
                 localStorage.removeItem('lastRoom');
                 localStorage.removeItem('identity_' + roomId);
+                localStorage.removeItem('roomName_' + roomId);
+
+                // Clear personalization settings so they don't carry over
+                localStorage.removeItem('myName');
+                localStorage.removeItem('partnerName');
+                localStorage.removeItem('myPronouns');
+                localStorage.removeItem('partnerPronouns');
+                localStorage.removeItem('myAttachment');
+                localStorage.removeItem('partnerAttachment');
+                localStorage.removeItem('myAttachmentSecondary');
+                localStorage.removeItem('partnerAttachmentSecondary');
+
+                // Redirect to clean room
                 window.location.href = window.location.pathname;
             }
         }
