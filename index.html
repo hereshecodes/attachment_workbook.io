@@ -526,8 +526,8 @@
                 <div class="helps-grid">
                     <div class="helps-column">
                         <h3>Node A Optimizations</h3>
-                        <ul>
-                            <li><strong>Allow async processing:</strong> His buffer space prevents system overload</li>
+                        <ul id="protocol-node-a">
+                            <li><strong>Allow async processing:</strong> Partner's buffer space prevents system overload</li>
                             <li><strong>Emit status updates:</strong> Broadcast state without expecting ACK</li>
                             <li><strong>Trust the handshake:</strong> Connection persists through idle cycles</li>
                             <li><strong>Parallel processing:</strong> Both nodes need independent compute time</li>
@@ -535,7 +535,7 @@
                     </div>
                     <div class="helps-column">
                         <h3>System-Wide Protocols</h3>
-                        <ul>
+                        <ul id="protocol-system-wide">
                             <li><strong>Use descriptive logging:</strong> "STATUS: feeling X" vs "ERROR: you always Y"</li>
                             <li><strong>Implement graceful degradation:</strong> Temporary disconnects don't crash the system</li>
                             <li><strong>Schedule health checks:</strong> Regular pings maintain connection stability</li>
@@ -544,7 +544,7 @@
                     </div>
                     <div class="helps-column">
                         <h3>Node B Optimizations</h3>
-                        <ul>
+                        <ul id="protocol-node-b">
                             <li><strong>Send keepalive packets:</strong> Small signals maintain connection health</li>
                             <li><strong>Broadcast intent:</strong> Quick ETA reduces timeout anxiety</li>
                             <li><strong>Share debug logs:</strong> Internal state visibility builds trust</li>
@@ -798,6 +798,66 @@ git log --oneline relationship.branch
             }
         };
 
+        // ============ ATTACHMENT-SPECIFIC OPTIMIZATION PROTOCOLS ============
+        const optimizationProtocols = {
+            anxious: {
+                nodeOptimizations: [
+                    '<strong>Self-soothing protocols:</strong> Practice anxiety reduction before broadcasting distress signals',
+                    '<strong>Trust async mode:</strong> Partner\'s silence ≠ connection dropped',
+                    '<strong>Emit honest status:</strong> Broadcast needs directly vs seeking validation indirectly',
+                    '<strong>Buffer tolerance:</strong> Allow partner processing time without flooding with pings'
+                ],
+                partnerSupport: [
+                    '<strong>Send keepalive packets:</strong> Small reassurance signals prevent timeout anxiety',
+                    '<strong>Broadcast ETAs:</strong> "Processing, will reconnect in 2h" reduces latency fears',
+                    '<strong>Consistent responses:</strong> Reliability builds connection trust over time',
+                    '<strong>Validate then redirect:</strong> Acknowledge feelings before problem-solving'
+                ]
+            },
+            avoidant: {
+                nodeOptimizations: [
+                    '<strong>Proactive status broadcasts:</strong> Signal buffer needs before going async',
+                    '<strong>Share debug logs:</strong> Verbalize internal state vs expecting partner to infer',
+                    '<strong>Scheduled connection time:</strong> Regular sync prevents drift',
+                    '<strong>Incremental vulnerability:</strong> Small emotional packets build tolerance'
+                ],
+                partnerSupport: [
+                    '<strong>Respect buffer space:</strong> Allow async processing without interpreting as rejection',
+                    '<strong>Low-pressure presence:</strong> Parallel processing (same room, different tasks) works well',
+                    '<strong>Celebrate small opens:</strong> Reinforce emotional risk-taking positively',
+                    '<strong>Accept action-based care:</strong> Recognize non-verbal expressions of connection'
+                ]
+            },
+            secure: {
+                nodeOptimizations: [
+                    '<strong>Model healthy patterns:</strong> Demonstrate balanced connection-autonomy for partner',
+                    '<strong>Provide stability:</strong> Consistent presence during partner\'s high-load states',
+                    '<strong>Adaptive processing:</strong> Flex communication style to partner\'s current needs',
+                    '<strong>Maintain boundaries:</strong> Self-care prevents burnout from over-supporting'
+                ],
+                partnerSupport: [
+                    '<strong>Continue secure base:</strong> Your stability anchors the relationship system',
+                    '<strong>Patient consistency:</strong> Reliable responses help partner build trust',
+                    '<strong>Self-awareness:</strong> Monitor for compassion fatigue or resentment',
+                    '<strong>Celebrate growth:</strong> Acknowledge partner\'s progress toward security'
+                ]
+            },
+            fearful: {
+                nodeOptimizations: [
+                    '<strong>Track activation patterns:</strong> Identify when connection vs withdrawal mode triggers',
+                    '<strong>Explicit mode signals:</strong> Broadcast when shifting between approach/avoid states',
+                    '<strong>Therapy as debugging:</strong> External support helps stabilize oscillating patterns',
+                    '<strong>Self-compassion protocols:</strong> Mixed signals are system behavior, not character flaws'
+                ],
+                partnerSupport: [
+                    '<strong>Extra patience buffer:</strong> Inconsistency is expected system behavior',
+                    '<strong>Gentle communication:</strong> Minimize perceived threat during vulnerable moments',
+                    '<strong>Consistent reassurance:</strong> Regular validation helps reduce fear responses',
+                    '<strong>Respect both modes:</strong> Honor connection needs AND space needs as equally valid'
+                ]
+            }
+        };
+
         // ============ MOOD DATA ============
         const moodEmojis = {
             space: '🌿',
@@ -924,6 +984,9 @@ git log --oneline relationship.branch
             // Update Venn diagram on load
             updateVennDiagram();
 
+            // Update optimization protocols on load
+            updateOptimizationProtocols();
+
             // Update share link
             document.getElementById('share-link').value = window.location.href;
 
@@ -950,6 +1013,7 @@ git log --oneline relationship.branch
                         if (data.settings.partnerAttachmentSecondary) localStorage.setItem('partnerAttachmentSecondary', data.settings.partnerAttachmentSecondary);
                         updateDisplayNames();
                         updateVennDiagram();
+                        updateOptimizationProtocols();
                     }
                 });
 
@@ -1828,6 +1892,9 @@ git log --oneline relationship.branch
             // Update Venn diagram
             updateVennDiagram();
 
+            // Update optimization protocols
+            updateOptimizationProtocols();
+
             closeAttachmentSettings();
         }
 
@@ -1980,6 +2047,41 @@ git log --oneline relationship.branch
                 return `${style1}-${style2}`;
             } else {
                 return `${style2}-${style1}`;
+            }
+        }
+
+        function updateOptimizationProtocols() {
+            const myAttachment = localStorage.getItem('myAttachment') || 'secure';
+            const partnerAttachment = localStorage.getItem('partnerAttachment') || 'secure';
+
+            // Get protocols for each attachment style
+            const myProtocols = optimizationProtocols[myAttachment];
+            const partnerProtocols = optimizationProtocols[partnerAttachment];
+
+            if (!myProtocols || !partnerProtocols) return;
+
+            // Update Node A optimizations (what I should do)
+            const nodeAList = document.getElementById('protocol-node-a');
+            if (nodeAList) {
+                nodeAList.innerHTML = myProtocols.nodeOptimizations.map(item => `<li>${item}</li>`).join('');
+            }
+
+            // Update Node B optimizations (how to support partner)
+            const nodeBList = document.getElementById('protocol-node-b');
+            if (nodeBList) {
+                nodeBList.innerHTML = partnerProtocols.partnerSupport.map(item => `<li>${item}</li>`).join('');
+            }
+
+            // Update System-Wide protocols (general best practices)
+            const systemWideList = document.getElementById('protocol-system-wide');
+            if (systemWideList) {
+                const systemWideProtocols = [
+                    '<strong>Use descriptive logging:</strong> "STATUS: feeling X" vs "ERROR: you always Y"',
+                    '<strong>Implement graceful degradation:</strong> Temporary disconnects don\'t crash the system',
+                    '<strong>Schedule health checks:</strong> Regular pings maintain connection stability',
+                    '<strong>Recognize patterns:</strong> Both nodes have predictable behaviors under load'
+                ];
+                systemWideList.innerHTML = systemWideProtocols.map(item => `<li>${item}</li>`).join('');
             }
         }
 
