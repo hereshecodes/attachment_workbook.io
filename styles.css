@@ -493,13 +493,33 @@ h1 {
 .attachment-style-badge {
     display: none;
     font-size: 0.75rem;
-    color: #666;
-    background: rgba(138, 106, 154, 0.08);
+    color: #fff;
     padding: 4px 10px;
     border-radius: 12px;
     margin: 6px auto;
     max-width: fit-content;
     font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.attachment-style-badge.anxious {
+    background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+}
+
+.attachment-style-badge.avoidant {
+    background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.2);
+}
+
+.attachment-style-badge.secure {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}
+
+.attachment-style-badge.fearful {
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
 }
 
 .live-status-mood {

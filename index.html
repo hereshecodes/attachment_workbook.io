@@ -405,19 +405,19 @@
 
                     <div class="content-card card-me">
                         <div class="card-title">Node A</div>
-                        <div class="card-subtitle">Connection-Optimized · Low Latency Preference</div>
-                        <ul class="traits">
+                        <div class="card-subtitle" id="venn-subtitle-me">Connection-Optimized · Low Latency Preference</div>
+                        <ul class="traits" id="venn-traits-me">
                             <li>Processes state through synchronous communication</li>
                             <li>Stability achieved through regular keepalive packets</li>
                             <li>Lower tolerance for connection timeout</li>
                         </ul>
                         <div class="section-divider">
                             <span class="section-label">Preferred input signals</span>
-                            <div class="section-content">Acts of service, verbal acknowledgment</div>
+                            <div class="section-content" id="venn-signals-me">Acts of service, verbal acknowledgment</div>
                         </div>
                         <div class="section-divider">
                             <span class="section-label">Optimization target</span>
-                            <div class="growth-item">Trust async processing ≠ dropped connection</div>
+                            <div class="growth-item" id="venn-target-me">Trust async processing ≠ dropped connection</div>
                         </div>
                     </div>
 
@@ -439,8 +439,8 @@
 
                     <div class="content-card card-you">
                         <div class="card-title">Node B</div>
-                        <div class="card-subtitle">Autonomy-Optimized · Internal Processing</div>
-                        <ul class="traits">
+                        <div class="card-subtitle" id="venn-subtitle-you">Autonomy-Optimized · Internal Processing</div>
+                        <ul class="traits" id="venn-traits-you">
                             <li>Deep signal processing, async execution model</li>
                             <li>Resource recovery through isolated processing time</li>
                             <li>Maintains autonomy while preserving connection</li>
@@ -448,11 +448,11 @@
                         </ul>
                         <div class="section-divider">
                             <span class="section-label">Preferred input signals</span>
-                            <div class="section-content">Verbal acknowledgment, physical presence</div>
+                            <div class="section-content" id="venn-signals-you">Verbal acknowledgment, physical presence</div>
                         </div>
                         <div class="section-divider">
                             <span class="section-label">Optimization target</span>
-                            <div class="growth-item">Broadcast status before disconnect: "Processing independently, will reconnect"</div>
+                            <div class="growth-item" id="venn-target-you">Broadcast status before disconnect: "Processing independently, will reconnect"</div>
                         </div>
                     </div>
                 </div>
@@ -608,6 +608,62 @@ git log --oneline relationship.branch
         let moodHistory = [];
         let currentMonthOffset = 0; // 0 = current month, -1 = last month, etc.
 
+        // ============ ATTACHMENT STYLE DATA ============
+        const attachmentStyleData = {
+            anxious: {
+                title: 'Connection-Optimized',
+                subtitle: 'Low Latency Preference',
+                traits: [
+                    'Processes state through synchronous communication',
+                    'Stability achieved through regular keepalive packets',
+                    'Lower tolerance for connection timeout',
+                    'High-frequency status checks preferred'
+                ],
+                preferredSignals: 'Acts of service, verbal acknowledgment, quality time',
+                optimizationTarget: 'Trust async processing ≠ dropped connection',
+                color: '#3B82F6'
+            },
+            avoidant: {
+                title: 'Autonomy-Optimized',
+                subtitle: 'Internal Processing',
+                traits: [
+                    'Deep signal processing, async execution model',
+                    'Resource recovery through isolated processing time',
+                    'Maintains autonomy while preserving connection',
+                    'Demonstrates commitment through actions & presence'
+                ],
+                preferredSignals: 'Verbal acknowledgment, physical presence, quality time',
+                optimizationTarget: 'Broadcast status before disconnect: "Processing independently, will reconnect"',
+                color: '#7C3AED'
+            },
+            secure: {
+                title: 'Balanced Processing',
+                subtitle: 'Adaptive & Flexible',
+                traits: [
+                    'Comfortable with both sync and async communication',
+                    'Self-regulates without external validation',
+                    'Provides stability during partner\'s high-load states',
+                    'Balances connection needs with autonomy'
+                ],
+                preferredSignals: 'All forms of communication, adaptable to partner needs',
+                optimizationTarget: 'Continue modeling healthy communication patterns',
+                color: '#10B981'
+            },
+            fearful: {
+                title: 'Mixed-Mode Processing',
+                subtitle: 'Context-Dependent',
+                traits: [
+                    'Oscillates between connection-seeking and withdrawal',
+                    'Processing mode depends on system state',
+                    'Benefits from explicit protocol definitions',
+                    'Requires additional reassurance during transitions'
+                ],
+                preferredSignals: 'Clear communication, gentle reassurance, patience',
+                optimizationTarget: 'Build trust through consistent, predictable responses',
+                color: '#F59E0B'
+            }
+        };
+
         // ============ MOOD DATA ============
         const moodEmojis = {
             space: '🌿',
@@ -730,7 +786,10 @@ git log --oneline relationship.branch
 
             // Load and apply display names
             updateDisplayNames();
-            
+
+            // Update Venn diagram on load
+            updateVennDiagram();
+
             // Update share link
             document.getElementById('share-link').value = window.location.href;
 
@@ -1156,15 +1215,49 @@ git log --oneline relationship.branch
             const text = document.getElementById('combo-alert-text');
             const tension = ['anxious', 'overwhelmed', 'disconnected'];
 
+            // Get attachment styles for context-aware alerts
+            const myAttachment = localStorage.getItem('myAttachment') || 'anxious';
+            const partnerAttachment = localStorage.getItem('partnerAttachment') || 'avoidant';
+
+            // Mood-based alerts (existing logic)
             if (tension.includes(data.me.mood) && tension.includes(data.you.mood)) {
                 alert.classList.add('visible');
-                text.textContent = "⚠️ High latency detected on both nodes. Recommendation: Implement circuit breaker pattern (20 min cooldown), then retry with curiosity. Previous deployments successful.";
+
+                // Attachment-aware message
+                if (myAttachment === 'anxious' && partnerAttachment === 'avoidant') {
+                    text.textContent = "⚠️ Classic anxious-avoidant protest-withdraw pattern detected. Recommendation: 20 min circuit breaker, then reconnect with explicit needs stated.";
+                } else if (myAttachment === 'fearful' || partnerAttachment === 'fearful') {
+                    text.textContent = "⚠️ High latency on both nodes. Mixed-mode systems need extra reassurance. Take space, then reconnect with gentle communication.";
+                } else {
+                    text.textContent = "⚠️ High latency detected on both nodes. Recommendation: Implement circuit breaker pattern (20 min cooldown), then retry with curiosity. Previous deployments successful.";
+                }
             } else if (data.me.mood === 'anxious' && (data.you.mood === 'space' || data.you.mood === 'overwhelmed')) {
                 alert.classList.add('visible');
-                text.textContent = "🔄 Classic retry loop: Node A pinging, Node B buffering. Neither is ERROR state. Expected behavior. Auto-resolve in ~1h.";
+
+                if (myAttachment === 'anxious' && partnerAttachment === 'avoidant') {
+                    text.textContent = "🔄 Classic pursuit-distance pattern: Connection-optimized node pinging, autonomy-optimized buffering. This is expected system behavior. Trust the protocol.";
+                } else {
+                    text.textContent = "🔄 Classic retry loop: Node A pinging, Node B buffering. Neither is ERROR state. Expected behavior. Auto-resolve in ~1h.";
+                }
+            } else if ((data.me.mood === 'space' || data.me.mood === 'overwhelmed') && data.you.mood === 'anxious') {
+                alert.classList.add('visible');
+
+                if (myAttachment === 'avoidant' && partnerAttachment === 'anxious') {
+                    text.textContent = "💡 Your buffer time is triggering connection anxiety. Quick status broadcast ('need 2h, will reconnect') prevents timeout errors.";
+                } else {
+                    text.textContent = "💡 Partner experiencing connection anxiety. Small reassurance message provides significant latency reduction.";
+                }
             } else if (data.me.mood === 'good' && data.you.mood === 'good') {
                 alert.classList.add('visible');
-                text.textContent = "✅ 200 OK - Both systems operating at optimal throughput. Low-latency connection achieved. This is your target state.";
+
+                // Celebrate based on attachment pairing
+                if (myAttachment === 'anxious' && partnerAttachment === 'avoidant') {
+                    text.textContent = "✅ 200 OK - Anxious-avoidant system achieving secure connection! This proves the architecture works. Save this state.";
+                } else if (myAttachment === 'secure' || partnerAttachment === 'secure') {
+                    text.textContent = "✅ 200 OK - Secure attachment providing system stability. Optimal throughput achieved.";
+                } else {
+                    text.textContent = "✅ 200 OK - Both systems operating at optimal throughput. Low-latency connection achieved. This is your target state.";
+                }
                 setTimeout(() => alert.classList.remove('visible'), 5000);
             } else {
                 alert.classList.remove('visible');
@@ -1575,6 +1668,9 @@ git log --oneline relationship.branch
             // Update display names throughout the app
             updateDisplayNames();
 
+            // Update Venn diagram
+            updateVennDiagram();
+
             closeAttachmentSettings();
         }
 
@@ -1611,8 +1707,41 @@ git log --oneline relationship.branch
                 fearful: '🔄 Mixed-Mode'
             };
 
+            // Remove all style classes
+            badgeEl.classList.remove('anxious', 'avoidant', 'secure', 'fearful');
+
+            // Add current style class for color coding
+            if (style) {
+                badgeEl.classList.add(style);
+            }
+
             badgeEl.textContent = attachmentLabels[style] || '';
             badgeEl.style.display = style ? 'block' : 'none';
+        }
+
+        function updateVennDiagram() {
+            const myAttachment = localStorage.getItem('myAttachment') || 'anxious';
+            const partnerAttachment = localStorage.getItem('partnerAttachment') || 'avoidant';
+
+            // Update Node A (me)
+            const myData = attachmentStyleData[myAttachment];
+            if (myData) {
+                document.getElementById('venn-subtitle-me').textContent = `${myData.title} · ${myData.subtitle}`;
+                const traitsMe = document.getElementById('venn-traits-me');
+                traitsMe.innerHTML = myData.traits.map(trait => `<li>${trait}</li>`).join('');
+                document.getElementById('venn-signals-me').textContent = myData.preferredSignals;
+                document.getElementById('venn-target-me').textContent = myData.optimizationTarget;
+            }
+
+            // Update Node B (you)
+            const partnerData = attachmentStyleData[partnerAttachment];
+            if (partnerData) {
+                document.getElementById('venn-subtitle-you').textContent = `${partnerData.title} · ${partnerData.subtitle}`;
+                const traitsYou = document.getElementById('venn-traits-you');
+                traitsYou.innerHTML = partnerData.traits.map(trait => `<li>${trait}</li>`).join('');
+                document.getElementById('venn-signals-you').textContent = partnerData.preferredSignals;
+                document.getElementById('venn-target-you').textContent = partnerData.optimizationTarget;
+            }
         }
 
         // Add pronoun select change handlers
