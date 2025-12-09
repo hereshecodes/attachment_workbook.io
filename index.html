@@ -329,6 +329,14 @@
             <textarea id="private-note-input" placeholder="Personal reflection, triggers, patterns... Partner cannot see this."></textarea>
             <button class="save-private-note-btn" onclick="savePrivateNote()">Save Private Note</button>
             <div class="private-note-saved" id="private-note-saved" style="display: none;">✓ Saved locally</div>
+
+            <div class="private-notes-history" id="private-notes-history" style="margin-top: 20px;">
+                <div style="font-weight: 600; color: #d97706; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                    <span>📝 Your Note History</span>
+                    <button onclick="clearAllPrivateNotes()" style="font-size: 0.75rem; padding: 4px 12px; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; border-radius: 6px; cursor: pointer;">Clear All</button>
+                </div>
+                <div id="private-notes-list"></div>
+            </div>
         </div>
     </div>
 
@@ -1314,11 +1322,14 @@ git log --oneline relationship.branch
             } else {
                 privateBox.style.display = 'block';
                 loadPrivateNote();
+                displayPrivateNotes();
             }
         }
 
         function savePrivateNote() {
             const note = document.getElementById('private-note-input').value;
+            if (!note.trim()) return;
+
             const timestamp = Date.now();
 
             // Save to localStorage with timestamp
@@ -1339,6 +1350,9 @@ git log --oneline relationship.branch
 
             // Clear the input
             document.getElementById('private-note-input').value = '';
+
+            // Refresh the notes display
+            displayPrivateNotes();
         }
 
         function loadPrivateNote() {
@@ -1354,6 +1368,56 @@ git log --oneline relationship.branch
                         `Last note for this mood: "${recentNote.note.substring(0, 50)}${recentNote.note.length > 50 ? '...' : ''}"`;
                 }
             }
+        }
+
+        function displayPrivateNotes() {
+            const privateNotes = JSON.parse(localStorage.getItem('privateNotes') || '[]');
+            const notesList = document.getElementById('private-notes-list');
+
+            if (privateNotes.length === 0) {
+                notesList.innerHTML = '<div style="color: #94a3b8; font-size: 0.875rem; text-align: center; padding: 20px;">No notes yet. Start writing!</div>';
+                return;
+            }
+
+            // Sort by timestamp, newest first
+            const sortedNotes = privateNotes.sort((a, b) => b.timestamp - a.timestamp);
+
+            notesList.innerHTML = sortedNotes.map((note, index) => {
+                const date = new Date(note.timestamp);
+                const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                const timeStr = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                const moodLabel = note.mood && moodData[note.mood] ? moodData[note.mood].label : 'General';
+
+                return `
+                    <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(217, 119, 6, 0.2); border-radius: 8px; padding: 12px; margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                            <div style="font-size: 0.75rem; color: #f59e0b;">
+                                <span style="font-weight: 600;">${moodLabel}</span>
+                                <span style="color: #94a3b8; margin-left: 8px;">${dateStr} at ${timeStr}</span>
+                            </div>
+                            <button onclick="deletePrivateNote(${index})" style="background: transparent; border: none; color: #ef4444; cursor: pointer; font-size: 0.875rem; padding: 0;">✕</button>
+                        </div>
+                        <div style="color: #e2e8f0; font-size: 0.875rem; line-height: 1.5; white-space: pre-wrap;">${note.note}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function deletePrivateNote(index) {
+            if (!confirm('Delete this note?')) return;
+
+            const privateNotes = JSON.parse(localStorage.getItem('privateNotes') || '[]');
+            const sortedNotes = privateNotes.sort((a, b) => b.timestamp - a.timestamp);
+            sortedNotes.splice(index, 1);
+            localStorage.setItem('privateNotes', JSON.stringify(sortedNotes));
+            displayPrivateNotes();
+        }
+
+        function clearAllPrivateNotes() {
+            if (!confirm('Delete ALL private notes? This cannot be undone.')) return;
+
+            localStorage.removeItem('privateNotes');
+            displayPrivateNotes();
         }
 
         function openTherapyExport() {
