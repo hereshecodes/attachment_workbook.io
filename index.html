@@ -1,16 +1,2190 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Attachment Workbook - Node Session</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coupled Systems Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=2.1.1">
+    <script>
+        // Initialize CONFIG - will be overridden by config.js if it loads
+        var CONFIG = { ANTHROPIC_API_KEY: "YOUR_ANTHROPIC_API_KEY_HERE" };
+    </script>
+    <script src="config.js" onerror="console.log('Note: config.js not loaded (this is normal when opening file directly). AI features will use embedded config or be disabled.')"></script>
+</head>
+<body>
+    <h1>Coupled Systems Interface</h1>
+    <p class="subtitle">Real-time status monitoring for bidirectional feedback loops</p>
+
+    <!-- 1. ROOM BAR (Sticky) -->
+    <div class="room-bar" id="room-bar">
+        <div class="room-bar-top">
+            <div class="room-identity">
+                <div class="connection-dot" id="connection-dot"></div>
+                <div class="room-name-display">
+                    <span class="room-name" id="room-name">Node Session</span>
+                    <button class="room-name-edit" onclick="editRoomName()">✏️</button>
+                    <input type="text" class="room-name-input" id="room-name-input" maxlength="20" onblur="saveRoomName()" onkeypress="if(event.key==='Enter')saveRoomName()">
+                </div>
+                <span class="identity-badge" id="identity-badge" style="display: none;"></span>
+            </div>
+            <div class="share-actions">
+                <button class="share-btn" onclick="togglePrivateNotes()">🔒 Private Notes</button>
+                <button class="share-btn" onclick="openTherapyExport()">📊 Therapy Export</button>
+                <button class="share-btn" onclick="openDateNightIdeas()">💝 Date Ideas</button>
+                <button class="share-btn" onclick="openPersonalizationSettings()">⚙️ Config</button>
+                <button class="share-btn" onclick="openShareModal()">📤 Share URL</button>
+                <button class="share-btn" onclick="createNewRoom()">+ New Session</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div class="share-modal" id="share-modal">
+        <div class="share-modal-content">
+            <div class="share-modal-title">Share Session Endpoint</div>
+            <div class="share-modal-subtitle">Send this URL to Node B to establish bidirectional connection</div>
+            <div class="qr-code" id="qr-code"></div>
+            <div class="share-link-box">
+                <input type="text" class="share-link-input" id="share-link" readonly>
+                <button class="copy-link-btn" onclick="copyLink()">Copy URL</button>
+            </div>
+            <div class="share-options">
+                <button class="share-option-btn" onclick="shareViaText()">💬 SMS</button>
+                <button class="share-option-btn" onclick="shareViaEmail()">📧 Email</button>
+            </div>
+            <button class="close-modal-btn" onclick="closeShareModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- Image Modal for Server Illustration -->
+    <div class="image-modal" id="image-modal" onclick="closeImageModal()">
+        <div class="image-modal-content" onclick="event.stopPropagation()">
+            <button class="close-modal-btn" onclick="closeImageModal()" style="margin-bottom: 16px;">✕ Close</button>
+            <img src="server-illustration.svg" alt="Two-Node Server Architecture" style="width: 100%; max-width: 800px; height: auto; display: block;">
+        </div>
+    </div>
+
+    <!-- First-Time User Tutorial -->
+    <div class="tutorial-modal" id="tutorial-modal" style="display: none;">
+        <div class="tutorial-content">
+            <button class="skip-tutorial-btn" onclick="skipTutorial()">Skip</button>
+
+            <div class="tutorial-step" id="tutorial-step-1">
+                <div class="tutorial-icon">🔧</div>
+                <div class="tutorial-title">System Initialization</div>
+                <div class="tutorial-text">
+                    This is a real-time interface for two autonomous systems to broadcast status updates and optimize their shared throughput. Think of it as a bidirectional API where both nodes can signal state changes without blocking the other.
+                </div>
+                <div class="tutorial-progress">
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+                <button class="tutorial-next-btn" onclick="nextTutorialStep()">Next</button>
+            </div>
+
+            <div class="tutorial-step" id="tutorial-step-2" style="display: none;">
+                <div class="tutorial-icon">📡</div>
+                <div class="tutorial-title">Broadcast Status Updates</div>
+                <div class="tutorial-text">
+                    Select a status to broadcast your current operational state. The other node receives the signal in real-time along with recommended response protocols. No manual synchronization required—Firebase handles the WebSocket connection.
+                </div>
+                <div class="tutorial-example">
+                    <div class="example-mood">⚡ "HIGH_LOAD detected"</div>
+                    <div class="example-arrow">→</div>
+                    <div class="example-result">Node B receives: "// ACK - Node A processing independently. Simple keepalive sufficient."</div>
+                </div>
+                <div class="tutorial-progress">
+                    <span class="dot"></span>
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+                <button class="tutorial-next-btn" onclick="nextTutorialStep()">Next</button>
+            </div>
+
+            <div class="tutorial-step" id="tutorial-step-3" style="display: none;">
+                <div class="tutorial-icon">📊</div>
+                <div class="tutorial-title">System Telemetry & Pattern Analysis</div>
+                <div class="tutorial-text">
+                    Your git log tracks status changes over time. The AI analyzes telemetry data to identify recurring patterns, suggest optimizations, and provide performance metrics on system stability.
+                </div>
+                <div class="tutorial-features">
+                    <div class="feature-item">🤖 ML-powered pattern detection</div>
+                    <div class="feature-item">📈 Weekly performance reports</div>
+                    <div class="feature-item">💬 Protocol suggestion engine</div>
+                </div>
+                <div class="tutorial-progress">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                </div>
+                <button class="tutorial-next-btn" onclick="nextTutorialStep()">Next</button>
+            </div>
+
+            <div class="tutorial-step" id="tutorial-step-4" style="display: none;">
+                <div class="tutorial-icon">🔗</div>
+                <div class="tutorial-title">Establish Connection to Node B</div>
+                <div class="tutorial-text">
+                    This session URL is scoped to a two-node architecture. Share the endpoint with the second node to establish the bidirectional connection. All telemetry data is isolated to your unique namespace in the Firebase Realtime Database.
+                </div>
+                <div class="tutorial-tip">
+                    💡 Tip: Bookmark this endpoint for persistent session access.
+                </div>
+                <div class="tutorial-progress">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot active"></span>
+                </div>
+                <button class="tutorial-done-btn" onclick="closeTutorial()">Initialize System</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. WELCOME / NODE IDENTITY SELECTOR -->
+    <div class="welcome-card" id="welcome-card">
+        <div class="welcome-title">Node Configuration</div>
+        <div class="welcome-subtitle">Select your node identity</div>
+        <div class="identity-buttons">
+            <button class="identity-btn me" onclick="selectIdentity('me')">I'm Node A (Her)</button>
+            <button class="identity-btn you" onclick="selectIdentity('you')">I'm Node B (Him)</button>
+        </div>
+        <div class="returning-user-note" id="returning-note">
+            ✓ Session restored from local cache.
+        </div>
+    </div>
+
+    <!-- ATTACHMENT STYLE ONBOARDING -->
+    <div class="attachment-onboarding" id="attachment-onboarding" style="display: none;">
+        <div class="onboarding-content">
+            <div class="onboarding-title">Node Configuration Protocol</div>
+            <div class="onboarding-subtitle">Setting operational parameters optimizes protocol recommendations</div>
+
+            <div class="attachment-quiz">
+                <div class="quiz-question">
+                    <div class="question-number">Question 1 of 3</div>
+                    <div class="question-text" id="quiz-question-text">In relationships, I tend to...</div>
+                    <div class="quiz-options" id="quiz-options">
+                        <!-- Options will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="attachment-results" id="attachment-results" style="display: none;">
+                <div class="results-title">Node Operational Profile</div>
+                <div class="style-badge" id="style-badge"></div>
+                <div class="style-description" id="style-description"></div>
+                <div class="style-strengths" id="style-strengths"></div>
+                <div class="style-growth" id="style-growth"></div>
+                <button class="continue-btn" onclick="completeOnboarding()">Initialize Interface</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ATTACHMENT STYLE SETTINGS (accessible later) -->
+    <div class="attachment-settings-modal" id="attachment-settings-modal" style="display: none;">
+        <div class="settings-modal-content">
+            <div class="settings-header">
+                <div class="settings-title">System Configuration</div>
+                <button class="close-settings-btn" onclick="closeAttachmentSettings()">✕</button>
+            </div>
+
+            <div class="settings-body">
+                <div class="setting-section">
+                    <div class="setting-label">Node A Operational Profile</div>
+                    <div class="attachment-dual-selects">
+                        <div class="attachment-primary">
+                            <label class="attachment-sublabel">Primary Style</label>
+                            <select class="attachment-select" id="my-attachment-select" onchange="updateAttachmentStyle('me', this.value)">
+                                <option value="anxious">Connection-Optimized (Lower latency tolerance)</option>
+                                <option value="avoidant">Autonomy-Optimized (Buffer preference)</option>
+                                <option value="secure">Balanced (Adaptive)</option>
+                                <option value="fearful">Mixed-Mode (Context-dependent)</option>
+                            </select>
+                        </div>
+                        <div class="attachment-secondary">
+                            <label class="attachment-sublabel">Secondary Style (Optional)</label>
+                            <select class="attachment-select" id="my-attachment-secondary-select">
+                                <option value="">None</option>
+                                <option value="anxious">Connection-Optimized</option>
+                                <option value="avoidant">Autonomy-Optimized</option>
+                                <option value="secure">Balanced</option>
+                                <option value="fearful">Mixed-Mode</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting-description" id="my-style-description"></div>
+                </div>
+
+                <div class="setting-section">
+                    <div class="setting-label">Node B Operational Profile</div>
+                    <div class="attachment-dual-selects">
+                        <div class="attachment-primary">
+                            <label class="attachment-sublabel">Primary Style</label>
+                            <select class="attachment-select" id="partner-attachment-select" onchange="updateAttachmentStyle('you', this.value)">
+                                <option value="anxious">Connection-Optimized (Lower latency tolerance)</option>
+                                <option value="avoidant">Autonomy-Optimized (Buffer preference)</option>
+                                <option value="secure">Balanced (Adaptive)</option>
+                                <option value="fearful">Mixed-Mode (Context-dependent)</option>
+                            </select>
+                        </div>
+                        <div class="attachment-secondary">
+                            <label class="attachment-sublabel">Secondary Style (Optional)</label>
+                            <select class="attachment-select" id="partner-attachment-secondary-select">
+                                <option value="">None</option>
+                                <option value="anxious">Connection-Optimized</option>
+                                <option value="avoidant">Autonomy-Optimized</option>
+                                <option value="secure">Balanced</option>
+                                <option value="fearful">Mixed-Mode</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting-description" id="partner-style-description"></div>
+                </div>
+
+                <div class="setting-section">
+                    <div class="setting-label">Node Display Labels</div>
+                    <div class="name-inputs">
+                        <input type="text" class="name-input" id="my-name-input" placeholder="Node A label (e.g., Alex)" maxlength="15">
+                        <input type="text" class="name-input" id="partner-name-input" placeholder="Node B label (e.g., Sam)" maxlength="15">
+                    </div>
+                </div>
+
+                <div class="setting-section">
+                    <div class="setting-label">Node A Pronouns</div>
+                    <select class="pronoun-select" id="my-pronoun-select">
+                        <option value="she/her">she/her</option>
+                        <option value="he/him">he/him</option>
+                        <option value="they/them">they/them</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                    <input type="text" class="custom-pronoun-input" id="my-custom-pronoun" placeholder="Enter custom pronouns" style="display: none;" maxlength="20">
+                </div>
+
+                <div class="setting-section">
+                    <div class="setting-label">Node B Pronouns</div>
+                    <select class="pronoun-select" id="partner-pronoun-select">
+                        <option value="she/her">she/her</option>
+                        <option value="he/him">he/him</option>
+                        <option value="they/them">they/them</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                    <input type="text" class="custom-pronoun-input" id="partner-custom-pronoun" placeholder="Enter custom pronouns" style="display: none;" maxlength="20">
+                </div>
+            </div>
+
+            <button class="save-settings-btn" onclick="savePersonalizationSettings()">Save Configuration</button>
+        </div>
+    </div>
+
+    <!-- 3. LIVE STATUS CARDS -->
+    <div class="status-section">
+        <div class="live-status">
+            <div class="live-status-card me-card">
+                <div class="live-status-name">Node A (Her)</div>
+                <div class="attachment-style-badge" id="attachment-badge-me"></div>
+                <div class="live-status-mood" id="live-mood-me">// Awaiting initial broadcast</div>
+                <div class="live-status-time" id="live-time-me"></div>
+            </div>
+            <div class="live-status-card you-card">
+                <div class="live-status-name">Node B (Him)</div>
+                <div class="attachment-style-badge" id="attachment-badge-you"></div>
+                <div class="live-status-mood" id="live-mood-you">// Awaiting initial broadcast</div>
+                <div class="live-status-time" id="live-time-you"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. MOOD SELECTOR -->
+    <div class="mood-section" id="mood-section">
+        <div class="mood-header">System Status Update</div>
+        <div class="mood-buttons" id="mood-buttons"></div>
+        
+        <div class="note-box" id="note-box">
+            <label>Append custom message payload (optional)</label>
+            <textarea id="note-input" placeholder="Additional context to transmit..."></textarea>
+            <div class="note-actions">
+                <button class="ai-rephrase-btn" onclick="improveMessage()">🤖 Optimize for clarity</button>
+                <button class="send-note-btn" onclick="sendNote()">Send Payload</button>
+            </div>
+            <div class="ai-suggestion" id="ai-suggestion">
+                <div class="ai-suggestion-label">💭 Protocol optimization:</div>
+                <div class="ai-suggestion-text" id="ai-suggestion-text"></div>
+                <div class="suggestion-actions">
+                    <button class="use-btn" onclick="useSuggestion()">Apply</button>
+                    <button class="dismiss-btn" onclick="dismissSuggestion()">Keep original</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="private-note-box" id="private-note-box" style="display: none;">
+            <div class="private-note-header">
+                <span class="private-icon">🔒</span>
+                <label>Private Note (Only visible to you)</label>
+            </div>
+            <textarea id="private-note-input" placeholder="Personal reflection, triggers, patterns... Partner cannot see this."></textarea>
+            <button class="save-private-note-btn" onclick="savePrivateNote()">Save Private Note</button>
+            <div class="private-note-saved" id="private-note-saved" style="display: none;">✓ Saved locally</div>
+        </div>
+    </div>
+
+    <!-- 5. ALERTS & PARTNER MESSAGE -->
+    <div class="alert-section" id="alert-section">
+        <div class="combo-alert" id="combo-alert">
+            <div class="combo-alert-title">⚠️ System Notification</div>
+            <div class="combo-alert-text" id="combo-alert-text"></div>
+        </div>
+
+        <div class="partner-message" id="partner-message">
+            <div class="partner-message-label" id="partner-message-label">Incoming message from Node B</div>
+            <div class="partner-message-text" id="partner-message-text"></div>
+            <button class="understand-btn" onclick="helpMeUnderstand()">📖 Parse response protocol</button>
+            <div class="understand-response" id="understand-response">
+                <div class="understand-text" id="understand-text"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. CONTEXTUAL INSIGHT -->
+    <div class="insight-panel" id="insight-panel">
+        <div class="insight-header">
+            <div class="insight-title" id="insight-title">System State Analysis</div>
+            <button class="insight-close" onclick="closeInsight()">✕</button>
+        </div>
+        <div class="insight-grid">
+            <div class="insight-card for-me">
+                <h4 id="insight-label-1">// Local Processing Notes</h4>
+                <p id="insight-text-1"></p>
+            </div>
+            <div class="insight-card for-you">
+                <h4 id="insight-label-2">// Remote Node Receives</h4>
+                <p id="insight-text-2"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. AI INSIGHTS & WEEKLY -->
+    <div class="ai-section">
+        <div class="ai-card">
+            <div class="ai-card-header">
+                <span class="ai-card-icon">🤖</span>
+                <span class="ai-card-title">ML Pattern Detection</span>
+                <button class="refresh-btn" onclick="generateInsights()">Analyze</button>
+            </div>
+            <div class="ai-loading" id="insights-loading">
+                <span class="loading-dot"></span>
+                <span class="loading-dot"></span>
+                <span class="loading-dot"></span>
+            </div>
+            <div class="ai-card-content" id="ai-insights-text">
+                // Select node identity to run pattern analysis
+            </div>
+        </div>
+        <div class="ai-card weekly">
+            <div class="ai-card-header">
+                <span class="ai-card-icon">📊</span>
+                <span class="ai-card-title">Weekly Performance Report</span>
+            </div>
+            <div class="ai-loading" id="weekly-loading">
+                <span class="loading-dot"></span>
+                <span class="loading-dot"></span>
+                <span class="loading-dot"></span>
+            </div>
+            <div class="ai-card-content" id="weekly-text">
+                // Awaiting telemetry data for weekly performance metrics
+            </div>
+        </div>
+    </div>
+
+    <!-- 8. MOOD HISTORY / GIT LOG (Collapsible) -->
+    <div class="collapsible-section">
+        <div class="collapsible-header" onclick="toggleSection(this)">
+            <div class="collapsible-header-left">
+                <span class="collapsible-icon">📊</span>
+                <span class="collapsible-title">git log --graph relationship.branch</span>
+            </div>
+            <span class="collapsible-toggle">▼</span>
+        </div>
+        <div class="collapsible-content">
+            <div class="collapsible-inner">
+                <div class="calendar-legend" style="font-family: 'Courier New', monospace; font-size: 0.85rem;">
+                    <span class="legend-item"><span class="emoji">🌿</span> IDLE (buffering)</span>
+                    <span class="legend-item"><span class="emoji">🌊</span> HIGH_LOAD</span>
+                    <span class="legend-item"><span class="emoji">🌫️</span> TIMEOUT</span>
+                    <span class="legend-item"><span class="emoji">🌸</span> READY</span>
+                    <span class="legend-item"><span class="emoji">☀️</span> 200 OK</span>
+                </div>
+                <div class="month-navigation">
+                    <button class="month-nav-btn" onclick="previousMonth()">◀ git log --skip</button>
+                    <span class="current-month" id="current-month" style="font-family: 'Courier New', monospace;">December 2025</span>
+                    <button class="month-nav-btn" onclick="nextMonth()">git log --recent ▶</button>
+                    <button class="month-nav-btn" onclick="updateMoodCalendar(moodHistory)" style="margin-left: 12px;">🔄 git pull</button>
+                </div>
+                <div class="calendar-container" id="mood-calendar">
+                    <div class="no-history" style="font-family: 'Courier New', monospace;">// No commits yet. Initialize with your first status update.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 9. VENN DIAGRAM (Collapsible) -->
+    <div class="collapsible-section">
+        <div class="collapsible-header" onclick="toggleSection(this)">
+            <div class="collapsible-header-left">
+                <span class="collapsible-icon">🔧</span>
+                <span class="collapsible-title">Node Architecture Diagram</span>
+            </div>
+            <span class="collapsible-toggle">▼</span>
+        </div>
+        <div class="collapsible-content">
+            <div class="collapsible-inner">
+                <div class="venn-container">
+                    <div class="circle circle-me"></div>
+                    <div class="circle circle-you"></div>
+
+                    <div class="content-card card-me">
+                        <div class="card-title">Node A</div>
+                        <div class="card-subtitle" id="venn-subtitle-me">Connection-Optimized · Low Latency Preference</div>
+                        <ul class="traits" id="venn-traits-me">
+                            <li>Processes state through synchronous communication</li>
+                            <li>Stability achieved through regular keepalive packets</li>
+                            <li>Lower tolerance for connection timeout</li>
+                        </ul>
+                        <div class="section-divider">
+                            <span class="section-label">Preferred input signals</span>
+                            <div class="section-content" id="venn-signals-me">Acts of service, verbal acknowledgment</div>
+                        </div>
+                        <div class="section-divider">
+                            <span class="section-label">Optimization target</span>
+                            <div class="growth-item" id="venn-target-me">Trust async processing ≠ dropped connection</div>
+                        </div>
+                    </div>
+
+                    <div class="overlap-card">
+                        <div class="overlap-title">Interface Layer</div>
+                        <span class="overlap-icon">⚡</span>
+                        <ul class="overlap-traits" id="venn-overlap-traits">
+                            <li>Physical co-location stabilizes both systems</li>
+                            <li>Defensive protocols relax in proximity</li>
+                            <li>Shared objective, different optimization strategies</li>
+                            <li>Both nodes more committed than external metrics show</li>
+                            <li>Peak throughput in unscheduled, low-pressure sessions</li>
+                        </ul>
+                        <div class="shared-lang">
+                            <span class="shared-lang-label">Shared communication protocols</span>
+                            <span id="venn-overlap-protocols">Verbal acknowledgment & demonstrated action</span>
+                        </div>
+                    </div>
+
+                    <div class="content-card card-you">
+                        <div class="card-title">Node B</div>
+                        <div class="card-subtitle" id="venn-subtitle-you">Autonomy-Optimized · Internal Processing</div>
+                        <ul class="traits" id="venn-traits-you">
+                            <li>Deep signal processing, async execution model</li>
+                            <li>Resource recovery through isolated processing time</li>
+                            <li>Maintains autonomy while preserving connection</li>
+                            <li>Demonstrates commitment through actions & presence</li>
+                        </ul>
+                        <div class="section-divider">
+                            <span class="section-label">Preferred input signals</span>
+                            <div class="section-content" id="venn-signals-you">Verbal acknowledgment, physical presence</div>
+                        </div>
+                        <div class="section-divider">
+                            <span class="section-label">Optimization target</span>
+                            <div class="growth-item" id="venn-target-you">Broadcast status before disconnect: "Processing independently, will reconnect"</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 10. SYSTEM OPTIMIZATION PROTOCOLS (Collapsible) -->
+    <div class="collapsible-section">
+        <div class="collapsible-header" onclick="toggleSection(this)">
+            <div class="collapsible-header-left">
+                <span class="collapsible-icon">⚙️</span>
+                <span class="collapsible-title">System Optimization Protocols</span>
+            </div>
+            <span class="collapsible-toggle">▼</span>
+        </div>
+        <div class="collapsible-content">
+            <div class="collapsible-inner">
+                <div style="background: rgba(138, 106, 154, 0.05); padding: 16px; border-radius: 12px; margin-bottom: 20px; font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.6; color: #5a4a6a;">
+                    <div style="margin-bottom: 12px; font-weight: 600; color: #4a3a5a;">📊 Coupled Systems Architecture</div>
+                    <pre style="margin: 0; white-space: pre; overflow-x: auto;">
+┌─────────────┐                    ┌─────────────┐
+│   Node A    │◄──────────────────►│   Node B    │
+│  (Her)  │    Bidirectional   │ (Him)  │
+│             │   Feedback Loop    │             │
+└──────┬──────┘                    └──────┬──────┘
+       │                                  │
+       ├─► Signal Processing              ├─► Buffer Space
+       ├─► State Validation               ├─► Async Handling
+       └─► Load Balancing ◄───────────────┘</pre>
+                    <div style="margin-top: 12px; font-size: 0.8rem; font-style: italic;">Two autonomous systems optimizing for shared throughput</div>
+                </div>
+
+                <!-- Server Illustration -->
+                <div style="margin-bottom: 24px; padding: 20px; background: rgba(15, 15, 26, 0.3); border-radius: 12px; border: 1px solid rgba(138, 106, 154, 0.2);">
+                    <div style="margin-bottom: 12px; font-weight: 600; color: #4a3a5a; text-align: center; font-family: 'Courier New', monospace;">💻 Visual Node Topology</div>
+                    <img src="server-illustration.svg" alt="Two-Node Server Architecture" style="width: 100%; height: auto; display: block; border-radius: 8px; cursor: pointer;" onclick="openImageModal()" title="Click to view full size">
+                    <div style="margin-top: 8px; text-align: center; font-size: 0.75rem; color: #8a6a9a; font-style: italic;">Tap to enlarge</div>
+                </div>
+
+                <div class="helps-grid">
+                    <div class="helps-column">
+                        <h3>Node A Optimizations</h3>
+                        <ul id="protocol-node-a">
+                            <li><strong>Allow async processing:</strong> Partner's buffer space prevents system overload</li>
+                            <li><strong>Emit status updates:</strong> Broadcast state without expecting ACK</li>
+                            <li><strong>Trust the handshake:</strong> Connection persists through idle cycles</li>
+                            <li><strong>Parallel processing:</strong> Both nodes need independent compute time</li>
+                        </ul>
+                    </div>
+                    <div class="helps-column">
+                        <h3>System-Wide Protocols</h3>
+                        <ul id="protocol-system-wide">
+                            <li><strong>Use descriptive logging:</strong> "STATUS: feeling X" vs "ERROR: you always Y"</li>
+                            <li><strong>Implement graceful degradation:</strong> Temporary disconnects don't crash the system</li>
+                            <li><strong>Schedule health checks:</strong> Regular pings maintain connection stability</li>
+                            <li><strong>Load balancing:</strong> Distribute processing across both nodes</li>
+                        </ul>
+                    </div>
+                    <div class="helps-column">
+                        <h3>Node B Optimizations</h3>
+                        <ul id="protocol-node-b">
+                            <li><strong>Send keepalive packets:</strong> Small signals maintain connection health</li>
+                            <li><strong>Broadcast intent:</strong> Quick ETA reduces timeout anxiety</li>
+                            <li><strong>Share debug logs:</strong> Internal state visibility builds trust</li>
+                            <li><strong>Presence > perfection:</strong> Uptime matters more than flawless output</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div style="background: rgba(138, 106, 154, 0.05); padding: 16px; border-radius: 12px; margin-top: 20px; font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.6; color: #5a4a6a;">
+                    <div style="margin-bottom: 12px; font-weight: 600; color: #4a3a5a;">📡 Network Traffic Flow</div>
+                    <pre style="margin: 0; white-space: pre; overflow-x: auto;">
+Request Flow:
+Node A ──[SIGNAL: need_space]──> Node B
+       <─[ACK: optional]─────── Node B
+
+Response Latency Tolerance:
+Immediate      ███████░░░░░░░░░░░░░░ Nice when it happens
+Hours          ████████████████░░░░░ Common, expected
+Days           █████████████████████ 100% valid - No timeout ever
+
+All response times are acceptable system behavior.
+Connection persists regardless of latency.
+
+Status Codes:
+200 OK                    - System stable
+202 Accepted              - Processing async (no ETA required)
+408 Extended Processing   - Taking more time (not an error)
+503 Service Unavailable   - Temporary buffer overflow (normal)</pre>
+                </div>
+
+                <div style="margin-top: 20px; padding: 16px; background: linear-gradient(135deg, #e8f4fd 0%, #dce8f7 100%); border-radius: 12px; border-left: 4px solid #A855F7; box-shadow: 0 2px 8px rgba(168, 85, 247, 0.15);">
+                    <div style="font-weight: 600; color: #4a3a5a; margin-bottom: 8px;">🔕 Zero-Notification Architecture</div>
+                    <div style="font-size: 0.9rem; color: #4a3a5a; line-height: 1.6;">
+                        <strong>This system does not send notifications.</strong> No alerts, no pings, no pressure for immediate responses. The line stays open indefinitely for when partners are ready. Both nodes can process at their own pace—hours, days, or longer—without breaking the connection. Your need for space and autonomous processing is built into the core design.
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; padding: 16px; background: linear-gradient(135deg, #fff9e6 0%, #fff5d9 100%); border-radius: 12px; border-left: 4px solid #f0c040;">
+                    <div style="font-weight: 600; color: #6a5a4a; margin-bottom: 8px;">💡 Engineering Note:</div>
+                    <div style="font-size: 0.9rem; color: #6a5a4a; line-height: 1.6;">
+                        This isn't about fixing bugs in each other—it's about optimizing the interface between two well-functioning systems. When Node A signals high load, Node B doesn't need to debug Node A's internals. Just acknowledge the signal and allow async processing. Both systems remain stable independently.
+                    </div>
+                </div>
+
+                <div style="background: rgba(138, 106, 154, 0.05); padding: 16px; border-radius: 12px; margin-top: 20px; font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.6; color: #5a4a6a;">
+                    <div style="margin-bottom: 12px; font-weight: 600; color: #4a3a5a;">🔀 Version Control Metaphor</div>
+                    <pre style="margin: 0; white-space: pre; overflow-x: auto;">
+git log --oneline relationship.branch
+
+* a3f91c2 (HEAD) Merge: Better async communication
+* 8b2e4d1 feat: Implemented keepalive packets
+* c7a9f3e fix: Reduced timeout anxiety
+* 2d1b8a4 refactor: Optimized buffer handling
+* f5e3c2b Initial commit: Two systems connecting
+
+// No force push. No hard reset.
+// Just continuous integration.</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <!-- QR Code Library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
+    <script>
+        // ============ FIREBASE CONFIG ============
+        const firebaseConfig = {
+            apiKey: "AIzaSyDivrvDQijdlHP6nFOBlQB7eAOf8WFo_GA",
+            authDomain: "attachmentstyles-b807c.firebaseapp.com",
+            databaseURL: "https://attachmentstyles-b807c-default-rtdb.firebaseio.com",
+            projectId: "attachmentstyles-b807c",
+            storageBucket: "attachmentstyles-b807c.firebasestorage.app",
+            messagingSenderId: "619137221036",
+            appId: "1:619137221036:web:905bcdec602659048d7a09"
+        };
+
+        const isFirebaseConfigured = !firebaseConfig.apiKey.includes("YOUR_");
+
+        let db = null;
+        let roomRef = null;
+        let historyRef = null;
+        let currentIdentity = null;
+        let roomId = null;
+        let currentMoodKey = null;
+        let previousData = {};
+        let moodHistory = [];
+        let currentMonthOffset = 0; // 0 = current month, -1 = last month, etc.
+
+        // ============ ATTACHMENT STYLE DATA ============
+        const attachmentStyleData = {
+            anxious: {
+                title: 'Connection-Optimized',
+                subtitle: 'Low Latency Preference',
+                traits: [
+                    'Processes state through synchronous communication',
+                    'Stability achieved through regular keepalive packets',
+                    'Lower tolerance for connection timeout',
+                    'High-frequency status checks preferred'
+                ],
+                preferredSignals: 'Acts of service, verbal acknowledgment, quality time',
+                optimizationTarget: 'Trust async processing ≠ dropped connection',
+                color: '#3B82F6'
+            },
+            avoidant: {
+                title: 'Autonomy-Optimized',
+                subtitle: 'Internal Processing',
+                traits: [
+                    'Deep signal processing, async execution model',
+                    'Resource recovery through isolated processing time',
+                    'Maintains autonomy while preserving connection',
+                    'Demonstrates commitment through actions & presence'
+                ],
+                preferredSignals: 'Verbal acknowledgment, physical presence, quality time',
+                optimizationTarget: 'Broadcast status before disconnect: "Processing independently, will reconnect"',
+                color: '#7C3AED'
+            },
+            secure: {
+                title: 'Balanced Processing',
+                subtitle: 'Adaptive & Flexible',
+                traits: [
+                    'Comfortable with both sync and async communication',
+                    'Self-regulates without external validation',
+                    'Provides stability during partner\'s high-load states',
+                    'Balances connection needs with autonomy'
+                ],
+                preferredSignals: 'All forms of communication, adaptable to partner needs',
+                optimizationTarget: 'Continue modeling healthy communication patterns',
+                color: '#10B981'
+            },
+            fearful: {
+                title: 'Mixed-Mode Processing',
+                subtitle: 'Context-Dependent',
+                traits: [
+                    'Oscillates between connection-seeking and withdrawal',
+                    'Processing mode depends on system state',
+                    'Benefits from explicit protocol definitions',
+                    'Requires additional reassurance during transitions'
+                ],
+                preferredSignals: 'Clear communication, gentle reassurance, patience',
+                optimizationTarget: 'Build trust through consistent, predictable responses',
+                color: '#F59E0B'
+            }
+        };
+
+        // ============ ATTACHMENT PAIRING DATA (Interface Layer) ============
+        const attachmentPairingData = {
+            'anxious-avoidant': {
+                traits: [
+                    'Classic pursuit-distance dynamic requires conscious intervention',
+                    'Both styles trigger each other\'s core fears initially',
+                    'High growth potential through learning opposite strategies',
+                    'Physical proximity significantly reduces defensive protocols',
+                    'Success requires explicit communication of needs and reassurance'
+                ],
+                protocols: 'Regular check-ins, clear ETAs, verbal reassurance'
+            },
+            'anxious-anxious': {
+                traits: [
+                    'Both nodes seek high-frequency connection and validation',
+                    'Risk of over-dependency without external stability',
+                    'Strong empathy for each other\'s connection needs',
+                    'May amplify anxiety during conflicts without secure base',
+                    'Thrives when both practice self-soothing techniques'
+                ],
+                protocols: 'Mutual reassurance, scheduled quality time, grounding practices'
+            },
+            'anxious-secure': {
+                traits: [
+                    'Secure node provides consistent stability and reassurance',
+                    'Anxious node learns trust through reliable responsiveness',
+                    'Lower conflict potential with secure\'s emotional regulation',
+                    'Secure node models healthy independence',
+                    'Balanced dynamic with clear growth path for anxious node'
+                ],
+                protocols: 'Secure provides consistent reassurance, anxious practices trust'
+            },
+            'anxious-fearful': {
+                traits: [
+                    'Mixed-mode node oscillates between connection and withdrawal',
+                    'Requires extra patience during fearful node\'s withdrawal phases',
+                    'Both benefit from explicit protocol definitions',
+                    'Connection-seeking phases align well',
+                    'Growth through understanding each other\'s triggers'
+                ],
+                protocols: 'Gentle communication, patience during transitions, clear boundaries'
+            },
+            'avoidant-avoidant': {
+                traits: [
+                    'Both value autonomy and independent processing',
+                    'Low conflict but risk of emotional distance',
+                    'Comfortable with async communication patterns',
+                    'May need conscious effort to maintain intimacy',
+                    'Thrives with scheduled connection time and mutual respect for space'
+                ],
+                protocols: 'Scheduled quality time, respect for independence, intentional vulnerability'
+            },
+            'avoidant-secure': {
+                traits: [
+                    'Secure node respects autonomy while maintaining connection',
+                    'Avoidant node feels safe to gradually increase vulnerability',
+                    'Balanced dynamic with low pressure on avoidant node',
+                    'Secure models healthy interdependence',
+                    'Natural progression toward secure attachment for avoidant'
+                ],
+                protocols: 'Space with reassurance, patient consistency, celebrating small openings'
+            },
+            'avoidant-fearful': {
+                traits: [
+                    'Both need significant buffer space during high-load states',
+                    'Fearful node\'s connection-seeking can trigger avoidant withdrawal',
+                    'Success requires clear communication of shifting needs',
+                    'Both benefit from understanding attachment patterns',
+                    'Physical presence without pressure works well for both'
+                ],
+                protocols: 'Clear boundaries, patient presence, explicit reassurance when needed'
+            },
+            'secure-secure': {
+                traits: [
+                    'Both nodes comfortable with interdependence and autonomy',
+                    'High emotional regulation reduces conflict escalation',
+                    'Natural balance of connection and independence',
+                    'Strong foundation for long-term stability',
+                    'Optimal system architecture for resilience'
+                ],
+                protocols: 'Adaptive communication, mutual support, natural flow'
+            },
+            'secure-fearful': {
+                traits: [
+                    'Secure node provides stability during fearful node\'s transitions',
+                    'Fearful node learns trust through consistent secure responses',
+                    'Requires patience during mixed-mode oscillations',
+                    'Strong growth potential for fearful node toward security',
+                    'Secure node models healthy attachment without judgment'
+                ],
+                protocols: 'Consistent reassurance, patience with shifts, gentle communication'
+            },
+            'fearful-fearful': {
+                traits: [
+                    'Both nodes experience push-pull dynamics',
+                    'High empathy for each other\'s internal conflicts',
+                    'Risk of amplifying each other\'s anxiety and withdrawal',
+                    'Success requires external support and self-awareness',
+                    'Strong bond through shared understanding of complexity'
+                ],
+                protocols: 'Therapy support, explicit communication, patience with each other\'s patterns'
+            }
+        };
+
+        // ============ ATTACHMENT-SPECIFIC OPTIMIZATION PROTOCOLS ============
+        const optimizationProtocols = {
+            anxious: {
+                nodeOptimizations: [
+                    '<strong>Self-soothing protocols:</strong> Practice anxiety reduction before broadcasting distress signals',
+                    '<strong>Trust async mode:</strong> Partner\'s silence ≠ connection dropped',
+                    '<strong>Emit honest status:</strong> Broadcast needs directly vs seeking validation indirectly',
+                    '<strong>Buffer tolerance:</strong> Allow partner processing time without flooding with pings'
+                ],
+                partnerSupport: [
+                    '<strong>Send keepalive packets:</strong> Small reassurance signals prevent timeout anxiety',
+                    '<strong>Broadcast ETAs:</strong> "Processing, will reconnect in 2h" reduces latency fears',
+                    '<strong>Consistent responses:</strong> Reliability builds connection trust over time',
+                    '<strong>Validate then redirect:</strong> Acknowledge feelings before problem-solving'
+                ]
+            },
+            avoidant: {
+                nodeOptimizations: [
+                    '<strong>Proactive status broadcasts:</strong> Signal buffer needs before going async',
+                    '<strong>Share debug logs:</strong> Verbalize internal state vs expecting partner to infer',
+                    '<strong>Scheduled connection time:</strong> Regular sync prevents drift',
+                    '<strong>Incremental vulnerability:</strong> Small emotional packets build tolerance'
+                ],
+                partnerSupport: [
+                    '<strong>Respect buffer space:</strong> Allow async processing without interpreting as rejection',
+                    '<strong>Low-pressure presence:</strong> Parallel processing (same room, different tasks) works well',
+                    '<strong>Celebrate small opens:</strong> Reinforce emotional risk-taking positively',
+                    '<strong>Accept action-based care:</strong> Recognize non-verbal expressions of connection'
+                ]
+            },
+            secure: {
+                nodeOptimizations: [
+                    '<strong>Model healthy patterns:</strong> Demonstrate balanced connection-autonomy for partner',
+                    '<strong>Provide stability:</strong> Consistent presence during partner\'s high-load states',
+                    '<strong>Adaptive processing:</strong> Flex communication style to partner\'s current needs',
+                    '<strong>Maintain boundaries:</strong> Self-care prevents burnout from over-supporting'
+                ],
+                partnerSupport: [
+                    '<strong>Continue secure base:</strong> Your stability anchors the relationship system',
+                    '<strong>Patient consistency:</strong> Reliable responses help partner build trust',
+                    '<strong>Self-awareness:</strong> Monitor for compassion fatigue or resentment',
+                    '<strong>Celebrate growth:</strong> Acknowledge partner\'s progress toward security'
+                ]
+            },
+            fearful: {
+                nodeOptimizations: [
+                    '<strong>Track activation patterns:</strong> Identify when connection vs withdrawal mode triggers',
+                    '<strong>Explicit mode signals:</strong> Broadcast when shifting between approach/avoid states',
+                    '<strong>Therapy as debugging:</strong> External support helps stabilize oscillating patterns',
+                    '<strong>Self-compassion protocols:</strong> Mixed signals are system behavior, not character flaws'
+                ],
+                partnerSupport: [
+                    '<strong>Extra patience buffer:</strong> Inconsistency is expected system behavior',
+                    '<strong>Gentle communication:</strong> Minimize perceived threat during vulnerable moments',
+                    '<strong>Consistent reassurance:</strong> Regular validation helps reduce fear responses',
+                    '<strong>Respect both modes:</strong> Honor connection needs AND space needs as equally valid'
+                ]
+            }
+        };
+
+        // ============ MOOD DATA ============
+        const moodEmojis = {
+            space: '🌿',
+            anxious: '🌊',
+            overwhelmed: '🌊',
+            disconnected: '🌫️',
+            reconnect: '🌸',
+            good: '☀️'
+        };
+
+        const moodData = {
+            me: {
+                space: {
+                    label: "Need space, but okay",
+                    message: "I just need a little quiet time to recharge. This isn't about you. I'll be back soon.",
+                    insightTitle: "When I Need Space",
+                    insightMe: "// STATUS: 200 OK - Processing independently. Take this time to do something that fills your cup.",
+                    insightYou: "// ACK received - She's self-regulating. A simple 'take your time' is perfect keepalive packet."
+                },
+                anxious: {
+                    label: "Feeling anxious",
+                    message: "I'm feeling a bit anxious right now. I don't need you to fix it. Just knowing you're there helps.",
+                    insightTitle: "When I'm Feeling Anxious",
+                    insightMe: "// High latency detected - Notice this feeling without acting on it. Try 5 deep breaths first.",
+                    insightYou: "// Signal received - She's being vulnerable. A heart emoji or 'I'm here' goes far."
+                },
+                disconnected: {
+                    label: "Feeling disconnected",
+                    message: "I'm feeling a bit distant from us. I'd love some quality time when you're ready.",
+                    insightTitle: "When I Feel Disconnected",
+                    insightMe: "// TODO: Debug - Am I seeking connection or seeking reassurance?",
+                    insightYou: "// Connection timeout - She's missing you. Low-pressure sync session would help."
+                },
+                reconnect: {
+                    label: "Ready to reconnect",
+                    message: "I'm feeling open and ready to connect. No pressure, just wanted you to know. ♡",
+                    insightTitle: "Ready to Reconnect",
+                    insightMe: "// READY state - Stay open without expecting specific response code.",
+                    insightYou: "// Port open - This is an invitation, not a requirement. Good time to sync."
+                },
+                good: {
+                    label: "All good ♡",
+                    message: "Feeling good and settled. Just wanted you to know all is well. ♡",
+                    insightTitle: "All Good",
+                    insightMe: "// 200 OK - System stable. Note what contributed to this state.",
+                    insightYou: "// All systems nominal - She's content. No action needed. Just receive this."
+                }
+            },
+            you: {
+                space: {
+                    label: "Need space, but okay",
+                    message: "I'm taking some time to recharge. This isn't distance, it's how I process. I'll be back.",
+                    insightTitle: "When He Needs Space",
+                    insightMe: "// His buffer processing != connection issue. Do something nourishing for yourself.",
+                    insightYou: "// Broadcasting ETA reduces timeout anxiety - Naming when you'll return helps stabilize system."
+                },
+                overwhelmed: {
+                    label: "Feeling overwhelmed",
+                    message: "Feeling a bit overwhelmed right now. I need to step back and recalibrate.",
+                    insightTitle: "When He's Overwhelmed",
+                    insightMe: "// 503 Service Temporarily Unavailable - His withdrawal is system protection, not punishment. Don't retry immediately.",
+                    insightYou: "// High load detected - A small keepalive packet when ready bridges the gap."
+                },
+                disconnected: {
+                    label: "Feeling disconnected",
+                    message: "I've been in my own world lately. It's not intentional. I want to find our way back.",
+                    insightTitle: "When He Feels Disconnected",
+                    insightMe: "// git commit -m 'Acknowledge disconnect' - He's naming it, that's huge. Let him initiate merge.",
+                    insightYou: "// Sharing internal state visibility builds trust - She'll appreciate you naming this."
+                },
+                reconnect: {
+                    label: "Ready to reconnect",
+                    message: "I'm feeling open and ready to be close. Just wanted you to know I'm here.",
+                    insightTitle: "When He's Ready to Reconnect",
+                    insightMe: "// Connection restored - Receive this. Don't overload. Match his bandwidth.",
+                    insightYou: "// Your uptime presence > perfection - Being available is the gift."
+                },
+                good: {
+                    label: "All good ♡",
+                    message: "I'm good. Feeling settled and close to you. ♡",
+                    insightTitle: "All Good",
+                    insightMe: "// 200 OK - Both systems stable. Soak this in. This is what secure feels like.",
+                    insightYou: "// Optimal throughput achieved - Enjoy this moment of low-latency connection."
+                }
+            }
+        };
+
+        // ============ INITIALIZATION ============
+        function init() {
+            // Check for first-time user
+            const hasSeenTutorial = localStorage.getItem('hasSeenTutorial');
+            if (!hasSeenTutorial) {
+                // Show tutorial after a brief delay
+                setTimeout(() => {
+                    document.getElementById('tutorial-modal').style.display = 'flex';
+                }, 500);
+            }
+
+            // Check for saved room first
+            const savedRoom = localStorage.getItem('lastRoom');
+            const urlParams = new URLSearchParams(window.location.search);
+
+            // Priority: URL param > saved room > new room
+            if (urlParams.get('room')) {
+                roomId = urlParams.get('room');
+            } else if (savedRoom) {
+                roomId = savedRoom;
+                document.getElementById('returning-note').classList.add('visible');
+            } else {
+                roomId = generateRoomId();
+            }
+
+            // Update URL and save
+            window.history.replaceState({}, '', `?room=${roomId}`);
+            localStorage.setItem('lastRoom', roomId);
+
+            // Load room name
+            const savedName = localStorage.getItem('roomName_' + roomId);
+            document.getElementById('room-name').textContent = savedName || 'Node Session';
+
+            // Load and apply display names
+            updateDisplayNames();
+
+            // Update Venn diagram on load
+            updateVennDiagram();
+
+            // Update optimization protocols on load
+            updateOptimizationProtocols();
+
+            // Update share link
+            document.getElementById('share-link').value = window.location.href;
+
+            if (isFirebaseConfigured) {
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.database();
+                roomRef = db.ref('rooms/' + roomId);
+                historyRef = db.ref('history/' + roomId);
+                
+                roomRef.on('value', (snapshot) => {
+                    const data = snapshot.val() || {};
+                    updateLiveStatus(data);
+                    checkForComboAlert(data);
+
+                    // Load settings from Firebase
+                    if (data.settings) {
+                        localStorage.setItem('myName', data.settings.myName || 'Her');
+                        localStorage.setItem('partnerName', data.settings.partnerName || 'Him');
+                        localStorage.setItem('myPronouns', data.settings.myPronouns || 'she/her');
+                        localStorage.setItem('partnerPronouns', data.settings.partnerPronouns || 'he/him');
+                        if (data.settings.myAttachment) localStorage.setItem('myAttachment', data.settings.myAttachment);
+                        if (data.settings.partnerAttachment) localStorage.setItem('partnerAttachment', data.settings.partnerAttachment);
+                        if (data.settings.myAttachmentSecondary) localStorage.setItem('myAttachmentSecondary', data.settings.myAttachmentSecondary);
+                        if (data.settings.partnerAttachmentSecondary) localStorage.setItem('partnerAttachmentSecondary', data.settings.partnerAttachmentSecondary);
+                        updateDisplayNames();
+                        updateVennDiagram();
+                        updateOptimizationProtocols();
+                    }
+                });
+
+                historyRef.on('value', (snapshot) => {
+                    console.log('Firebase snapshot received:', snapshot.exists(), 'Number of children:', snapshot.numChildren());
+                    const history = [];
+                    snapshot.forEach((child) => {
+                        const entry = child.val();
+                        console.log('Processing history entry:', entry);
+                        history.push(entry);
+                    });
+                    console.log('Total history entries loaded:', history.length);
+                    // Sort by timestamp in JavaScript instead of Firebase query
+                    history.sort((a, b) => b.timestamp - a.timestamp);
+                    console.log('Sorted history:', history);
+                    moodHistory = history;
+                    updateMoodCalendar(history);
+
+                    if (currentIdentity && history.length >= 3) {
+                        setTimeout(generateInsights, 500);
+                        setTimeout(generateWeeklyReflection, 1000);
+                    }
+                });
+
+                db.ref('.info/connected').on('value', (snap) => {
+                    const dot = document.getElementById('connection-dot');
+                    dot.classList.toggle('connected', snap.val());
+                });
+            }
+
+            // Load saved identity
+            const savedIdentity = localStorage.getItem('identity_' + roomId);
+            if (savedIdentity) {
+                selectIdentity(savedIdentity, true);
+            }
+        }
+
+        function generateRoomId() {
+            return Math.random().toString(36).substring(2, 8).toUpperCase();
+        }
+
+        // ============ ROOM MANAGEMENT ============
+        function editRoomName() {
+            const display = document.getElementById('room-name');
+            const input = document.getElementById('room-name-input');
+            input.value = display.textContent;
+            display.style.display = 'none';
+            input.style.display = 'inline-block';
+            input.focus();
+        }
+
+        function saveRoomName() {
+            const display = document.getElementById('room-name');
+            const input = document.getElementById('room-name-input');
+            const name = input.value.trim() || 'Node Session';
+            display.textContent = name;
+            display.style.display = 'inline';
+            input.style.display = 'none';
+            localStorage.setItem('roomName_' + roomId, name);
+        }
+
+        function openShareModal() {
+            const modal = document.getElementById('share-modal');
+            modal.classList.add('visible');
+
+            // Generate QR code
+            const qrContainer = document.getElementById('qr-code');
+            qrContainer.innerHTML = '';
+
+            // Add a small delay to ensure library is loaded
+            setTimeout(() => {
+                try {
+                    if (typeof QRCode !== 'undefined') {
+                        // Create canvas element
+                        const canvas = document.createElement('canvas');
+                        QRCode.toCanvas(canvas, window.location.href, {
+                            width: 160,
+                            margin: 2,
+                            color: {
+                                dark: '#4a4a5a',
+                                light: '#ffffff'
+                            }
+                        }, (error) => {
+                            if (error) {
+                                console.error('QR generation error:', error);
+                                qrContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; font-size: 0.8rem; text-align: center; padding: 20px;">QR Code generation failed<br><span style="font-size: 0.7rem;">(Copy link below instead)</span></div>';
+                            } else {
+                                qrContainer.appendChild(canvas);
+                            }
+                        });
+                    } else {
+                        // Library not loaded - show fallback
+                        qrContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; font-size: 0.8rem; text-align: center; padding: 20px;">QR Code library loading...<br><span style="font-size: 0.7rem;">(Use link below)</span></div>';
+                        console.warn('QRCode library not loaded. Check internet connection.');
+                    }
+                } catch (e) {
+                    console.error('QR Code error:', e);
+                    qrContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; font-size: 0.8rem; text-align: center; padding: 20px;">Error generating QR code<br><span style="font-size: 0.7rem;">(Copy link below)</span></div>';
+                }
+            }, 100);
+        }
+
+        function closeShareModal() {
+            document.getElementById('share-modal').classList.remove('visible');
+        }
+
+        function openImageModal() {
+            document.getElementById('image-modal').classList.add('visible');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeImageModal() {
+            document.getElementById('image-modal').classList.remove('visible');
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+
+        function copyLink() {
+            const link = document.getElementById('share-link').value;
+            navigator.clipboard.writeText(link).then(() => {
+                const btn = document.querySelector('.copy-link-btn');
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
+
+        function shareViaText() {
+            const link = window.location.href;
+            const name = document.getElementById('room-name').textContent;
+            window.open(`sms:?body=Connect to coupled systems interface "${name}": ${link}`);
+        }
+
+        function shareViaEmail() {
+            const link = window.location.href;
+            const name = document.getElementById('room-name').textContent;
+            window.open(`mailto:?subject=Node Session Invitation&body=Connect to coupled systems interface "${name}": ${link}`);
+        }
+
+        function createNewRoom() {
+            if (confirm('Create a new room? You can always come back to this one using the link.')) {
+                localStorage.removeItem('lastRoom');
+                localStorage.removeItem('identity_' + roomId);
+                window.location.href = window.location.pathname;
+            }
+        }
+
+        // ============ IDENTITY ============
+        function selectIdentity(identity, silent = false) {
+            currentIdentity = identity;
+            localStorage.setItem('identity_' + roomId, identity);
+
+            // Update UI
+            document.querySelectorAll('.identity-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.identity-btn.${identity}`).classList.add('active');
+            
+            // Show badge
+            const badge = document.getElementById('identity-badge');
+            badge.textContent = identity === 'me' ? 'Her' : 'Him';
+            badge.className = `identity-badge ${identity}`;
+            badge.style.display = 'inline-block';
+
+            // Hide welcome after selection
+            if (!silent) {
+                document.getElementById('welcome-card').style.display = 'none';
+            }
+
+            // Show mood section
+            document.getElementById('mood-section').classList.add('visible');
+            populateMoodButtons();
+
+            if (!silent) {
+                document.getElementById('mood-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function populateMoodButtons() {
+            const container = document.getElementById('mood-buttons');
+            const moods = moodData[currentIdentity];
+            container.innerHTML = '';
+            
+            // Check for existing mood today
+            let todayMood = null;
+            if (previousData && previousData[currentIdentity]) {
+                const ts = previousData[currentIdentity].timestamp;
+                if (new Date(ts).toDateString() === new Date().toDateString()) {
+                    todayMood = previousData[currentIdentity].mood;
+                    currentMoodKey = todayMood;
+                    document.getElementById('note-box').classList.add('visible');
+                }
+            }
+
+            Object.keys(moods).forEach(key => {
+                const btn = document.createElement('button');
+                btn.className = 'mood-btn';
+                btn.textContent = moods[key].label;
+                btn.onclick = function() { selectMood(key, this); };
+                if (key === todayMood) {
+                    btn.classList.add(currentIdentity === 'me' ? 'active-me' : 'active-you');
+                }
+                container.appendChild(btn);
+            });
+        }
+
+        // ============ MOOD SELECTION ============
+        function selectMood(moodKey, btn) {
+            currentMoodKey = moodKey;
+            const mood = moodData[currentIdentity][moodKey];
+
+            // Update buttons
+            document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active-me', 'active-you'));
+            btn.classList.add(currentIdentity === 'me' ? 'active-me' : 'active-you');
+
+            // Show note box
+            document.getElementById('note-box').classList.add('visible');
+            document.getElementById('note-input').value = '';
+
+            // Floating hearts for "good"
+            if (moodKey === 'good') createFloatingHearts(btn);
+
+            // Save
+            const timestamp = Date.now();
+            const update = {
+                mood: moodKey,
+                label: mood.label,
+                message: mood.message,
+                customNote: '',
+                timestamp: timestamp
+            };
+
+            if (roomRef && historyRef) {
+                // Update current mood status
+                roomRef.child(currentIdentity).set(update);
+
+                // Save to history - always save so history reflects mood changes
+                const historyEntry = {
+                    person: currentIdentity,
+                    mood: moodKey,
+                    label: mood.label,
+                    emoji: moodEmojis[moodKey],
+                    timestamp: timestamp
+                };
+                historyRef.push(historyEntry).then(() => {
+                    console.log('Mood saved to history:', historyEntry);
+                }).catch(err => {
+                    console.error('Failed to save mood to history:', err);
+                });
+            } else {
+                console.warn('Firebase not initialized - mood not saved');
+            }
+
+            showInsight(currentIdentity, moodKey, false);
+        }
+
+        function sendNote() {
+            const note = document.getElementById('note-input').value.trim();
+            if (!currentMoodKey) return;
+
+            const mood = moodData[currentIdentity][currentMoodKey];
+            const update = {
+                mood: currentMoodKey,
+                label: mood.label,
+                message: mood.message,
+                customNote: note,
+                timestamp: Date.now()
+            };
+
+            if (roomRef) {
+                roomRef.child(currentIdentity).set(update).then(() => {
+                    document.getElementById('note-input').value = '';
+                    document.getElementById('note-input').placeholder = 'Sent! ♡';
+                    setTimeout(() => {
+                        document.getElementById('note-input').placeholder = 'Anything else you want to share...';
+                    }, 2000);
+                });
+                // Don't save to history here - it was already saved in selectMood()
+            }
+        }
+
+        // ============ PRIVATE NOTES (PARTNER VISIBILITY TOGGLE) ============
+        function togglePrivateNotes() {
+            const privateBox = document.getElementById('private-note-box');
+            const isVisible = privateBox.style.display !== 'none';
+
+            if (isVisible) {
+                privateBox.style.display = 'none';
+            } else {
+                privateBox.style.display = 'block';
+                loadPrivateNote();
+            }
+        }
+
+        function savePrivateNote() {
+            const note = document.getElementById('private-note-input').value;
+            const timestamp = Date.now();
+
+            // Save to localStorage with timestamp
+            const privateNotes = JSON.parse(localStorage.getItem('privateNotes') || '[]');
+            privateNotes.push({
+                note: note,
+                timestamp: timestamp,
+                mood: currentMoodKey || 'general'
+            });
+            localStorage.setItem('privateNotes', JSON.stringify(privateNotes));
+
+            // Show saved confirmation
+            const savedIndicator = document.getElementById('private-note-saved');
+            savedIndicator.style.display = 'block';
+            setTimeout(() => {
+                savedIndicator.style.display = 'none';
+            }, 2000);
+
+            // Clear the input
+            document.getElementById('private-note-input').value = '';
+        }
+
+        function loadPrivateNote() {
+            // Load most recent private note for current mood if available
+            const privateNotes = JSON.parse(localStorage.getItem('privateNotes') || '[]');
+            if (privateNotes.length > 0 && currentMoodKey) {
+                const recentNote = privateNotes
+                    .filter(n => n.mood === currentMoodKey)
+                    .sort((a, b) => b.timestamp - a.timestamp)[0];
+
+                if (recentNote) {
+                    document.getElementById('private-note-input').placeholder =
+                        `Last note for this mood: "${recentNote.note.substring(0, 50)}${recentNote.note.length > 50 ? '...' : ''}"`;
+                }
+            }
+        }
+
+        function createFloatingHearts(el) {
+            const rect = el.getBoundingClientRect();
+            const container = document.createElement('div');
+            container.className = 'floating-hearts';
+            container.style.left = rect.left + rect.width / 2 + 'px';
+            container.style.top = rect.top + 'px';
+            document.body.appendChild(container);
+
+            const hearts = ['♡', '💕', '✨', '💗'];
+            for (let i = 0; i < 6; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('span');
+                    heart.className = 'floating-heart';
+                    heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                    heart.style.left = (Math.random() - 0.5) * 50 + 'px';
+                    container.appendChild(heart);
+                    setTimeout(() => heart.remove(), 2000);
+                }, i * 80);
+            }
+            setTimeout(() => container.remove(), 2500);
+        }
+
+        // ============ LIVE STATUS ============
+        function updateLiveStatus(data) {
+            ['me', 'you'].forEach(person => {
+                const moodEl = document.getElementById(`live-mood-${person}`);
+                const timeEl = document.getElementById(`live-time-${person}`);
+                const card = moodEl.closest('.live-status-card');
+
+                if (data && data[person]) {
+                    const isNew = !previousData[person] || previousData[person].timestamp !== data[person].timestamp;
+                    
+                    moodEl.textContent = data[person].label;
+                    moodEl.classList.add('active');
+                    card.classList.add('has-mood');
+                    
+                    if (isNew) {
+                        card.classList.remove('just-updated');
+                        void card.offsetWidth;
+                        card.classList.add('just-updated');
+                    }
+
+                    timeEl.textContent = formatTime(new Date(data[person].timestamp));
+
+                    if (currentIdentity && person !== currentIdentity) {
+                        showPartnerMessage(data[person]);
+                    }
+                } else {
+                    moodEl.textContent = '// Awaiting initial broadcast';
+                    moodEl.classList.remove('active');
+                    card.classList.remove('has-mood');
+                    timeEl.textContent = '';
+                }
+            });
+            previousData = JSON.parse(JSON.stringify(data || {}));
+        }
+
+        function formatTime(date) {
+            const diff = Date.now() - date;
+            if (diff < 60000) return 'just now';
+            if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+            if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
+            return date.toLocaleDateString();
+        }
+
+        function showPartnerMessage(data) {
+            const container = document.getElementById('partner-message');
+            const label = document.getElementById('partner-message-label');
+            const text = document.getElementById('partner-message-text');
+            const partnerIs = currentIdentity === 'me' ? 'Node B' : 'Node A';
+
+            label.textContent = `Incoming message from ${partnerIs}`;
+            let html = data.message;
+            if (data.customNote) {
+                html += `<div class="custom-note"><span class="custom-note-label">Added:</span>${data.customNote}</div>`;
+            }
+            text.innerHTML = html;
+            container.classList.add('visible');
+            
+            // Show insight for partner's mood
+            const partnerIdentity = currentIdentity === 'me' ? 'you' : 'me';
+            showInsight(partnerIdentity, data.mood, true);
+        }
+
+        // ============ INSIGHTS ============
+        function showInsight(person, moodKey, isPartner = false) {
+            const mood = moodData[person] && moodData[person][moodKey];
+            if (!mood) return;
+
+            document.getElementById('insight-title').textContent = mood.insightTitle;
+            
+            const label1 = document.getElementById('insight-label-1');
+            const label2 = document.getElementById('insight-label-2');
+            const text1 = document.getElementById('insight-text-1');
+            const text2 = document.getElementById('insight-text-2');
+
+            if (isPartner) {
+                const who = person === 'me' ? 'She' : 'He';
+                label1.textContent = `What ${who}'s Saying`;
+                label2.textContent = 'How I Can Help';
+                text1.textContent = mood.message;
+                // Show the insight for the CURRENT user (partner of the person who set the mood)
+                text2.textContent = currentIdentity === 'me' ? mood.insightMe : mood.insightYou;
+            } else {
+                label1.textContent = 'Reminder for Me';
+                label2.textContent = 'What They\'ll See';
+                text1.textContent = person === 'me' ? mood.insightMe : mood.insightYou;
+                text2.textContent = mood.message;
+            }
+
+            document.getElementById('insight-panel').classList.add('visible');
+        }
+
+        function closeInsight() {
+            document.getElementById('insight-panel').classList.remove('visible');
+        }
+
+        // ============ COMBO ALERTS ============
+        function checkForComboAlert(data) {
+            if (!data.me || !data.you) return;
+
+            const alert = document.getElementById('combo-alert');
+            const text = document.getElementById('combo-alert-text');
+            const tension = ['anxious', 'overwhelmed', 'disconnected'];
+
+            // Get attachment styles for context-aware alerts
+            const myAttachment = localStorage.getItem('myAttachment') || 'anxious';
+            const partnerAttachment = localStorage.getItem('partnerAttachment') || 'avoidant';
+
+            // Mood-based alerts (existing logic)
+            if (tension.includes(data.me.mood) && tension.includes(data.you.mood)) {
+                alert.classList.add('visible');
+
+                // Attachment-aware message
+                if (myAttachment === 'anxious' && partnerAttachment === 'avoidant') {
+                    text.textContent = "⚠️ Classic anxious-avoidant protest-withdraw pattern detected. Recommendation: 20 min circuit breaker, then reconnect with explicit needs stated.";
+                } else if (myAttachment === 'fearful' || partnerAttachment === 'fearful') {
+                    text.textContent = "⚠️ High latency on both nodes. Mixed-mode systems need extra reassurance. Take space, then reconnect with gentle communication.";
+                } else {
+                    text.textContent = "⚠️ High latency detected on both nodes. Recommendation: Implement circuit breaker pattern (20 min cooldown), then retry with curiosity. Previous deployments successful.";
+                }
+            } else if (data.me.mood === 'anxious' && (data.you.mood === 'space' || data.you.mood === 'overwhelmed')) {
+                alert.classList.add('visible');
+
+                if (myAttachment === 'anxious' && partnerAttachment === 'avoidant') {
+                    text.textContent = "🔄 Classic pursuit-distance pattern: Connection-optimized node pinging, autonomy-optimized buffering. This is expected system behavior. Trust the protocol.";
+                } else {
+                    text.textContent = "🔄 Classic retry loop: Node A pinging, Node B buffering. Neither is ERROR state. Expected behavior. Auto-resolve in ~1h.";
+                }
+            } else if ((data.me.mood === 'space' || data.me.mood === 'overwhelmed') && data.you.mood === 'anxious') {
+                alert.classList.add('visible');
+
+                if (myAttachment === 'avoidant' && partnerAttachment === 'anxious') {
+                    text.textContent = "💡 Your buffer time is triggering connection anxiety. Quick status broadcast ('need 2h, will reconnect') prevents timeout errors.";
+                } else {
+                    text.textContent = "💡 Partner experiencing connection anxiety. Small reassurance message provides significant latency reduction.";
+                }
+            } else if (data.me.mood === 'good' && data.you.mood === 'good') {
+                alert.classList.add('visible');
+
+                // Celebrate based on attachment pairing
+                if (myAttachment === 'anxious' && partnerAttachment === 'avoidant') {
+                    text.textContent = "✅ 200 OK - Anxious-avoidant system achieving secure connection! This proves the architecture works. Save this state.";
+                } else if (myAttachment === 'secure' || partnerAttachment === 'secure') {
+                    text.textContent = "✅ 200 OK - Secure attachment providing system stability. Optimal throughput achieved.";
+                } else {
+                    text.textContent = "✅ 200 OK - Both systems operating at optimal throughput. Low-latency connection achieved. This is your target state.";
+                }
+                setTimeout(() => alert.classList.remove('visible'), 5000);
+            } else {
+                alert.classList.remove('visible');
+            }
+        }
+
+        // ============ AI FEATURES ============
+        function getAIContext() {
+            const myAttachment = localStorage.getItem('myAttachment') || 'secure';
+            const partnerAttachment = localStorage.getItem('partnerAttachment') || 'secure';
+            const myAttachmentSecondary = localStorage.getItem('myAttachmentSecondary') || '';
+            const partnerAttachmentSecondary = localStorage.getItem('partnerAttachmentSecondary') || '';
+
+            const attachmentDescriptions = {
+                anxious: 'connection-optimized with lower latency tolerance',
+                avoidant: 'autonomy-optimized with buffer preference',
+                secure: 'balanced with adaptive processing',
+                fearful: 'mixed-mode with context-dependent behavior'
+            };
+
+            const myDesc = attachmentDescriptions[myAttachment];
+            const partnerDesc = attachmentDescriptions[partnerAttachment];
+
+            // Add secondary style context if present
+            const myFullDesc = myAttachmentSecondary
+                ? `${myDesc} with ${attachmentDescriptions[myAttachmentSecondary]} tendencies`
+                : myDesc;
+            const partnerFullDesc = partnerAttachmentSecondary
+                ? `${partnerDesc} with ${attachmentDescriptions[partnerAttachmentSecondary]} tendencies`
+                : partnerDesc;
+
+            return `You are a systems engineer consulting on a coupled network architecture.
+            Node A (Her) is ${myFullDesc}. Node B (Him) is ${partnerFullDesc}.
+            Use dev/network engineering language: status codes (200, 503), async/sync, latency, throughput, buffering, keepalive packets, circuit breakers, etc.
+            Keep responses brief (2-3 sentences), technical, and actionable. Frame relationship dynamics as system optimization, not emotional fixing.
+            Example language: "High latency detected", "implement circuit breaker", "buffer overflow", "ACK received", "graceful degradation", "eventual consistency".
+            Consider each node's attachment profile (including secondary tendencies) when providing recommendations.`;
+        }
+
+        async function callAI(prompt) {
+            // Check if API key is configured
+            if (!CONFIG || !CONFIG.ANTHROPIC_API_KEY || CONFIG.ANTHROPIC_API_KEY === "YOUR_ANTHROPIC_API_KEY_HERE") {
+                console.warn('AI features disabled: No API key configured');
+                return null;
+            }
+
+            try {
+                const response = await fetch("https://api.anthropic.com/v1/messages", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-api-key": CONFIG.ANTHROPIC_API_KEY,
+                        "anthropic-version": "2023-06-01"
+                    },
+                    body: JSON.stringify({
+                        model: "claude-sonnet-4-20250514",
+                        max_tokens: 250,
+                        system: getAIContext(),
+                        messages: [{ role: "user", content: prompt }]
+                    })
+                });
+                const data = await response.json();
+                return data.content?.[0]?.text || null;
+            } catch (e) {
+                console.error('AI error:', e);
+                return null;
+            }
+        }
+
+        let currentSuggestion = '';
+
+        async function improveMessage() {
+            const input = document.getElementById('note-input');
+            const text = input.value.trim();
+            if (!text) {
+                input.placeholder = 'Write something first';
+                setTimeout(() => input.placeholder = 'Anything else you want to share...', 2000);
+                return;
+            }
+
+            const box = document.getElementById('ai-suggestion');
+            const suggestionText = document.getElementById('ai-suggestion-text');
+            box.classList.add('visible');
+            suggestionText.textContent = 'Thinking...';
+
+            // Get partner's attachment style
+            const partnerAttachment = currentIdentity === 'me'
+                ? localStorage.getItem('partnerAttachment') || 'avoidant'
+                : localStorage.getItem('myAttachment') || 'anxious';
+
+            const attachmentDescriptions = {
+                anxious: 'connection-optimized node (lower latency tolerance)',
+                avoidant: 'autonomy-optimized node (buffer preference)',
+                secure: 'balanced node (adaptive processing)',
+                fearful: 'mixed-mode node (context-dependent)'
+            };
+
+            const target = attachmentDescriptions[partnerAttachment];
+            const result = await callAI(`Optimize this message for ${target}: "${text}". Return only the optimized message.`);
+
+            if (result) {
+                currentSuggestion = result;
+                suggestionText.textContent = result;
+            } else {
+                box.classList.remove('visible');
+            }
+        }
+
+        function useSuggestion() {
+            if (currentSuggestion) document.getElementById('note-input').value = currentSuggestion;
+            dismissSuggestion();
+        }
+
+        function dismissSuggestion() {
+            document.getElementById('ai-suggestion').classList.remove('visible');
+            currentSuggestion = '';
+        }
+
+        async function helpMeUnderstand() {
+            const response = document.getElementById('understand-response');
+            const text = document.getElementById('understand-text');
+            response.classList.add('visible');
+            text.textContent = 'Thinking...';
+
+            const partner = currentIdentity === 'me' ? 'you' : 'me';
+            const data = previousData[partner];
+            if (!data) {
+                text.textContent = "// Remote node has not broadcast status yet";
+                return;
+            }
+
+            // Get partner's attachment style
+            const partnerAttachment = partner === 'me'
+                ? localStorage.getItem('myAttachment') || 'anxious'
+                : localStorage.getItem('partnerAttachment') || 'avoidant';
+
+            const attachmentDescriptions = {
+                anxious: 'connection-optimized (Node A)',
+                avoidant: 'autonomy-optimized (Node B)',
+                secure: 'balanced (adaptive)',
+                fearful: 'mixed-mode (context-dependent)'
+            };
+
+            const type = attachmentDescriptions[partnerAttachment];
+            const result = await callAI(`The ${type} node broadcast: "${data.label}". Status message: "${data.message}". ${data.customNote ? `Additional payload: "${data.customNote}"` : ''} What protocol response is recommended and what's one concrete action to take?`);
+            text.textContent = result || "// Execute requested protocol directly";
+        }
+
+        async function generateInsights() {
+            if (!currentIdentity || moodHistory.length < 3) {
+                document.getElementById('ai-insights-text').textContent = '// Continue logging status broadcasts to enable pattern analysis';
+                return;
+            }
+
+            document.getElementById('insights-loading').classList.add('visible');
+            document.getElementById('ai-insights-text').style.display = 'none';
+
+            const summary = moodHistory.slice(-15).map(h => `${h.person === 'me' ? 'Node A' : 'Node B'}: ${h.label}`).join(', ');
+
+            // Get current user's attachment style
+            const myAttachment = currentIdentity === 'me'
+                ? localStorage.getItem('myAttachment') || 'anxious'
+                : localStorage.getItem('partnerAttachment') || 'avoidant';
+
+            const attachmentDescriptions = {
+                anxious: 'Node A (connection-optimized)',
+                avoidant: 'Node B (autonomy-optimized)',
+                secure: 'balanced node (adaptive)',
+                fearful: 'mixed-mode node (context-dependent)'
+            };
+
+            const who = attachmentDescriptions[myAttachment];
+
+            const result = await callAI(`Status broadcast history: ${summary}. I'm ${who}. Identify one encouraging pattern in system performance. Start with emoji.`);
+
+            document.getElementById('insights-loading').classList.remove('visible');
+            const textEl = document.getElementById('ai-insights-text');
+            textEl.style.display = 'block';
+            textEl.textContent = result || "✅ Both nodes actively maintaining connection. Core system stable.";
+        }
+
+        async function generateWeeklyReflection() {
+            const week = moodHistory.filter(h => h.timestamp > Date.now() - 7 * 24 * 60 * 60 * 1000);
+            if (week.length < 3) {
+                document.getElementById('weekly-text').textContent = '// Insufficient telemetry data for weekly performance analysis';
+                return;
+            }
+
+            document.getElementById('weekly-loading').classList.add('visible');
+            document.getElementById('weekly-text').style.display = 'none';
+
+            const good = week.filter(h => h.mood === 'good' || h.mood === 'reconnect').length;
+            const hard = week.filter(h => ['anxious', 'overwhelmed', 'disconnected'].includes(h.mood)).length;
+
+            const result = await callAI(`Weekly metrics: ${good} optimal states (200 OK), ${hard} high-load states. Generate brief 2-sentence performance summary. Start with emoji.`);
+
+            document.getElementById('weekly-loading').classList.remove('visible');
+            const textEl = document.getElementById('weekly-text');
+            textEl.style.display = 'block';
+            textEl.textContent = result || `📊 System achieved ${good} optimal states this week. Both nodes maintaining active connection.`;
+        }
+
+        // ============ MOOD CALENDAR (GIT LOG) ============
+        function updateMoodCalendar(history) {
+            const container = document.getElementById('mood-calendar');
+            console.log('updateMoodCalendar called with', history?.length, 'entries:', history);
+
+            if (!history || history.length === 0) {
+                container.innerHTML = '<div class="no-history" style="font-family: \'Courier New\', monospace;">// No commits yet. Initialize with your first status update.</div>';
+                return;
+            }
+
+            // Auto-expand the Mood History section if it has data and is collapsed
+            const historySection = container.closest('.collapsible-section');
+            if (historySection && !historySection.querySelector('.collapsible-header').classList.contains('open')) {
+                historySection.querySelector('.collapsible-header').classList.add('open');
+                historySection.querySelector('.collapsible-content').classList.add('open');
+            }
+
+            // Calculate the target month
+            const now = new Date();
+            const targetDate = new Date(now.getFullYear(), now.getMonth() + currentMonthOffset, 1);
+            const targetYear = targetDate.getFullYear();
+            const targetMonth = targetDate.getMonth();
+
+            // Update month display
+            document.getElementById('current-month').textContent =
+                targetDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+            // Filter history for the target month
+            const monthHistory = history.filter(h => {
+                const d = new Date(h.timestamp);
+                return d.getFullYear() === targetYear && d.getMonth() === targetMonth;
+            });
+
+            if (monthHistory.length === 0) {
+                container.innerHTML = `<div class="no-history" style="font-family: 'Courier New', monospace;">// No commits for ${targetDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</div>`;
+                return;
+            }
+
+            // Group by day
+            const grouped = {};
+            monthHistory.forEach(h => {
+                const key = new Date(h.timestamp).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                if (!grouped[key]) grouped[key] = [];
+                grouped[key].push(h);
+            });
+
+            console.log('Grouped calendar data:', grouped);
+
+            // Sort days in descending order (newest first)
+            const sorted = Object.keys(grouped).sort((a, b) =>
+                new Date(grouped[b][0].timestamp) - new Date(grouped[a][0].timestamp)
+            );
+
+            // Display all days in the month - Git log style
+            let html = '';
+            sorted.forEach((day, i) => {
+                const entries = grouped[day].sort((a, b) => b.timestamp - a.timestamp);
+                html += `<div class="calendar-day" style="animation-delay: ${i * 0.05}s; font-family: 'Courier New', monospace;">
+                    <div class="calendar-date" style="font-weight: 600; color: #5a4a6a; border-bottom: 1px solid rgba(138, 106, 154, 0.15); padding-bottom: 8px; margin-bottom: 8px;">${day}</div>
+                    <div class="calendar-moods">`;
+                entries.forEach(e => {
+                    const time = new Date(e.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                    const hash = Math.random().toString(36).substring(2, 9);
+                    const nodeLabel = e.person === 'me' ? 'Node_A' : 'Node_B';
+                    const moodMap = {
+                        space: 'IDLE',
+                        anxious: 'HIGH_LOAD',
+                        overwhelmed: 'HIGH_LOAD',
+                        disconnected: 'TIMEOUT',
+                        reconnect: 'READY',
+                        good: 'OK_200'
+                    };
+                    const statusLabel = moodMap[e.mood] || e.label;
+                    html += `<div class="calendar-mood-entry ${e.person}" style="display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 0.85rem;">
+                        <span style="color: #f0c040; font-weight: 600;">${hash}</span>
+                        <span class="entry-emoji">${e.emoji || moodEmojis[e.mood]}</span>
+                        <span style="color: #8a6a9a; font-weight: 600;">${nodeLabel}:</span>
+                        <span style="color: #5a4a6a;">${statusLabel}</span>
+                        <span class="entry-time" style="color: #999; font-size: 0.8rem; margin-left: auto;">${time}</span>
+                    </div>`;
+                });
+                html += '</div></div>';
+            });
+            container.innerHTML = html;
+        }
+
+        function previousMonth() {
+            currentMonthOffset--;
+            updateMoodCalendar(moodHistory);
+        }
+
+        function nextMonth() {
+            if (currentMonthOffset < 0) {
+                currentMonthOffset++;
+                updateMoodCalendar(moodHistory);
+            }
+        }
+
+        // ============ COLLAPSIBLE SECTIONS ============
+        function toggleSection(header) {
+            header.classList.toggle('open');
+            header.nextElementSibling.classList.toggle('open');
+        }
+
+        // ============ TUTORIAL FUNCTIONS ============
+        let currentTutorialStep = 1;
+
+        function nextTutorialStep() {
+            document.getElementById(`tutorial-step-${currentTutorialStep}`).style.display = 'none';
+            currentTutorialStep++;
+            document.getElementById(`tutorial-step-${currentTutorialStep}`).style.display = 'block';
+        }
+
+        function skipTutorial() {
+            localStorage.setItem('hasSeenTutorial', 'true');
+            document.getElementById('tutorial-modal').style.display = 'none';
+            currentTutorialStep = 1;
+        }
+
+        function closeTutorial() {
+            localStorage.setItem('hasSeenTutorial', 'true');
+            document.getElementById('tutorial-modal').style.display = 'none';
+            currentTutorialStep = 1;
+        }
+
+        function showTutorialAgain() {
+            currentTutorialStep = 1;
+            document.getElementById('tutorial-step-1').style.display = 'block';
+            document.getElementById('tutorial-step-2').style.display = 'none';
+            document.getElementById('tutorial-step-3').style.display = 'none';
+            document.getElementById('tutorial-step-4').style.display = 'none';
+            document.getElementById('tutorial-modal').style.display = 'flex';
+        }
+
+        // ============ PERSONALIZATION SETTINGS ============
+        function openPersonalizationSettings() {
+            const modal = document.getElementById('attachment-settings-modal');
+            modal.style.display = 'flex';
+
+            // Load saved settings
+            const myName = localStorage.getItem('myName') || '';
+            const partnerName = localStorage.getItem('partnerName') || '';
+            const myPronouns = localStorage.getItem('myPronouns') || 'she/her';
+            const partnerPronouns = localStorage.getItem('partnerPronouns') || 'he/him';
+            const myAttachment = localStorage.getItem('myAttachment') || 'secure';
+            const partnerAttachment = localStorage.getItem('partnerAttachment') || 'secure';
+            const myAttachmentSecondary = localStorage.getItem('myAttachmentSecondary') || '';
+            const partnerAttachmentSecondary = localStorage.getItem('partnerAttachmentSecondary') || '';
+
+            document.getElementById('my-name-input').value = myName;
+            document.getElementById('partner-name-input').value = partnerName;
+            document.getElementById('my-pronoun-select').value = myPronouns;
+            document.getElementById('partner-pronoun-select').value = partnerPronouns;
+            document.getElementById('my-attachment-select').value = myAttachment;
+            document.getElementById('partner-attachment-select').value = partnerAttachment;
+            document.getElementById('my-attachment-secondary-select').value = myAttachmentSecondary;
+            document.getElementById('partner-attachment-secondary-select').value = partnerAttachmentSecondary;
+
+            // Handle custom pronouns
+            if (myPronouns === 'custom' || !['she/her', 'he/him', 'they/them'].includes(myPronouns)) {
+                document.getElementById('my-pronoun-select').value = 'custom';
+                document.getElementById('my-custom-pronoun').style.display = 'block';
+                document.getElementById('my-custom-pronoun').value = myPronouns;
+            }
+            if (partnerPronouns === 'custom' || !['she/her', 'he/him', 'they/them'].includes(partnerPronouns)) {
+                document.getElementById('partner-pronoun-select').value = 'custom';
+                document.getElementById('partner-custom-pronoun').style.display = 'block';
+                document.getElementById('partner-custom-pronoun').value = partnerPronouns;
+            }
+        }
+
+        function closeAttachmentSettings() {
+            document.getElementById('attachment-settings-modal').style.display = 'none';
+        }
+
+        function savePersonalizationSettings() {
+            const myName = document.getElementById('my-name-input').value.trim() || 'Partner 1';
+            const partnerName = document.getElementById('partner-name-input').value.trim() || 'Partner 2';
+
+            let myPronouns = document.getElementById('my-pronoun-select').value;
+            let partnerPronouns = document.getElementById('partner-pronoun-select').value;
+
+            if (myPronouns === 'custom') {
+                myPronouns = document.getElementById('my-custom-pronoun').value.trim() || 'they/them';
+            }
+            if (partnerPronouns === 'custom') {
+                partnerPronouns = document.getElementById('partner-custom-pronoun').value.trim() || 'they/them';
+            }
+
+            // Get attachment styles
+            const myAttachment = document.getElementById('my-attachment-select').value;
+            const partnerAttachment = document.getElementById('partner-attachment-select').value;
+            const myAttachmentSecondary = document.getElementById('my-attachment-secondary-select').value;
+            const partnerAttachmentSecondary = document.getElementById('partner-attachment-secondary-select').value;
+
+            const settings = {
+                myName,
+                partnerName,
+                myPronouns,
+                partnerPronouns,
+                myAttachment,
+                partnerAttachment,
+                myAttachmentSecondary,
+                partnerAttachmentSecondary
+            };
+
+            // Save to Firebase
+            if (roomRef) {
+                roomRef.child('settings').set(settings).then(() => {
+                    console.log('Settings saved to Firebase');
+                }).catch(err => {
+                    console.error('Failed to save settings:', err);
+                });
+            }
+
+            // Also save to localStorage as backup
+            localStorage.setItem('myName', myName);
+            localStorage.setItem('partnerName', partnerName);
+            localStorage.setItem('myPronouns', myPronouns);
+            localStorage.setItem('partnerPronouns', partnerPronouns);
+            localStorage.setItem('myAttachment', myAttachment);
+            localStorage.setItem('partnerAttachment', partnerAttachment);
+            localStorage.setItem('myAttachmentSecondary', myAttachmentSecondary);
+            localStorage.setItem('partnerAttachmentSecondary', partnerAttachmentSecondary);
+
+            // Update display names throughout the app
+            updateDisplayNames();
+
+            // Update Venn diagram
+            updateVennDiagram();
+
+            // Update optimization protocols
+            updateOptimizationProtocols();
+
+            closeAttachmentSettings();
+        }
+
+        function updateDisplayNames() {
+            const myName = localStorage.getItem('myName') || 'Her';
+            const partnerName = localStorage.getItem('partnerName') || 'Him';
+            const myAttachment = localStorage.getItem('myAttachment');
+            const partnerAttachment = localStorage.getItem('partnerAttachment');
+            const myAttachmentSecondary = localStorage.getItem('myAttachmentSecondary');
+            const partnerAttachmentSecondary = localStorage.getItem('partnerAttachmentSecondary');
+
+            // Update live status cards
+            document.querySelectorAll('.live-status-name').forEach((el, index) => {
+                el.textContent = index === 0 ? myName : partnerName;
+            });
+
+            // Update identity buttons
+            document.querySelectorAll('.identity-btn').forEach((btn, index) => {
+                if (index === 0) btn.textContent = `I'm ${myName}`;
+                else btn.textContent = `I'm ${partnerName}`;
+            });
+
+            // Update attachment style badges
+            updateAttachmentBadge('me', myAttachment, myAttachmentSecondary);
+            updateAttachmentBadge('you', partnerAttachment, partnerAttachmentSecondary);
+        }
+
+        function updateAttachmentBadge(person, primaryStyle, secondaryStyle) {
+            const badgeEl = document.getElementById(`attachment-badge-${person}`);
+            if (!badgeEl || !primaryStyle) return;
+
+            const attachmentLabels = {
+                anxious: '🔗 Connection-Optimized',
+                avoidant: '🛡️ Autonomy-Optimized',
+                secure: '⚖️ Balanced',
+                fearful: '🔄 Mixed-Mode'
+            };
+
+            const attachmentShortLabels = {
+                anxious: 'Connection',
+                avoidant: 'Autonomy',
+                secure: 'Balanced',
+                fearful: 'Mixed-Mode'
+            };
+
+            // Remove all style classes
+            badgeEl.classList.remove('anxious', 'avoidant', 'secure', 'fearful');
+
+            // Add primary style class for color coding
+            if (primaryStyle) {
+                badgeEl.classList.add(primaryStyle);
+            }
+
+            // Build badge text
+            let badgeText = attachmentLabels[primaryStyle] || '';
+            if (secondaryStyle) {
+                badgeText = `${attachmentShortLabels[primaryStyle]} / ${attachmentShortLabels[secondaryStyle]}`;
+            }
+
+            badgeEl.textContent = badgeText;
+            badgeEl.style.display = primaryStyle ? 'block' : 'none';
+        }
+
+        function updateVennDiagram() {
+            const myAttachment = localStorage.getItem('myAttachment') || 'secure';
+            const partnerAttachment = localStorage.getItem('partnerAttachment') || 'secure';
+            const myAttachmentSecondary = localStorage.getItem('myAttachmentSecondary') || '';
+            const partnerAttachmentSecondary = localStorage.getItem('partnerAttachmentSecondary') || '';
+
+            // Update Node A (me)
+            const myData = getBlendedAttachmentData(myAttachment, myAttachmentSecondary);
+            if (myData) {
+                document.getElementById('venn-subtitle-me').textContent = myData.subtitle;
+                const traitsMe = document.getElementById('venn-traits-me');
+                traitsMe.innerHTML = myData.traits.map(trait => `<li>${trait}</li>`).join('');
+                document.getElementById('venn-signals-me').textContent = myData.preferredSignals;
+                document.getElementById('venn-target-me').textContent = myData.optimizationTarget;
+            }
+
+            // Update Node B (you)
+            const partnerData = getBlendedAttachmentData(partnerAttachment, partnerAttachmentSecondary);
+            if (partnerData) {
+                document.getElementById('venn-subtitle-you').textContent = partnerData.subtitle;
+                const traitsYou = document.getElementById('venn-traits-you');
+                traitsYou.innerHTML = partnerData.traits.map(trait => `<li>${trait}</li>`).join('');
+                document.getElementById('venn-signals-you').textContent = partnerData.preferredSignals;
+                document.getElementById('venn-target-you').textContent = partnerData.optimizationTarget;
+            }
+
+            // Update Interface Layer (overlap) based on pairing
+            const pairingKey = getPairingKey(myAttachment, partnerAttachment);
+            const pairingData = attachmentPairingData[pairingKey];
+            if (pairingData) {
+                const overlapTraits = document.getElementById('venn-overlap-traits');
+                let overlapTraitsList = [...pairingData.traits];
+
+                // Add notes about secondary tendencies if present
+                if (myAttachmentSecondary || partnerAttachmentSecondary) {
+                    overlapTraitsList.push('Both partners show multi-faceted attachment patterns');
+                    if (myAttachmentSecondary) {
+                        const secondaryLabel = attachmentStyleData[myAttachmentSecondary].title;
+                        overlapTraitsList.push(`Node A has ${secondaryLabel} tendencies during stress or specific triggers`);
+                    }
+                    if (partnerAttachmentSecondary) {
+                        const secondaryLabel = attachmentStyleData[partnerAttachmentSecondary].title;
+                        overlapTraitsList.push(`Node B has ${secondaryLabel} tendencies during stress or specific triggers`);
+                    }
+                }
+
+                overlapTraits.innerHTML = overlapTraitsList.map(trait => `<li>${trait}</li>`).join('');
+                document.getElementById('venn-overlap-protocols').textContent = pairingData.protocols;
+            }
+        }
+
+        function getBlendedAttachmentData(primaryStyle, secondaryStyle) {
+            if (!primaryStyle) return null;
+
+            const primaryData = attachmentStyleData[primaryStyle];
+            if (!secondaryStyle) {
+                return {
+                    subtitle: `${primaryData.title} · ${primaryData.subtitle}`,
+                    traits: primaryData.traits,
+                    preferredSignals: primaryData.preferredSignals,
+                    optimizationTarget: primaryData.optimizationTarget
+                };
+            }
+
+            // Blend primary and secondary styles
+            const secondaryData = attachmentStyleData[secondaryStyle];
+            const blendedTraits = [
+                primaryData.traits[0], // Lead with primary
+                `Shows ${secondaryData.title.toLowerCase()} tendencies in stress or specific contexts`,
+                primaryData.traits[1],
+                secondaryData.traits[0] // Add key secondary trait
+            ];
+
+            return {
+                subtitle: `${primaryData.title} (with ${secondaryData.title} tendencies)`,
+                traits: blendedTraits,
+                preferredSignals: `${primaryData.preferredSignals} (especially when ${secondaryStyle} needs activate)`,
+                optimizationTarget: primaryData.optimizationTarget
+            };
+        }
+
+        function getPairingKey(style1, style2) {
+            // Normalize pairing keys to ensure consistent lookup
+            // Order: anxious, avoidant, secure, fearful (alphabetically)
+            const order = { anxious: 1, avoidant: 2, fearful: 3, secure: 4 };
+            if (order[style1] <= order[style2]) {
+                return `${style1}-${style2}`;
+            } else {
+                return `${style2}-${style1}`;
+            }
+        }
+
+        function updateOptimizationProtocols() {
+            const myAttachment = localStorage.getItem('myAttachment') || 'secure';
+            const partnerAttachment = localStorage.getItem('partnerAttachment') || 'secure';
+
+            // Get protocols for each attachment style
+            const myProtocols = optimizationProtocols[myAttachment];
+            const partnerProtocols = optimizationProtocols[partnerAttachment];
+
+            if (!myProtocols || !partnerProtocols) return;
+
+            // Update Node A optimizations (what I should do)
+            const nodeAList = document.getElementById('protocol-node-a');
+            if (nodeAList) {
+                nodeAList.innerHTML = myProtocols.nodeOptimizations.map(item => `<li>${item}</li>`).join('');
+            }
+
+            // Update Node B optimizations (how to support partner)
+            const nodeBList = document.getElementById('protocol-node-b');
+            if (nodeBList) {
+                nodeBList.innerHTML = partnerProtocols.partnerSupport.map(item => `<li>${item}</li>`).join('');
+            }
+
+            // Update System-Wide protocols (general best practices)
+            const systemWideList = document.getElementById('protocol-system-wide');
+            if (systemWideList) {
+                const systemWideProtocols = [
+                    '<strong>Use descriptive logging:</strong> "STATUS: feeling X" vs "ERROR: you always Y"',
+                    '<strong>Implement graceful degradation:</strong> Temporary disconnects don\'t crash the system',
+                    '<strong>Schedule health checks:</strong> Regular pings maintain connection stability',
+                    '<strong>Recognize patterns:</strong> Both nodes have predictable behaviors under load'
+                ];
+                systemWideList.innerHTML = systemWideProtocols.map(item => `<li>${item}</li>`).join('');
+            }
+        }
+
+        // Add pronoun select change handlers
+        document.addEventListener('DOMContentLoaded', () => {
+            const myPronounSelect = document.getElementById('my-pronoun-select');
+            const partnerPronounSelect = document.getElementById('partner-pronoun-select');
+
+            if (myPronounSelect) {
+                myPronounSelect.addEventListener('change', (e) => {
+                    const customInput = document.getElementById('my-custom-pronoun');
+                    customInput.style.display = e.target.value === 'custom' ? 'block' : 'none';
+                });
+            }
+
+            if (partnerPronounSelect) {
+                partnerPronounSelect.addEventListener('change', (e) => {
+                    const customInput = document.getElementById('partner-custom-pronoun');
+                    customInput.style.display = e.target.value === 'custom' ? 'block' : 'none';
+                });
+            }
+        });
+
+        // Initialize
+        init();
+    </script>
+
+    <!-- Footer -->
+    <footer style="width: 100%; max-width: 920px; text-align: center; padding: 40px 20px 20px; margin-top: 40px; border-top: 1px solid rgba(0,0,0,0.06);">
+        <p style="font-size: 0.85rem; color: #888; margin-bottom: 12px;">
+            Made with 💕 for better understanding between partners
+        </p>
+        <a href="https://github.com/hereshecodes/attachment_workbook.io" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 20px; background: rgba(255,255,255,0.8); border: 1px solid rgba(0,0,0,0.1); text-decoration: none; color: #4a4a5a; font-size: 0.8rem; transition: all 0.2s;">
+            <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+            </svg>
+            View on GitHub
+        </a>
+    </footer>
+</body>
 </html>
