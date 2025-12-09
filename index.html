@@ -424,7 +424,7 @@
                     <div class="overlap-card">
                         <div class="overlap-title">Interface Layer</div>
                         <span class="overlap-icon">⚡</span>
-                        <ul class="overlap-traits">
+                        <ul class="overlap-traits" id="venn-overlap-traits">
                             <li>Physical co-location stabilizes both systems</li>
                             <li>Defensive protocols relax in proximity</li>
                             <li>Shared objective, different optimization strategies</li>
@@ -433,7 +433,7 @@
                         </ul>
                         <div class="shared-lang">
                             <span class="shared-lang-label">Shared communication protocols</span>
-                            Verbal acknowledgment & demonstrated action
+                            <span id="venn-overlap-protocols">Verbal acknowledgment & demonstrated action</span>
                         </div>
                     </div>
 
@@ -664,6 +664,110 @@ git log --oneline relationship.branch
             }
         };
 
+        // ============ ATTACHMENT PAIRING DATA (Interface Layer) ============
+        const attachmentPairingData = {
+            'anxious-avoidant': {
+                traits: [
+                    'Classic pursuit-distance dynamic requires conscious intervention',
+                    'Both styles trigger each other\'s core fears initially',
+                    'High growth potential through learning opposite strategies',
+                    'Physical proximity significantly reduces defensive protocols',
+                    'Success requires explicit communication of needs and reassurance'
+                ],
+                protocols: 'Regular check-ins, clear ETAs, verbal reassurance'
+            },
+            'anxious-anxious': {
+                traits: [
+                    'Both nodes seek high-frequency connection and validation',
+                    'Risk of over-dependency without external stability',
+                    'Strong empathy for each other\'s connection needs',
+                    'May amplify anxiety during conflicts without secure base',
+                    'Thrives when both practice self-soothing techniques'
+                ],
+                protocols: 'Mutual reassurance, scheduled quality time, grounding practices'
+            },
+            'anxious-secure': {
+                traits: [
+                    'Secure node provides consistent stability and reassurance',
+                    'Anxious node learns trust through reliable responsiveness',
+                    'Lower conflict potential with secure\'s emotional regulation',
+                    'Secure node models healthy independence',
+                    'Balanced dynamic with clear growth path for anxious node'
+                ],
+                protocols: 'Secure provides consistent reassurance, anxious practices trust'
+            },
+            'anxious-fearful': {
+                traits: [
+                    'Mixed-mode node oscillates between connection and withdrawal',
+                    'Requires extra patience during fearful node\'s withdrawal phases',
+                    'Both benefit from explicit protocol definitions',
+                    'Connection-seeking phases align well',
+                    'Growth through understanding each other\'s triggers'
+                ],
+                protocols: 'Gentle communication, patience during transitions, clear boundaries'
+            },
+            'avoidant-avoidant': {
+                traits: [
+                    'Both value autonomy and independent processing',
+                    'Low conflict but risk of emotional distance',
+                    'Comfortable with async communication patterns',
+                    'May need conscious effort to maintain intimacy',
+                    'Thrives with scheduled connection time and mutual respect for space'
+                ],
+                protocols: 'Scheduled quality time, respect for independence, intentional vulnerability'
+            },
+            'avoidant-secure': {
+                traits: [
+                    'Secure node respects autonomy while maintaining connection',
+                    'Avoidant node feels safe to gradually increase vulnerability',
+                    'Balanced dynamic with low pressure on avoidant node',
+                    'Secure models healthy interdependence',
+                    'Natural progression toward secure attachment for avoidant'
+                ],
+                protocols: 'Space with reassurance, patient consistency, celebrating small openings'
+            },
+            'avoidant-fearful': {
+                traits: [
+                    'Both need significant buffer space during high-load states',
+                    'Fearful node\'s connection-seeking can trigger avoidant withdrawal',
+                    'Success requires clear communication of shifting needs',
+                    'Both benefit from understanding attachment patterns',
+                    'Physical presence without pressure works well for both'
+                ],
+                protocols: 'Clear boundaries, patient presence, explicit reassurance when needed'
+            },
+            'secure-secure': {
+                traits: [
+                    'Both nodes comfortable with interdependence and autonomy',
+                    'High emotional regulation reduces conflict escalation',
+                    'Natural balance of connection and independence',
+                    'Strong foundation for long-term stability',
+                    'Optimal system architecture for resilience'
+                ],
+                protocols: 'Adaptive communication, mutual support, natural flow'
+            },
+            'secure-fearful': {
+                traits: [
+                    'Secure node provides stability during fearful node\'s transitions',
+                    'Fearful node learns trust through consistent secure responses',
+                    'Requires patience during mixed-mode oscillations',
+                    'Strong growth potential for fearful node toward security',
+                    'Secure node models healthy attachment without judgment'
+                ],
+                protocols: 'Consistent reassurance, patience with shifts, gentle communication'
+            },
+            'fearful-fearful': {
+                traits: [
+                    'Both nodes experience push-pull dynamics',
+                    'High empathy for each other\'s internal conflicts',
+                    'Risk of amplifying each other\'s anxiety and withdrawal',
+                    'Success requires external support and self-awareness',
+                    'Strong bond through shared understanding of complexity'
+                ],
+                protocols: 'Therapy support, explicit communication, patience with each other\'s patterns'
+            }
+        };
+
         // ============ MOOD DATA ============
         const moodEmojis = {
             space: '🌿',
@@ -813,6 +917,7 @@ git log --oneline relationship.branch
                         if (data.settings.myAttachment) localStorage.setItem('myAttachment', data.settings.myAttachment);
                         if (data.settings.partnerAttachment) localStorage.setItem('partnerAttachment', data.settings.partnerAttachment);
                         updateDisplayNames();
+                        updateVennDiagram();
                     }
                 });
 
@@ -1741,6 +1846,26 @@ git log --oneline relationship.branch
                 traitsYou.innerHTML = partnerData.traits.map(trait => `<li>${trait}</li>`).join('');
                 document.getElementById('venn-signals-you').textContent = partnerData.preferredSignals;
                 document.getElementById('venn-target-you').textContent = partnerData.optimizationTarget;
+            }
+
+            // Update Interface Layer (overlap) based on pairing
+            const pairingKey = getPairingKey(myAttachment, partnerAttachment);
+            const pairingData = attachmentPairingData[pairingKey];
+            if (pairingData) {
+                const overlapTraits = document.getElementById('venn-overlap-traits');
+                overlapTraits.innerHTML = pairingData.traits.map(trait => `<li>${trait}</li>`).join('');
+                document.getElementById('venn-overlap-protocols').textContent = pairingData.protocols;
+            }
+        }
+
+        function getPairingKey(style1, style2) {
+            // Normalize pairing keys to ensure consistent lookup
+            // Order: anxious, avoidant, secure, fearful (alphabetically)
+            const order = { anxious: 1, avoidant: 2, fearful: 3, secure: 4 };
+            if (order[style1] <= order[style2]) {
+                return `${style1}-${style2}`;
+            } else {
+                return `${style2}-${style1}`;
             }
         }
 
