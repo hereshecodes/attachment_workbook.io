@@ -1892,13 +1892,15 @@ git log --oneline relationship.branch
         }
 
         function updateVennDiagram() {
-            const myAttachment = localStorage.getItem('myAttachment') || 'anxious';
-            const partnerAttachment = localStorage.getItem('partnerAttachment') || 'avoidant';
+            const myAttachment = localStorage.getItem('myAttachment') || 'secure';
+            const partnerAttachment = localStorage.getItem('partnerAttachment') || 'secure';
+            const myAttachmentSecondary = localStorage.getItem('myAttachmentSecondary') || '';
+            const partnerAttachmentSecondary = localStorage.getItem('partnerAttachmentSecondary') || '';
 
             // Update Node A (me)
-            const myData = attachmentStyleData[myAttachment];
+            const myData = getBlendedAttachmentData(myAttachment, myAttachmentSecondary);
             if (myData) {
-                document.getElementById('venn-subtitle-me').textContent = `${myData.title} · ${myData.subtitle}`;
+                document.getElementById('venn-subtitle-me').textContent = myData.subtitle;
                 const traitsMe = document.getElementById('venn-traits-me');
                 traitsMe.innerHTML = myData.traits.map(trait => `<li>${trait}</li>`).join('');
                 document.getElementById('venn-signals-me').textContent = myData.preferredSignals;
@@ -1906,9 +1908,9 @@ git log --oneline relationship.branch
             }
 
             // Update Node B (you)
-            const partnerData = attachmentStyleData[partnerAttachment];
+            const partnerData = getBlendedAttachmentData(partnerAttachment, partnerAttachmentSecondary);
             if (partnerData) {
-                document.getElementById('venn-subtitle-you').textContent = `${partnerData.title} · ${partnerData.subtitle}`;
+                document.getElementById('venn-subtitle-you').textContent = partnerData.subtitle;
                 const traitsYou = document.getElementById('venn-traits-you');
                 traitsYou.innerHTML = partnerData.traits.map(trait => `<li>${trait}</li>`).join('');
                 document.getElementById('venn-signals-you').textContent = partnerData.preferredSignals;
@@ -1920,9 +1922,54 @@ git log --oneline relationship.branch
             const pairingData = attachmentPairingData[pairingKey];
             if (pairingData) {
                 const overlapTraits = document.getElementById('venn-overlap-traits');
-                overlapTraits.innerHTML = pairingData.traits.map(trait => `<li>${trait}</li>`).join('');
+                let overlapTraitsList = [...pairingData.traits];
+
+                // Add notes about secondary tendencies if present
+                if (myAttachmentSecondary || partnerAttachmentSecondary) {
+                    overlapTraitsList.push('Both partners show multi-faceted attachment patterns');
+                    if (myAttachmentSecondary) {
+                        const secondaryLabel = attachmentStyleData[myAttachmentSecondary].title;
+                        overlapTraitsList.push(`Node A has ${secondaryLabel} tendencies during stress or specific triggers`);
+                    }
+                    if (partnerAttachmentSecondary) {
+                        const secondaryLabel = attachmentStyleData[partnerAttachmentSecondary].title;
+                        overlapTraitsList.push(`Node B has ${secondaryLabel} tendencies during stress or specific triggers`);
+                    }
+                }
+
+                overlapTraits.innerHTML = overlapTraitsList.map(trait => `<li>${trait}</li>`).join('');
                 document.getElementById('venn-overlap-protocols').textContent = pairingData.protocols;
             }
+        }
+
+        function getBlendedAttachmentData(primaryStyle, secondaryStyle) {
+            if (!primaryStyle) return null;
+
+            const primaryData = attachmentStyleData[primaryStyle];
+            if (!secondaryStyle) {
+                return {
+                    subtitle: `${primaryData.title} · ${primaryData.subtitle}`,
+                    traits: primaryData.traits,
+                    preferredSignals: primaryData.preferredSignals,
+                    optimizationTarget: primaryData.optimizationTarget
+                };
+            }
+
+            // Blend primary and secondary styles
+            const secondaryData = attachmentStyleData[secondaryStyle];
+            const blendedTraits = [
+                primaryData.traits[0], // Lead with primary
+                `Shows ${secondaryData.title.toLowerCase()} tendencies in stress or specific contexts`,
+                primaryData.traits[1],
+                secondaryData.traits[0] // Add key secondary trait
+            ];
+
+            return {
+                subtitle: `${primaryData.title} (with ${secondaryData.title} tendencies)`,
+                traits: blendedTraits,
+                preferredSignals: `${primaryData.preferredSignals} (especially when ${secondaryStyle} needs activate)`,
+                optimizationTarget: primaryData.optimizationTarget
+            };
         }
 
         function getPairingKey(style1, style2) {
