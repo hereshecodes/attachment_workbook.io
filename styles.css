@@ -2214,6 +2214,8 @@ h1 {
 
 .health-research-section,
 .health-blocking-section,
+.health-connection-section,
+.health-calculation-section,
 .health-path-section,
 .health-improvements-section {
     background: rgba(255, 255, 255, 0.5);
@@ -2248,6 +2250,8 @@ h1 {
 }
 
 .health-path-steps,
+.health-connection-content,
+.health-calculation-content,
 .health-improvements-content {
     color: #5a4a6a;
     font-size: 0.95rem;
@@ -2255,6 +2259,8 @@ h1 {
 }
 
 .health-path-steps strong,
+.health-connection-content strong,
+.health-calculation-content strong,
 .health-improvements-content strong,
 .health-research-content strong {
     color: #4a3a5a;
@@ -2278,6 +2284,8 @@ h1 {
     .health-gauge-section,
     .health-research-section,
     .health-blocking-section,
+    .health-connection-section,
+    .health-calculation-section,
     .health-path-section,
     .health-improvements-section {
         padding: 16px;
