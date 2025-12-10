@@ -4,6 +4,11 @@
     box-sizing: border-box;
 }
 
+html {
+    overflow-x: hidden;
+    width: 100%;
+}
+
 body {
     font-family: 'Quicksand', sans-serif;
     background: linear-gradient(160deg, #0f0f1a 0%, #1a1a2e 30%, #16213e 100%);
@@ -14,6 +19,7 @@ body {
     padding: 40px 20px;
     position: relative;
     overflow-x: hidden;
+    width: 100%;
 }
 
 body::before {
@@ -2408,8 +2414,18 @@ h1 {
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
+    .monitoring-dashboard {
+        padding: 16px;
+        margin: 20px auto;
+    }
+
     .monitoring-grid {
         grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .monitoring-section {
+        padding: 16px;
     }
 
     .gauge-compact {
@@ -2419,5 +2435,9 @@ h1 {
 
     .gauge-compact-text {
         font-size: 1.5rem;
+    }
+
+    .dashboard-title {
+        font-size: 1.1rem;
     }
 }
