@@ -2099,3 +2099,49 @@ h1 {
         text-align: center;
     }
 }
+
+/* ============ CRISIS MODE ============ */
+#crisis-mode-modal .share-modal-content {
+    background: #1a1a2e;
+    color: #e2e8f0;
+}
+
+#crisis-mode-modal strong {
+    color: #f0f0f0;
+}
+
+#crisis-mode-modal em {
+    color: #e2e8f0;
+    font-style: italic;
+}
+
+#crisis-mode-modal button {
+    color: #f0f0f0;
+    transition: all 0.3s ease;
+}
+
+#crisis-mode-modal button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.2);
+}
+
+#crisis-status-me,
+#crisis-status-partner {
+    color: #e2e8f0;
+    margin-bottom: 8px;
+}
+
+#crisis-guidance {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
