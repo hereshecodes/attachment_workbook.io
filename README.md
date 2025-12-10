@@ -38,6 +38,18 @@ A beautiful, interactive web app for couples to understand each other's attachme
 * **Weekly Reflections**: Get AI-generated summaries of your week together, highlighting progress and growth
 * **Understanding Assistant**: When your partner shares how they're feeling, AI helps you understand what they need and how to respond
 
+### 🚨 Crisis & Support Features
+* **Crisis Mode**: Auto-activates when both partners are dysregulated, offering emergency de-escalation protocols with two paths:
+  - **Take Space**: 4-step protocol for safe disconnection with attachment-specific self-regulation strategies
+  - **Attempt Repair**: 4-step protocol for staying together with pattern-naming scripts and co-regulation guidance
+* **System Health & Repair Probability**: Research-backed indicator showing real-time probability of successful repair based on:
+  - Current mood states of both partners
+  - Attachment style pairing dynamics
+  - Specific research citations (Gottman, Sue Johnson, Porges, Siegel)
+  - Shows blockers, recommended paths, and concrete steps to improve odds
+  - Color-coded gauge (Green 70%+, Orange 50-69%, Red 30-49%, Critical <30%)
+* **Private Notes**: Save personal reflections tagged with mood and timestamp, viewable only by you with full history
+
 ### Mood Options
 
 **For (Connection-Seeking):**

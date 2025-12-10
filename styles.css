@@ -2145,3 +2145,141 @@ h1 {
         transform: translateY(0);
     }
 }
+
+/* ============ SYSTEM HEALTH INDICATOR ============ */
+.health-indicator-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.health-gauge-section {
+    background: rgba(138, 106, 154, 0.05);
+    border: 1px solid rgba(138, 106, 154, 0.2);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+}
+
+.health-gauge-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #4a3a5a;
+    margin-bottom: 20px;
+}
+
+.health-gauge-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.health-gauge {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border: 8px solid rgba(138, 106, 154, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.health-gauge-fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #10b981;
+    transition: all 0.6s ease;
+    border-radius: 0 0 50% 50%;
+}
+
+.health-gauge-text {
+    position: relative;
+    z-index: 10;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #10b981;
+    transition: color 0.6s ease;
+}
+
+.health-status-label {
+    font-size: 1rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.health-research-section,
+.health-blocking-section,
+.health-path-section,
+.health-improvements-section {
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.health-section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #4a3a5a;
+    margin-bottom: 12px;
+}
+
+.health-research-content {
+    color: #5a4a6a;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.health-blocking-list {
+    margin: 0;
+    padding-left: 20px;
+    color: #ef4444;
+    font-size: 0.95rem;
+    line-height: 1.8;
+}
+
+.health-blocking-list li {
+    margin-bottom: 8px;
+}
+
+.health-path-steps,
+.health-improvements-content {
+    color: #5a4a6a;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.health-path-steps strong,
+.health-improvements-content strong,
+.health-research-content strong {
+    color: #4a3a5a;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .health-gauge {
+        width: 160px;
+        height: 160px;
+    }
+
+    .health-gauge-text {
+        font-size: 2rem;
+    }
+
+    .health-indicator-container {
+        gap: 16px;
+    }
+
+    .health-gauge-section,
+    .health-research-section,
+    .health-blocking-section,
+    .health-path-section,
+    .health-improvements-section {
+        padding: 16px;
+    }
+}
