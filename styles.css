@@ -2458,4 +2458,85 @@ h1 {
     .dashboard-title {
         font-size: 1.1rem;
     }
+
+    /* Settings Modal Mobile Styles */
+    .settings-modal-content {
+        width: 95%;
+        padding: 20px;
+        max-height: 90vh;
+        border-radius: 16px;
+    }
+
+    .settings-header {
+        margin-bottom: 12px;
+    }
+
+    .settings-title {
+        font-size: 1.3rem;
+    }
+
+    .settings-intro {
+        padding: 12px 16px;
+        margin-bottom: 20px;
+    }
+
+    .settings-intro p {
+        font-size: 0.9rem;
+    }
+
+    .settings-body {
+        gap: 20px;
+    }
+
+    .setting-section {
+        gap: 8px;
+    }
+
+    .setting-label {
+        font-size: 0.9rem;
+    }
+
+    /* Stack dual selects vertically on mobile */
+    .attachment-dual-selects {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+
+    .attachment-primary,
+    .attachment-secondary {
+        width: 100%;
+    }
+
+    .attachment-sublabel {
+        font-size: 0.85rem;
+    }
+
+    .attachment-select,
+    .pronoun-select {
+        font-size: 0.9rem;
+        padding: 10px 12px;
+    }
+
+    /* Stack name inputs vertically on mobile */
+    .name-inputs {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .name-input {
+        width: 100%;
+        font-size: 0.9rem;
+        padding: 10px 14px;
+    }
+
+    .save-settings-btn {
+        padding: 14px 24px;
+        font-size: 0.95rem;
+    }
+
+    .setting-description {
+        font-size: 0.85rem;
+        padding: 10px;
+    }
 }
