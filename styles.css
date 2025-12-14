@@ -2765,7 +2765,13 @@ h1 {
 }
 
 .growth-sidebar.collapsed {
-    transform: translateX(-340px);
+    transform: translateX(-280px);
+}
+
+.growth-sidebar.collapsed .growth-sidebar-toggle {
+    position: absolute;
+    right: -50px;
+    top: 12px;
 }
 
 .growth-sidebar-header {
