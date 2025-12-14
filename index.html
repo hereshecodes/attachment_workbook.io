@@ -1243,8 +1243,9 @@ git log --oneline relationship.branch
                         setTimeout(generateWeeklyReflection, 1000);
                     }
 
-                    // Update growth checklist
+                    // Update growth checklist and consistency metrics
                     setTimeout(generateGrowthChecklist, 100);
+                    setTimeout(calculateConsistencyMetrics, 150);
                 });
 
                 db.ref('.info/connected').on('value', (snap) => {
