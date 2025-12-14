@@ -2385,7 +2385,7 @@ h1 {
     max-width: 920px;
     margin: 30px auto;
     background: linear-gradient(135deg, rgba(138, 106, 154, 0.08) 0%, rgba(186, 230, 253, 0.08) 100%);
-    border: 1px solid rgba(138, 106, 154, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.5);
     border-radius: 16px;
     padding: 24px;
 }
