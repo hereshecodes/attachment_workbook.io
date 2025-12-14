@@ -29,6 +29,7 @@
                 <span class="identity-badge" id="identity-badge" style="display: none;"></span>
             </div>
             <div class="share-actions">
+                <button class="share-btn" onclick="openAboutModal()">ℹ️ What Is This?</button>
                 <button class="share-btn" onclick="togglePrivateNotes()">🔒 Private Notes</button>
                 <button class="share-btn" onclick="openTherapyExport()">📊 Therapy Export</button>
                 <button class="share-btn" onclick="openDateNightIdeas()">💝 Date Ideas</button>
@@ -42,12 +43,116 @@
     <!-- Growth Checklist Sidebar -->
     <div class="growth-sidebar" id="growth-sidebar">
         <div class="growth-sidebar-header">
-            <div class="growth-sidebar-title">🎯 Active Growth Tasks</div>
+            <div class="growth-sidebar-title" id="growth-sidebar-title">🎯 Active Growth Tasks</div>
             <button class="growth-sidebar-toggle" onclick="toggleGrowthSidebar()">←</button>
         </div>
-        <div class="growth-sidebar-subtitle">Auto-generated based on current system state</div>
+        <div class="growth-sidebar-subtitle" id="growth-sidebar-subtitle">Select your identity to see personalized tasks</div>
         <div class="growth-checklist" id="growth-checklist">
-            <div class="growth-loading">Analyzing patterns...</div>
+            <div class="growth-loading">Select your identity (Node A or Node B) to begin...</div>
+        </div>
+    </div>
+
+    <!-- About Modal -->
+    <div class="about-modal" id="about-modal">
+        <div class="about-modal-content">
+            <button class="close-about-btn" onclick="closeAboutModal()">✕</button>
+
+            <div class="about-section">
+                <h2 class="about-title">What Is This Tool?</h2>
+                <p class="about-text">
+                    This is a real-time emotional regulation tracker designed specifically for couples dealing with attachment pattern differences—especially anxious-avoidant pairings.
+                </p>
+            </div>
+
+            <div class="about-section">
+                <h3 class="about-subtitle">🎯 What It Does</h3>
+                <ul class="about-list">
+                    <li><strong>Tracks emotional states in real-time:</strong> Both partners log their current state (anxious, calm, overwhelmed, etc.) so you can see each other's nervous system regulation</li>
+                    <li><strong>Provides context-aware insights:</strong> Get specific advice based on YOUR attachment style + YOUR PARTNER'S current state</li>
+                    <li><strong>Shows objective progress:</strong> The Consistency Tracker proves emotional regulation improvements with data, not subjective feelings</li>
+                    <li><strong>Prevents protest-withdraw cycles:</strong> Real-time visibility helps anxious partners see their partner hasn't disappeared, and avoidant partners understand when their silence triggers panic</li>
+                    <li><strong>Identifies repair windows:</strong> Alerts you when BOTH partners are calm—the optimal time for difficult conversations</li>
+                </ul>
+            </div>
+
+            <div class="about-section">
+                <h3 class="about-subtitle">🧠 The Science Behind It</h3>
+                <p class="about-text">
+                    This tool is built on 30+ years of attachment theory research (Bowlby, Ainsworth, Hazan & Shaver), Emotionally Focused Therapy (Sue Johnson), Gottman Method couples research, and Polyvagal Theory (Stephen Porges). Every percentage, insight, and suggestion is grounded in peer-reviewed research.
+                </p>
+                <p class="about-text">
+                    The "tech/systems" language isn't arbitrary—it's designed to make emotional concepts feel concrete and debuggable for avoidant partners who struggle with abstract emotional language.
+                </p>
+            </div>
+
+            <div class="about-section">
+                <h3 class="about-subtitle">💡 Why The Tech Metaphor?</h3>
+                <ul class="about-list">
+                    <li><strong>Makes emotions concrete:</strong> "I'm dysregulated" → "My system is running at high load"</li>
+                    <li><strong>Removes blame:</strong> Not "you're abandoning me" → "Pursuit-distance pattern detected—expected system behavior"</li>
+                    <li><strong>Provides actionable steps:</strong> "We need to talk" → "Optimal repair window: both nodes regulated for 24h+"</li>
+                    <li><strong>Appeals to logic:</strong> Especially helpful for avoidant partners who trust data over emotion</li>
+                </ul>
+            </div>
+
+            <div class="about-section">
+                <h3 class="about-subtitle">📊 Key Features Explained</h3>
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <div class="feature-name">🎯 Growth Tasks (Left Sidebar)</div>
+                        <div class="feature-desc">Auto-generated action items based on your current patterns. Updates as you log moods.</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-name">📈 Consistency Tracker</div>
+                        <div class="feature-desc">Objective proof of emotional regulation progress. Shows 7-day stability, 30-day trends, and self-soothing rate.</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-name">🏥 System Health</div>
+                        <div class="feature-desc">Research-based coupling probability for your attachment pairing. Shows what's working and what typically derails similar couples.</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-name">🔄 Real-Time Status</div>
+                        <div class="feature-desc">See your partner's current state without asking. Reduces anxious "are you okay?" checking and avoidant withdrawal from pressure.</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-name">📊 Mood History</div>
+                        <div class="feature-desc">Visual timeline showing patterns over time. Helps identify triggers and improvements.</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-name">💝 Date Night Ideas</div>
+                        <div class="feature-desc">Context-aware suggestions based on both partners' current states. No generic advice—tailored to YOUR situation right now.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-section">
+                <h3 class="about-subtitle">🚀 How To Use This Tool</h3>
+                <ol class="about-list">
+                    <li><strong>Both partners create an identity:</strong> Click "I am Node A" or "I am Node B" to establish your profile</li>
+                    <li><strong>Configure attachment styles:</strong> Go to ⚙️ Config and select your attachment types (anxious, avoidant, secure, fearful)</li>
+                    <li><strong>Share the URL:</strong> Click 📤 Share URL and send to your partner so you're in the same session</li>
+                    <li><strong>Log your state regularly:</strong> When you feel anxious, calm, overwhelmed, etc.—log it. The more data, the better the insights</li>
+                    <li><strong>Check the insights:</strong> Look at System Monitoring, Growth Tasks, and Consistency Tracker for guidance</li>
+                    <li><strong>Use repair windows:</strong> When both partners are calm, that's your green light for deeper conversations</li>
+                </ol>
+            </div>
+
+            <div class="about-section">
+                <h3 class="about-subtitle">⚠️ What This Tool Is NOT</h3>
+                <ul class="about-list">
+                    <li>❌ Not a replacement for couples therapy (but it's a great supplement)</li>
+                    <li>❌ Not a "fix" for abuse, infidelity, or fundamental incompatibility</li>
+                    <li>❌ Not about changing your partner—it's about understanding patterns and improving communication</li>
+                    <li>❌ Not a monitoring tool to track your partner's every move—it's for voluntary, mutual transparency</li>
+                </ul>
+            </div>
+
+            <div class="about-section about-footer">
+                <p class="about-text">
+                    <strong>Built with research, designed for real relationships.</strong><br>
+                    All coupling probabilities and insights are based on longitudinal attachment research, not arbitrary percentages.
+                </p>
+            </div>
         </div>
     </div>
 
@@ -1322,6 +1427,16 @@ git log --oneline relationship.branch
             document.getElementById('share-modal').classList.remove('visible');
         }
 
+        function openAboutModal() {
+            document.getElementById('about-modal').classList.add('visible');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAboutModal() {
+            document.getElementById('about-modal').classList.remove('visible');
+            document.body.style.overflow = '';
+        }
+
         function openImageModal() {
             document.getElementById('image-modal').classList.add('visible');
             document.body.style.overflow = 'hidden'; // Prevent background scrolling
@@ -1400,6 +1515,9 @@ git log --oneline relationship.branch
             // Show mood section
             document.getElementById('mood-section').classList.add('visible');
             populateMoodButtons();
+
+            // Update growth checklist for new identity
+            generateGrowthChecklist();
 
             if (!silent) {
                 document.getElementById('mood-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -3339,8 +3457,20 @@ Generated by Attachment Workbook - Systems Engineering Approach to Relationships
 
         function generateGrowthChecklist() {
             const checklist = document.getElementById('growth-checklist');
+            const titleEl = document.getElementById('growth-sidebar-title');
+            const subtitleEl = document.getElementById('growth-sidebar-subtitle');
 
-            if (!currentIdentity || moodHistory.length < 2) {
+            if (!currentIdentity) {
+                titleEl.textContent = '🎯 Active Growth Tasks';
+                subtitleEl.textContent = 'Select your identity to see personalized tasks';
+                checklist.innerHTML = '<div class="growth-loading">Select your identity (Node A or Node B) to begin...</div>';
+                return;
+            }
+
+            if (moodHistory.length < 2) {
+                const nodeName = currentIdentity === 'me' ? 'Node A' : 'Node B';
+                titleEl.textContent = `🎯 ${nodeName} Growth Tasks`;
+                subtitleEl.textContent = 'Log more moods to enable analysis';
                 checklist.innerHTML = '<div class="growth-loading">// Log more moods to enable personalized growth tasks</div>';
                 return;
             }
@@ -3352,6 +3482,17 @@ Generated by Attachment Workbook - Systems Engineering Approach to Relationships
             const partnerAttachment = currentIdentity === 'me'
                 ? localStorage.getItem('partnerAttachment') || 'avoidant'
                 : localStorage.getItem('myAttachment') || 'anxious';
+
+            // Update title and subtitle to show which node
+            const nodeName = currentIdentity === 'me' ? 'Node A' : 'Node B';
+            const attachmentLabel = {
+                anxious: 'Connection-Optimized',
+                avoidant: 'Autonomy-Optimized',
+                secure: 'Balanced',
+                fearful: 'Mixed-Mode'
+            };
+            titleEl.textContent = `🎯 ${nodeName} Growth Tasks`;
+            subtitleEl.textContent = `${attachmentLabel[myAttachment]} • Auto-updated based on patterns`;
 
             const tasks = [];
 
