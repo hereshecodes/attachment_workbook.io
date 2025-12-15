@@ -534,7 +534,38 @@
         </div>
     </div>
 
-    <!-- 4. SYSTEM MONITORING DASHBOARD -->
+    <!-- 4. MOOD HISTORY / GIT LOG -->
+    <div class="collapsible-section" style="margin-top: 30px;">
+        <div class="collapsible-header" onclick="toggleSection(this)">
+            <div class="collapsible-header-left">
+                <span class="collapsible-icon">📊</span>
+                <span class="collapsible-title">git log --graph relationship.branch</span>
+            </div>
+            <span class="collapsible-toggle">▼</span>
+        </div>
+        <div class="collapsible-content">
+            <div class="collapsible-inner">
+                <div class="calendar-legend" style="font-family: 'Courier New', monospace; font-size: 0.85rem;">
+                    <span class="legend-item"><span class="emoji">🌿</span> IDLE (buffering)</span>
+                    <span class="legend-item"><span class="emoji">🌊</span> HIGH_LOAD</span>
+                    <span class="legend-item"><span class="emoji">🌫️</span> TIMEOUT</span>
+                    <span class="legend-item"><span class="emoji">🌸</span> READY</span>
+                    <span class="legend-item"><span class="emoji">☀️</span> 200 OK</span>
+                </div>
+                <div class="month-navigation">
+                    <button class="month-nav-btn" onclick="previousMonth()">◀ git log --skip</button>
+                    <span class="current-month" id="current-month" style="font-family: 'Courier New', monospace;">December 2025</span>
+                    <button class="month-nav-btn" onclick="nextMonth()">git log --recent ▶</button>
+                    <button class="month-nav-btn" onclick="updateMoodCalendar(moodHistory)" style="margin-left: 12px;">🔄 git pull</button>
+                </div>
+                <div class="calendar-container" id="mood-calendar">
+                    <div class="no-history" style="font-family: 'Courier New', monospace;">// No commits yet. Initialize with your first status update.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. SYSTEM MONITORING DASHBOARD -->
     <div class="monitoring-dashboard">
         <div class="dashboard-header">
             <span class="dashboard-icon">📡</span>
@@ -674,38 +705,7 @@
         </div>
     </div>
 
-    <!-- 8. MOOD HISTORY / GIT LOG (Collapsible) -->
-    <div class="collapsible-section">
-        <div class="collapsible-header" onclick="toggleSection(this)">
-            <div class="collapsible-header-left">
-                <span class="collapsible-icon">📊</span>
-                <span class="collapsible-title">git log --graph relationship.branch</span>
-            </div>
-            <span class="collapsible-toggle">▼</span>
-        </div>
-        <div class="collapsible-content">
-            <div class="collapsible-inner">
-                <div class="calendar-legend" style="font-family: 'Courier New', monospace; font-size: 0.85rem;">
-                    <span class="legend-item"><span class="emoji">🌿</span> IDLE (buffering)</span>
-                    <span class="legend-item"><span class="emoji">🌊</span> HIGH_LOAD</span>
-                    <span class="legend-item"><span class="emoji">🌫️</span> TIMEOUT</span>
-                    <span class="legend-item"><span class="emoji">🌸</span> READY</span>
-                    <span class="legend-item"><span class="emoji">☀️</span> 200 OK</span>
-                </div>
-                <div class="month-navigation">
-                    <button class="month-nav-btn" onclick="previousMonth()">◀ git log --skip</button>
-                    <span class="current-month" id="current-month" style="font-family: 'Courier New', monospace;">December 2025</span>
-                    <button class="month-nav-btn" onclick="nextMonth()">git log --recent ▶</button>
-                    <button class="month-nav-btn" onclick="updateMoodCalendar(moodHistory)" style="margin-left: 12px;">🔄 git pull</button>
-                </div>
-                <div class="calendar-container" id="mood-calendar">
-                    <div class="no-history" style="font-family: 'Courier New', monospace;">// No commits yet. Initialize with your first status update.</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 9. VENN DIAGRAM (Collapsible) -->
+    <!-- 8. VENN DIAGRAM (Collapsible) -->
     <div class="collapsible-section">
         <div class="collapsible-header" onclick="toggleSection(this)">
             <div class="collapsible-header-left">
