@@ -3080,3 +3080,235 @@ h1 {
         grid-template-columns: 1fr;
     }
 }
+
+/* ============ MUSIC MODAL ============ */
+.music-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 10000;
+    overflow-y: auto;
+    padding: 40px 20px;
+}
+
+.music-modal.visible {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.music-modal-content {
+    background: linear-gradient(135deg, rgba(20, 20, 30, 0.98) 0%, rgba(30, 30, 42, 0.98) 100%);
+    border: 2px solid rgba(139, 92, 246, 0.3);
+    border-radius: 20px;
+    max-width: 800px;
+    width: 100%;
+    padding: 40px;
+    position: relative;
+    animation: slideDown 0.3s ease;
+}
+
+.close-music-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #ef4444;
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-music-btn:hover {
+    background: rgba(239, 68, 68, 0.3);
+    transform: scale(1.1);
+}
+
+.music-header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.music-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.music-subtitle {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.music-current-state {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.music-state-title {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 12px;
+    font-family: 'Courier New', monospace;
+}
+
+.music-state-badges {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.music-state-badge {
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: rgba(100, 100, 120, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.music-state-badge.me {
+    background: rgba(139, 92, 246, 0.2);
+    border-color: rgba(139, 92, 246, 0.4);
+    color: #a78bfa;
+}
+
+.music-state-badge.you {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: #60a5fa;
+}
+
+.music-playlists {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 30px;
+}
+
+.music-loading {
+    text-align: center;
+    padding: 40px;
+    color: rgba(255, 255, 255, 0.4);
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+.music-playlist-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 16px;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.music-playlist-card:hover {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(139, 92, 246, 0.4);
+    transform: translateY(-2px);
+}
+
+.music-playlist-icon {
+    font-size: 2.5rem;
+}
+
+.music-playlist-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.music-playlist-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.music-playlist-desc {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.music-playlist-reason {
+    font-size: 0.85rem;
+    color: #8b5cf6;
+    font-style: italic;
+    margin-top: 4px;
+}
+
+.music-playlist-link {
+    padding: 10px 20px;
+    background: rgba(139, 92, 246, 0.2);
+    border: 1px solid rgba(139, 92, 246, 0.4);
+    border-radius: 8px;
+    color: #a78bfa;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.music-playlist-link:hover {
+    background: rgba(139, 92, 246, 0.3);
+    transform: scale(1.05);
+}
+
+.music-note {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 8px;
+    padding: 16px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.music-note strong {
+    color: #3b82f6;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .music-modal-content {
+        padding: 30px 20px;
+    }
+
+    .music-title {
+        font-size: 1.4rem;
+    }
+
+    .music-playlist-card {
+        grid-template-columns: auto 1fr;
+        gap: 12px;
+    }
+
+    .music-playlist-link {
+        grid-column: 1 / -1;
+        text-align: center;
+    }
+
+    .music-playlist-icon {
+        font-size: 2rem;
+    }
+}

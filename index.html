@@ -30,6 +30,7 @@
             </div>
             <div class="share-actions">
                 <button class="share-btn" onclick="openAboutModal()">ℹ️ What Is This?</button>
+                <button class="share-btn" onclick="openMusicModal()">🎵 Music</button>
                 <button class="share-btn" onclick="togglePrivateNotes()">🔒 Private Notes</button>
                 <button class="share-btn" onclick="openTherapyExport()">📊 Therapy Export</button>
                 <button class="share-btn" onclick="openDateNightIdeas()">💝 Date Ideas</button>
@@ -49,6 +50,34 @@
         <div class="growth-sidebar-subtitle" id="growth-sidebar-subtitle">Select your identity to see personalized tasks</div>
         <div class="growth-checklist" id="growth-checklist">
             <div class="growth-loading">Select your identity (Node A or Node B) to begin...</div>
+        </div>
+    </div>
+
+    <!-- Music Modal -->
+    <div class="music-modal" id="music-modal">
+        <div class="music-modal-content">
+            <button class="close-music-btn" onclick="closeMusicModal()">✕</button>
+
+            <div class="music-header">
+                <h2 class="music-title">🎵 Context-Aware Music Suggestions</h2>
+                <p class="music-subtitle">Curated playlists based on your current emotional states</p>
+            </div>
+
+            <div class="music-current-state">
+                <div class="music-state-title">Current System State:</div>
+                <div class="music-state-badges">
+                    <div class="music-state-badge" id="music-my-state">Select your mood first</div>
+                    <div class="music-state-badge" id="music-partner-state">Awaiting partner status</div>
+                </div>
+            </div>
+
+            <div class="music-playlists" id="music-playlists">
+                <div class="music-loading">Log your mood to get personalized music suggestions...</div>
+            </div>
+
+            <div class="music-note">
+                <strong>How this works:</strong> Music suggestions adapt to both partners' emotional states. Links open in Spotify or your preferred music service. No tracking—just suggestions based on proven emotion regulation research.
+            </div>
         </div>
     </div>
 
@@ -1458,6 +1487,181 @@ git log --oneline relationship.branch
         function closeAboutModal() {
             document.getElementById('about-modal').classList.remove('visible');
             document.body.style.overflow = '';
+        }
+
+        function openMusicModal() {
+            document.getElementById('music-modal').classList.add('visible');
+            document.body.style.overflow = 'hidden';
+            generateMusicSuggestions();
+        }
+
+        function closeMusicModal() {
+            document.getElementById('music-modal').classList.remove('visible');
+            document.body.style.overflow = '';
+        }
+
+        function generateMusicSuggestions() {
+            const playlistsContainer = document.getElementById('music-playlists');
+            const myStateEl = document.getElementById('music-my-state');
+            const partnerStateEl = document.getElementById('music-partner-state');
+
+            // Get current moods
+            const myMood = currentMoodKey;
+            const partnerData = currentIdentity === 'me' ? partnerStatus : myStatus;
+            const partnerMood = partnerData?.mood;
+
+            // Update state badges
+            if (myMood) {
+                const moodLabels = moodData[currentIdentity];
+                myStateEl.textContent = `You: ${moodLabels[myMood]?.label || myMood}`;
+                myStateEl.className = 'music-state-badge ' + (currentIdentity === 'me' ? 'me' : 'you');
+            } else {
+                myStateEl.textContent = 'Select your mood first';
+                myStateEl.className = 'music-state-badge';
+            }
+
+            if (partnerMood) {
+                const partnerIdentity = currentIdentity === 'me' ? 'partner' : 'me';
+                const partnerMoodLabels = moodData[partnerIdentity];
+                partnerStateEl.textContent = `Partner: ${partnerMoodLabels[partnerMood]?.label || partnerMood}`;
+                partnerStateEl.className = 'music-state-badge ' + (currentIdentity === 'me' ? 'you' : 'me');
+            } else {
+                partnerStateEl.textContent = 'Awaiting partner status';
+                partnerStateEl.className = 'music-state-badge';
+            }
+
+            if (!myMood) {
+                playlistsContainer.innerHTML = '<div class="music-loading">Log your mood to get personalized music suggestions...</div>';
+                return;
+            }
+
+            // Generate playlist suggestions based on mood combinations
+            const playlists = getMusicRecommendations(myMood, partnerMood);
+
+            const html = playlists.map(playlist => `
+                <div class="music-playlist-card">
+                    <div class="music-playlist-icon">${playlist.icon}</div>
+                    <div class="music-playlist-info">
+                        <div class="music-playlist-name">${playlist.name}</div>
+                        <div class="music-playlist-desc">${playlist.description}</div>
+                        <div class="music-playlist-reason">${playlist.reason}</div>
+                    </div>
+                    <a href="${playlist.link}" target="_blank" class="music-playlist-link">
+                        Open in Spotify →
+                    </a>
+                </div>
+            `).join('');
+
+            playlistsContainer.innerHTML = html;
+        }
+
+        function getMusicRecommendations(myMood, partnerMood) {
+            const playlists = [];
+
+            const regulated = ['good', 'calm', 'connected', 'playful', 'content', 'reconnect'];
+            const activated = ['anxious', 'overwhelmed'];
+            const disconnected = ['disconnected', 'shutdown', 'withdrawn'];
+
+            const myRegulated = regulated.includes(myMood);
+            const partnerRegulated = partnerMood && regulated.includes(partnerMood);
+            const myActivated = activated.includes(myMood);
+            const partnerActivated = partnerMood && activated.includes(partnerMood);
+
+            // Both regulated - uplifting/connection music
+            if (myRegulated && partnerRegulated) {
+                playlists.push({
+                    icon: '🌟',
+                    name: 'Peaceful Piano',
+                    description: 'Gentle, calming instrumental piano',
+                    reason: 'Both partners calm - maintain this regulated state',
+                    link: 'https://open.spotify.com/playlist/37i9dQZF1DX4sWSpwq3LiO'
+                });
+                playlists.push({
+                    icon: '💫',
+                    name: 'Chill Hits',
+                    description: 'Relaxed, feel-good vibes',
+                    reason: 'Perfect for shared calm moments',
+                    link: 'https://open.spotify.com/playlist/37i9dQZF1DWU0ScTcjJBdj'
+                });
+            }
+
+            // One or both activated - calming/grounding music
+            if (myActivated || partnerActivated) {
+                playlists.push({
+                    icon: '🌊',
+                    name: 'Deep Focus',
+                    description: 'Ambient electronic for concentration',
+                    reason: 'Helps regulate nervous system during activation',
+                    link: 'https://open.spotify.com/playlist/37i9dQZF1DWZeKCadgRdKQ'
+                });
+                playlists.push({
+                    icon: '🧘',
+                    name: 'Calm Meditation',
+                    description: 'Soothing sounds for anxiety relief',
+                    reason: 'Research-backed for stress reduction',
+                    link: 'https://open.spotify.com/playlist/37i9dQZF1DWZqd5JICZI0u'
+                });
+            }
+
+            // Disconnected/shutdown - gentle, non-demanding music
+            if (disconnected.includes(myMood) || (partnerMood && disconnected.includes(partnerMood))) {
+                playlists.push({
+                    icon: '🌙',
+                    name: 'Ambient Relaxation',
+                    description: 'Gentle soundscapes, no lyrics',
+                    reason: 'Low-stimulation for shutdown states',
+                    link: 'https://open.spotify.com/playlist/37i9dQZF1DWXe9gFZP0gtP'
+                });
+                playlists.push({
+                    icon: '🌲',
+                    name: 'Nature Sounds',
+                    description: 'Rain, forest, ocean waves',
+                    reason: 'Grounding without emotional demands',
+                    link: 'https://open.spotify.com/playlist/37i9dQZF1DWVFeEut75IAL'
+                });
+            }
+
+            // Playful/connected - upbeat but not overwhelming
+            if (myMood === 'playful' || partnerMood === 'playful') {
+                playlists.push({
+                    icon: '✨',
+                    name: 'Feel Good Indie',
+                    description: 'Uplifting indie and alternative',
+                    reason: 'Light, positive energy for playful moods',
+                    link: 'https://open.spotify.com/playlist/37i9dQZF1DX2sUQwD7tbmL'
+                });
+            }
+
+            // Both good/reconnecting - celebration music
+            if ((myMood === 'good' || myMood === 'reconnect') && (partnerMood === 'good' || partnerMood === 'reconnect')) {
+                playlists.push({
+                    icon: '💕',
+                    name: 'Love Songs',
+                    description: 'Romantic, connection-focused',
+                    reason: 'Celebrate your regulated connection',
+                    link: 'https://open.spotify.com/playlist/37i9dQZF1DX50QitC6Oqtn'
+                });
+            }
+
+            // Default calming playlists
+            if (playlists.length === 0) {
+                playlists.push({
+                    icon: '🎵',
+                    name: 'Acoustic Chill',
+                    description: 'Soft acoustic tracks',
+                    reason: 'Versatile for any mood state',
+                    link: 'https://open.spotify.com/playlist/37i9dQZF1DX0SM0LYsmbMT'
+                });
+                playlists.push({
+                    icon: '🌸',
+                    name: 'Lofi Beats',
+                    description: 'Mellow hip-hop instrumentals',
+                    reason: 'Non-intrusive background music',
+                    link: 'https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn'
+                });
+            }
+
+            return playlists;
         }
 
         function openImageModal() {
@@ -3410,13 +3614,13 @@ Generated by Attachment Workbook - Systems Engineering Approach to Relationships
             // Generate evidence list
             const evidence = [];
 
-            // Show stability achievements
-            if (sevenDayStability >= 60) {
+            // Show stability achievements (only if we have enough data)
+            if (sevenDay.length >= 7 && sevenDayStability >= 60) {
                 evidence.push(`✅ Maintained regulated state ${sevenDayStability}% of the time (7-day average)`);
             }
 
-            // Show trend improvements
-            if (sevenDay.length >= 3 && fiveDay.length >= 2) {
+            // Show trend improvements (only if we have enough data for both periods)
+            if (threeDay.length >= 3 && fiveDay.length >= 5) {
                 if (threeDayStability > fiveDayStability) {
                     const improvement = threeDayStability - fiveDayStability;
                     evidence.push(`📈 Improving: Last 3 days ${improvement}% more stable than 5-day average`);
@@ -3464,7 +3668,7 @@ Generated by Attachment Workbook - Systems Engineering Approach to Relationships
             }
 
             // Show quick wins (3-day improvements)
-            if (threeDay.length >= 2 && threeDayStability >= 70) {
+            if (threeDay.length >= 3 && threeDayStability >= 70) {
                 evidence.push(`⚡ Strong recent performance: ${threeDayStability}% stable in last 3 days`);
             }
 
