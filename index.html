@@ -3839,11 +3839,23 @@ Analyze: Identify ONE encouraging pattern showing system health or improvement. 
                 return;
             }
 
-            // Get all mood history for current identity
-            const myHistory = moodHistory.filter(h => h.person === currentIdentity);
+            // Get partner's identity (opposite of current)
+            const partnerIdentity = currentIdentity === 'me' ? 'you' : 'me';
+            const nodeAName = localStorage.getItem('myName') || 'Node A';
+            const nodeBName = localStorage.getItem('partnerName') || 'Node B';
+            const partnerName = partnerIdentity === 'me' ? nodeAName : nodeBName;
 
-            if (myHistory.length < 3) {
-                document.getElementById('weekly-text').textContent = '// Insufficient telemetry data for performance analysis (need 3+ entries)';
+            // Update section title with partner's name
+            const weeklyTitleEl = document.querySelector('.monitoring-section:nth-of-type(3) .monitoring-section-title');
+            if (weeklyTitleEl) {
+                weeklyTitleEl.textContent = `📊 ${partnerName}'s Weekly Performance Report`;
+            }
+
+            // Get all mood history for PARTNER
+            const partnerHistory = moodHistory.filter(h => h.person === partnerIdentity);
+
+            if (partnerHistory.length < 3) {
+                document.getElementById('weekly-text').textContent = `// Insufficient telemetry data for ${partnerName}'s performance analysis (need 3+ entries)`;
                 return;
             }
 
@@ -3851,24 +3863,24 @@ Analyze: Identify ONE encouraging pattern showing system health or improvement. 
             const dysregulated = ['anxious', 'overwhelmed', 'disconnected', 'shutdown'];
 
             // Calculate overall stability
-            const regulatedCount = myHistory.filter(m => regulated.includes(m.mood)).length;
-            const dysregulatedCount = myHistory.filter(m => dysregulated.includes(m.mood)).length;
-            const overallStability = Math.round((regulatedCount / myHistory.length) * 100);
+            const regulatedCount = partnerHistory.filter(m => regulated.includes(m.mood)).length;
+            const dysregulatedCount = partnerHistory.filter(m => dysregulated.includes(m.mood)).length;
+            const overallStability = Math.round((regulatedCount / partnerHistory.length) * 100);
 
             // Calculate recent trend (last 3 entries vs overall)
-            const recentEntries = myHistory.slice(-3);
+            const recentEntries = partnerHistory.slice(-3);
             const recentRegulated = recentEntries.filter(m => regulated.includes(m.mood)).length;
             const recentStability = Math.round((recentRegulated / recentEntries.length) * 100);
 
             // Build report
-            let report = `📊 Overall Performance Report\n\n`;
+            let report = `📊 ${partnerName}'s Overall Performance Report\n\n`;
             report += `Overall Stability: ${overallStability}%\n`;
-            report += `Total Entries: ${myHistory.length}\n`;
+            report += `Total Entries: ${partnerHistory.length}\n`;
             report += `Regulated States: ${regulatedCount}\n`;
             report += `Dysregulated States: ${dysregulatedCount}\n\n`;
 
             // Add trend analysis
-            if (myHistory.length >= 6) {
+            if (partnerHistory.length >= 6) {
                 const diff = recentStability - overallStability;
                 if (diff > 10) {
                     report += `📈 Recent trend: Improving (+${diff}% above average)\n`;
@@ -4401,20 +4413,36 @@ Analyze: Identify ONE encouraging pattern showing system health or improvement. 
 
         // ============ CONSISTENCY TRACKER ============
         function calculateConsistencyMetrics() {
-            // Get all entries for current identity, sorted by timestamp
-            const myHistory = moodHistory
-                .filter(h => h.person === currentIdentity)
+            if (!currentIdentity) return;
+
+            // Get partner's identity (opposite of current)
+            const partnerIdentity = currentIdentity === 'me' ? 'you' : 'me';
+
+            // Get partner's name for display
+            const nodeAName = localStorage.getItem('myName') || 'Node A';
+            const nodeBName = localStorage.getItem('partnerName') || 'Node B';
+            const partnerName = partnerIdentity === 'me' ? nodeAName : nodeBName;
+
+            // Update section title with partner's name
+            const sectionTitle = document.querySelector('.monitoring-section-title');
+            if (sectionTitle) {
+                sectionTitle.textContent = `📈 ${partnerName}'s Emotional Consistency Score`;
+            }
+
+            // Get all entries for PARTNER, sorted by timestamp
+            const partnerHistory = moodHistory
+                .filter(h => h.person === partnerIdentity)
                 .sort((a, b) => a.timestamp - b.timestamp);
 
-            if (myHistory.length < 3) {
-                document.getElementById('evidence-list').innerHTML = '<div class="evidence-loading">Log 3+ moods to generate consistency analysis...</div>';
+            if (partnerHistory.length < 3) {
+                document.getElementById('evidence-list').innerHTML = `<div class="evidence-loading">${partnerName} needs to log 3+ moods to generate consistency analysis...</div>`;
                 return;
             }
 
             // Get last N entries (most recent)
-            const lastThree = myHistory.slice(-3);
-            const lastFive = myHistory.slice(-5);
-            const lastSeven = myHistory.slice(-7);
+            const lastThree = partnerHistory.slice(-3);
+            const lastFive = partnerHistory.slice(-5);
+            const lastSeven = partnerHistory.slice(-7);
 
             // Calculate stability percentages
             const regulated = ['good', 'calm', 'connected', 'playful', 'content', 'reconnect'];
@@ -4509,12 +4537,12 @@ Analyze: Identify ONE encouraging pattern showing system health or improvement. 
                 evidence.push(`🔥 Longest streak: ${maxStreak} consecutive regulated entries`);
             }
 
-            // Check for reduced protest behavior (for anxious)
-            const myAttachment = currentIdentity === 'me'
+            // Check for reduced protest behavior (for anxious partner)
+            const partnerAttachment = partnerIdentity === 'me'
                 ? localStorage.getItem('myAttachment') || 'anxious'
                 : localStorage.getItem('partnerAttachment') || 'avoidant';
 
-            if (myAttachment === 'anxious' && sevenStability !== null) {
+            if (partnerAttachment === 'anxious' && sevenStability !== null) {
                 const anxiousCount = lastSeven.filter(m => m.mood === 'anxious').length;
                 if (anxiousCount <= 2) {
                     evidence.push(`🎯 Low activation: Only ${anxiousCount} anxious entries in last 7`);
