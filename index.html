@@ -1978,9 +1978,13 @@ git log --oneline relationship.branch
             const myPronouns = localStorage.getItem('myPronouns') || 'she/her';
             const partnerPronouns = localStorage.getItem('partnerPronouns') || 'he/him';
 
-            // Get partner mood from previousData
-            const partner = currentIdentity === 'me' ? 'you' : 'me';
-            const partnerMood = previousData[partner] ? previousData[partner].mood : null;
+            // Get most recent moods from history
+            const myRecentMood = moodHistory
+                .filter(h => h.person === 'me')
+                .sort((a, b) => b.timestamp - a.timestamp)[0];
+            const partnerRecentMood = moodHistory
+                .filter(h => h.person === 'partner')
+                .sort((a, b) => b.timestamp - a.timestamp)[0];
 
             const timestamp = new Date().toLocaleString();
 
@@ -1991,16 +1995,16 @@ Generated: ${timestamp}
 Node A: ${myName} (${myPronouns})
 - Primary Attachment Style: ${myAttachment}
 ${myAttachmentSecondary ? `- Secondary Style: ${myAttachmentSecondary}` : ''}
-- Current Status: ${currentMoodKey ? moodData[currentMoodKey].label : 'Not set'}
+- Current Status: ${myRecentMood ? myRecentMood.mood : 'Not set'}
 
 Node B: ${partnerName} (${partnerPronouns})
 - Primary Attachment Style: ${partnerAttachment}
 ${partnerAttachmentSecondary ? `- Secondary Style: ${partnerAttachmentSecondary}` : ''}
-- Current Status: ${partnerMood ? moodData[partnerMood].label : 'Not set'}
+- Current Status: ${partnerRecentMood ? partnerRecentMood.mood : 'Not set'}
 
 === CURRENT DYNAMICS ===
-${currentMoodKey ? `Node A Mood: ${moodData[currentMoodKey].message}` : ''}
-${partnerMood ? `Node B Mood: ${moodData[partnerMood].message}` : ''}
+${myRecentMood ? `Node A Mood: ${myRecentMood.mood} - ${myRecentMood.message || ''}` : ''}
+${partnerRecentMood ? `Node B Mood: ${partnerRecentMood.mood} - ${partnerRecentMood.message || ''}` : ''}
 
 === PATTERN NOTES ===
 (Space for therapist/client notes about recurring patterns)
