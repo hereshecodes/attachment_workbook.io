@@ -613,15 +613,15 @@
         <div class="monitoring-grid">
             <!-- Live Status Cards -->
             <div class="monitoring-section">
-                <div class="monitoring-section-title">Current Node States</div>
+                <div class="monitoring-section-title">Partner Status Update</div>
                 <div class="live-status">
-                    <div class="live-status-card me-card">
+                    <div class="live-status-card me-card" id="status-card-me">
                         <div class="live-status-name">Node A (Her)</div>
                         <div class="attachment-style-badge" id="attachment-badge-me"></div>
                         <div class="live-status-mood" id="live-mood-me">// Awaiting initial broadcast</div>
                         <div class="live-status-time" id="live-time-me"></div>
                     </div>
-                    <div class="live-status-card you-card">
+                    <div class="live-status-card you-card" id="status-card-you">
                         <div class="live-status-name">Node B (Him)</div>
                         <div class="attachment-style-badge" id="attachment-badge-you"></div>
                         <div class="live-status-mood" id="live-mood-you">// Awaiting initial broadcast</div>
@@ -1967,9 +1967,22 @@ git log --oneline relationship.branch
             // Show partner's latest status in context card
             showPartnerLatestStatus();
 
+            // Update status cards to show only partner's card
+            updateStatusCardVisibility();
+
             if (!silent) {
                 document.getElementById('mood-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
+        }
+
+        function updateStatusCardVisibility() {
+            if (!currentIdentity) return;
+
+            // Show partner's card, hide own card
+            const partnerIdentity = currentIdentity === 'me' ? 'you' : 'me';
+
+            document.getElementById(`status-card-${currentIdentity}`).style.display = 'none';
+            document.getElementById(`status-card-${partnerIdentity}`).style.display = 'block';
         }
 
         function populateMoodButtons() {
