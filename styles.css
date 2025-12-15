@@ -1594,6 +1594,30 @@ h1 {
     opacity: 0.7;
 }
 
+.delete-entry-btn {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-left: 8px;
+    opacity: 0.6;
+}
+
+.delete-entry-btn:hover {
+    background: rgba(239, 68, 68, 0.25);
+    border-color: rgba(239, 68, 68, 0.5);
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.delete-entry-btn:active {
+    transform: scale(0.95);
+}
+
 .no-history {
     text-align: center;
     color: #999;
@@ -3349,6 +3373,113 @@ h1 {
 }
 
 .music-note strong {
+    color: #3b82f6;
+}
+
+/* ============ MESSAGE ANALYSIS ============ */
+.message-upload-section {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.upload-instructions {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.upload-instructions h3 {
+    color: rgba(167, 139, 250, 0.9);
+    font-size: 1rem;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.upload-instructions ol {
+    color: rgba(255, 255, 255, 0.85);
+    margin-left: 20px;
+    line-height: 1.8;
+}
+
+.upload-instructions li {
+    margin-bottom: 8px;
+}
+
+.upload-btn {
+    background: rgba(139, 92, 246, 0.2);
+    border: 2px solid rgba(139, 92, 246, 0.5);
+    color: rgba(167, 139, 250, 0.9);
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    display: block;
+}
+
+.upload-btn:hover {
+    background: rgba(139, 92, 246, 0.3);
+    border-color: rgba(167, 139, 250, 0.8);
+    transform: translateY(-2px);
+}
+
+.message-stats {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.message-stats h3 {
+    color: rgba(167, 139, 250, 0.9);
+    font-size: 1rem;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.message-stat-card {
+    background: rgba(16, 185, 129, 0.12);
+    border-left: 3px solid #10b981;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+.stat-label {
+    color: rgba(167, 139, 250, 0.8);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.stat-value {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.message-insight {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 8px;
+    padding: 16px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-top: 16px;
+}
+
+.message-insight strong {
     color: #3b82f6;
 }
 

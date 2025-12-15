@@ -82,6 +82,43 @@
         </div>
     </div>
 
+    <!-- Message Analysis Modal -->
+    <div class="music-modal" id="message-modal">
+        <div class="music-modal-content">
+            <button class="close-music-btn" onclick="closeMessageAnalysis()">✕</button>
+
+            <div class="music-header">
+                <h2 class="music-title">💬 Message History Analysis</h2>
+                <p class="music-subtitle">Import text/message history to analyze communication patterns</p>
+            </div>
+
+            <div class="message-upload-section">
+                <div class="upload-instructions">
+                    <h3>How to Import:</h3>
+                    <ol>
+                        <li>Export your text messages (iMessage, WhatsApp, etc.) as a text file</li>
+                        <li>Upload the file below</li>
+                        <li>We'll analyze patterns like message frequency, response times, and communication style</li>
+                    </ol>
+                </div>
+
+                <input type="file" id="message-file-input" accept=".txt,.csv" style="display: none;" onchange="processMessageFile(event)">
+                <button class="upload-btn" onclick="document.getElementById('message-file-input').click()">
+                    📁 Upload Message History
+                </button>
+
+                <div class="message-stats" id="message-stats" style="display: none;">
+                    <h3>Analysis Results:</h3>
+                    <div id="message-analysis-content"></div>
+                </div>
+            </div>
+
+            <div class="music-note">
+                <strong>Privacy:</strong> All analysis happens in your browser. No data is sent to any server. Message content is analyzed for patterns only—not stored or shared.
+            </div>
+        </div>
+    </div>
+
     <!-- About Modal -->
     <div class="about-modal" id="about-modal">
         <div class="about-modal-content">
@@ -1671,6 +1708,78 @@ git log --oneline relationship.branch
             return playlists;
         }
 
+        // ============ MESSAGE ANALYSIS ============
+        function openMessageAnalysis() {
+            document.getElementById('message-modal').classList.add('visible');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMessageAnalysis() {
+            document.getElementById('message-modal').classList.remove('visible');
+            document.body.style.overflow = '';
+        }
+
+        function processMessageFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                analyzeMessages(content);
+            };
+            reader.readAsText(file);
+        }
+
+        function analyzeMessages(textContent) {
+            // Parse message patterns
+            const lines = textContent.split('\n');
+            const myName = localStorage.getItem('myName') || 'Me';
+            const partnerName = localStorage.getItem('partnerName') || 'Partner';
+
+            let myMessages = 0;
+            let partnerMessages = 0;
+            let totalMessages = lines.length;
+
+            // Try to detect who sent each message (basic pattern matching)
+            lines.forEach(line => {
+                if (line.includes(myName) || line.toLowerCase().includes('me:')) {
+                    myMessages++;
+                } else if (line.includes(partnerName) || line.toLowerCase().includes('you:')) {
+                    partnerMessages++;
+                }
+            });
+
+            // Calculate patterns
+            const myPercentage = Math.round((myMessages / totalMessages) * 100);
+            const partnerPercentage = Math.round((partnerMessages / totalMessages) * 100);
+
+            // Display analysis
+            const analysisHTML = `
+                <div class="message-stat-card">
+                    <div class="stat-label">Total Messages Analyzed</div>
+                    <div class="stat-value">${totalMessages}</div>
+                </div>
+                <div class="message-stat-card">
+                    <div class="stat-label">${myName}'s Messages</div>
+                    <div class="stat-value">${myMessages} (${myPercentage}%)</div>
+                </div>
+                <div class="message-stat-card">
+                    <div class="stat-label">${partnerName}'s Messages</div>
+                    <div class="stat-value">${partnerMessages} (${partnerPercentage}%)</div>
+                </div>
+                <div class="message-insight">
+                    <strong>Communication Pattern:</strong><br>
+                    ${myPercentage > 60 ? `${myName} initiates more - may indicate anxious attachment pursuing connection` : ''}
+                    ${partnerPercentage > 60 ? `${partnerName} initiates more - balanced or secure communication` : ''}
+                    ${Math.abs(myPercentage - partnerPercentage) < 20 ? 'Balanced communication - both partners contributing equally' : ''}
+                </div>
+            `;
+
+            document.getElementById('message-analysis-content').innerHTML = analysisHTML;
+            document.getElementById('message-stats').style.display = 'block';
+        }
+
         function openImageModal() {
             document.getElementById('image-modal').classList.add('visible');
             document.body.style.overflow = 'hidden'; // Prevent background scrolling
@@ -1858,6 +1967,61 @@ git log --oneline relationship.branch
                     }, 2000);
                 });
                 // Don't save to history here - it was already saved in selectMood()
+            }
+        }
+
+        // ============ MOOD ENTRY DELETION ============
+        function deleteMoodEntry(timestamp) {
+            // Find the entry to delete
+            const entryToDelete = moodHistory.find(e => e.timestamp === timestamp && e.person === currentIdentity);
+
+            if (!entryToDelete) {
+                alert('Entry not found or you do not have permission to delete it.');
+                return;
+            }
+
+            // Confirmation dialog
+            const entryDate = new Date(timestamp).toLocaleString();
+            const entryMood = entryToDelete.mood;
+            const confirmMessage = `Delete this mood entry?\n\n${entryToDelete.emoji || moodEmojis[entryMood]} ${entryMood}\n${entryDate}\n\nThis action cannot be undone.`;
+
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+
+            // Delete from Firebase
+            if (historyRef) {
+                // Find the Firebase key for this entry
+                historyRef.orderByChild('timestamp').equalTo(timestamp).once('value', snapshot => {
+                    snapshot.forEach(childSnapshot => {
+                        const entry = childSnapshot.val();
+                        // Verify it's the current user's entry
+                        if (entry.person === currentIdentity && entry.timestamp === timestamp) {
+                            childSnapshot.ref.remove().then(() => {
+                                console.log('Mood entry deleted from Firebase:', timestamp);
+
+                                // Remove from local moodHistory array
+                                const index = moodHistory.findIndex(e => e.timestamp === timestamp && e.person === currentIdentity);
+                                if (index !== -1) {
+                                    moodHistory.splice(index, 1);
+                                }
+
+                                // Refresh displays
+                                updateMoodCalendar(moodHistory);
+                                calculateConsistencyMetrics();
+                                generateWeeklyReflection();
+
+                                // Show success message
+                                alert('Entry deleted successfully.');
+                            }).catch(err => {
+                                console.error('Failed to delete entry from Firebase:', err);
+                                alert('Failed to delete entry. Please try again.');
+                            });
+                        }
+                    });
+                });
+            } else {
+                alert('Firebase not initialized. Cannot delete entry.');
             }
         }
 
@@ -3164,12 +3328,20 @@ Generated by Attachment Workbook - Systems Engineering Approach to Relationships
                         good: 'OK_200'
                     };
                     const statusLabel = moodMap[e.mood] || e.label;
+
+                    // Show delete button only for entries owned by current identity
+                    const canDelete = currentIdentity && e.person === currentIdentity;
+                    const deleteBtn = canDelete
+                        ? `<button class="delete-entry-btn" onclick="deleteMoodEntry(${e.timestamp})" title="Delete this entry">✕</button>`
+                        : '';
+
                     html += `<div class="calendar-mood-entry ${e.person}" style="display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 0.85rem;">
                         <span style="color: #f0c040; font-weight: 600;">${hash}</span>
                         <span class="entry-emoji">${e.emoji || moodEmojis[e.mood]}</span>
                         <span style="color: #8a6a9a; font-weight: 600;">${nodeLabel}:</span>
                         <span style="color: #5a4a6a;">${statusLabel}</span>
                         <span class="entry-time" style="color: #999; font-size: 0.8rem; margin-left: auto;">${time}</span>
+                        ${deleteBtn}
                     </div>`;
                 });
                 html += '</div></div>';
