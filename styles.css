@@ -2428,6 +2428,34 @@ h1 {
     margin-bottom: 16px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.refresh-btn-inline {
+    padding: 6px 12px;
+    background: rgba(139, 92, 246, 0.15);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 6px;
+    color: #a78bfa;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: none;
+}
+
+.refresh-btn-inline:hover {
+    background: rgba(139, 92, 246, 0.25);
+    transform: scale(1.05);
+}
+
+.monitoring-content {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
 }
 
 .monitoring-gauge-compact {
@@ -3256,21 +3284,43 @@ h1 {
     margin-top: 4px;
 }
 
+.music-playlist-links {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
 .music-playlist-link {
-    padding: 10px 20px;
-    background: rgba(139, 92, 246, 0.2);
-    border: 1px solid rgba(139, 92, 246, 0.4);
+    padding: 8px 16px;
     border-radius: 8px;
-    color: #a78bfa;
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 500;
     transition: all 0.2s ease;
     white-space: nowrap;
+    flex: 1;
+    text-align: center;
 }
 
-.music-playlist-link:hover {
-    background: rgba(139, 92, 246, 0.3);
+.music-playlist-link.apple {
+    background: rgba(250, 60, 60, 0.15);
+    border: 1px solid rgba(250, 60, 60, 0.4);
+    color: #fc8181;
+}
+
+.music-playlist-link.apple:hover {
+    background: rgba(250, 60, 60, 0.25);
+    transform: scale(1.05);
+}
+
+.music-playlist-link.spotify {
+    background: rgba(30, 215, 96, 0.15);
+    border: 1px solid rgba(30, 215, 96, 0.4);
+    color: #68d391;
+}
+
+.music-playlist-link.spotify:hover {
+    background: rgba(30, 215, 96, 0.25);
     transform: scale(1.05);
 }
 
@@ -3303,9 +3353,13 @@ h1 {
         gap: 12px;
     }
 
-    .music-playlist-link {
+    .music-playlist-links {
         grid-column: 1 / -1;
-        text-align: center;
+        flex-direction: column;
+    }
+
+    .music-playlist-link {
+        width: 100%;
     }
 
     .music-playlist-icon {

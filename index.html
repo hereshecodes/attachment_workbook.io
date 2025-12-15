@@ -573,6 +573,69 @@
                     <button class="view-details-btn" onclick="scrollToCouplingAnalysis()">View Full Analysis →</button>
                 </div>
             </div>
+
+            <!-- Consistency Tracker -->
+            <div class="monitoring-section">
+                <div class="monitoring-section-title">📈 Emotional Consistency Score</div>
+                <div class="consistency-metrics">
+                    <div class="consistency-metric">
+                        <div class="metric-label">3-Day Stability</div>
+                        <div class="metric-value" id="stability-3day">--</div>
+                        <div class="metric-bar">
+                            <div class="metric-bar-fill" id="stability-3day-bar"></div>
+                        </div>
+                    </div>
+                    <div class="consistency-metric">
+                        <div class="metric-label">5-Day Stability</div>
+                        <div class="metric-value" id="stability-5day">--</div>
+                        <div class="metric-bar">
+                            <div class="metric-bar-fill" id="stability-5day-bar"></div>
+                        </div>
+                    </div>
+                    <div class="consistency-metric">
+                        <div class="metric-label">7-Day Stability</div>
+                        <div class="metric-value" id="stability-7day">--</div>
+                        <div class="metric-bar">
+                            <div class="metric-bar-fill" id="stability-7day-bar"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="consistency-evidence">
+                    <div class="evidence-label">Evidence of Progress:</div>
+                    <div class="evidence-list" id="evidence-list">
+                        <div class="evidence-loading">Select your identity to track consistency...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ML Pattern Detection -->
+            <div class="monitoring-section">
+                <div class="monitoring-section-title">
+                    <span>🤖 ML Pattern Detection</span>
+                    <button class="refresh-btn-inline" onclick="generateInsights()">Analyze</button>
+                </div>
+                <div class="ai-loading" id="insights-loading">
+                    <span class="loading-dot"></span>
+                    <span class="loading-dot"></span>
+                    <span class="loading-dot"></span>
+                </div>
+                <div class="monitoring-content" id="ai-insights-text">
+                    // Select node identity to run pattern analysis
+                </div>
+            </div>
+
+            <!-- Weekly Performance Report -->
+            <div class="monitoring-section">
+                <div class="monitoring-section-title">📊 Weekly Performance Report</div>
+                <div class="ai-loading" id="weekly-loading">
+                    <span class="loading-dot"></span>
+                    <span class="loading-dot"></span>
+                    <span class="loading-dot"></span>
+                </div>
+                <div class="monitoring-content" id="weekly-text">
+                    // Awaiting telemetry data for weekly performance metrics
+                </div>
+            </div>
         </div>
     </div>
 
@@ -608,84 +671,6 @@
                 <h4 id="insight-label-2">// Remote Node Receives</h4>
                 <p id="insight-text-2"></p>
             </div>
-        </div>
-    </div>
-
-    <!-- 7. AI INSIGHTS & WEEKLY -->
-    <div class="ai-section">
-        <div class="ai-card">
-            <div class="ai-card-header">
-                <span class="ai-card-icon">🤖</span>
-                <span class="ai-card-title">ML Pattern Detection</span>
-                <button class="refresh-btn" onclick="generateInsights()">Analyze</button>
-            </div>
-            <div class="ai-loading" id="insights-loading">
-                <span class="loading-dot"></span>
-                <span class="loading-dot"></span>
-                <span class="loading-dot"></span>
-            </div>
-            <div class="ai-card-content" id="ai-insights-text">
-                // Select node identity to run pattern analysis
-            </div>
-        </div>
-        <div class="ai-card weekly">
-            <div class="ai-card-header">
-                <span class="ai-card-icon">📊</span>
-                <span class="ai-card-title">Weekly Performance Report</span>
-            </div>
-            <div class="ai-loading" id="weekly-loading">
-                <span class="loading-dot"></span>
-                <span class="loading-dot"></span>
-                <span class="loading-dot"></span>
-            </div>
-            <div class="ai-card-content" id="weekly-text">
-                // Awaiting telemetry data for weekly performance metrics
-            </div>
-        </div>
-    </div>
-
-    <!-- CONSISTENCY TRACKER (for showing progress to avoidant partners) -->
-    <div class="consistency-tracker">
-        <div class="consistency-header">
-            <div class="consistency-title">📈 Emotional Consistency Score</div>
-            <div class="consistency-subtitle">Data-driven proof of regulation improvements over time</div>
-        </div>
-
-        <div class="consistency-metrics">
-            <div class="consistency-metric">
-                <div class="metric-label">3-Day Stability</div>
-                <div class="metric-value" id="stability-3day">--</div>
-                <div class="metric-bar">
-                    <div class="metric-bar-fill" id="stability-3day-bar"></div>
-                </div>
-            </div>
-
-            <div class="consistency-metric">
-                <div class="metric-label">5-Day Stability</div>
-                <div class="metric-value" id="stability-5day">--</div>
-                <div class="metric-bar">
-                    <div class="metric-bar-fill" id="stability-5day-bar"></div>
-                </div>
-            </div>
-
-            <div class="consistency-metric">
-                <div class="metric-label">7-Day Stability</div>
-                <div class="metric-value" id="stability-7day">--</div>
-                <div class="metric-bar">
-                    <div class="metric-bar-fill" id="stability-7day-bar"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="consistency-evidence" id="consistency-evidence">
-            <div class="evidence-title">🔍 Evidence of Progress:</div>
-            <div class="evidence-list" id="evidence-list">
-                <div class="evidence-loading">Log moods for 7 days to generate consistency analysis...</div>
-            </div>
-        </div>
-
-        <div class="consistency-note">
-            <strong>For avoidant partners:</strong> This section provides objective data showing emotional regulation improvements. Numbers don't lie - they show real, measurable change over time.
         </div>
     </div>
 
@@ -1657,7 +1642,8 @@ git log --oneline relationship.branch
                     name: 'Love Songs',
                     description: 'Romantic, connection-focused',
                     reason: 'Celebrate your regulated connection',
-                    link: 'https://open.spotify.com/playlist/37i9dQZF1DX50QitC6Oqtn'
+                    appleMusic: 'https://music.apple.com/us/playlist/love-songs/pl.4f87c2b0c1154b11a9eba26bfb0c0bdb',
+                    spotify: 'https://open.spotify.com/playlist/37i9dQZF1DX50QitC6Oqtn'
                 });
             }
 
@@ -1668,14 +1654,16 @@ git log --oneline relationship.branch
                     name: 'Acoustic Chill',
                     description: 'Soft acoustic tracks',
                     reason: 'Versatile for any mood state',
-                    link: 'https://open.spotify.com/playlist/37i9dQZF1DX0SM0LYsmbMT'
+                    appleMusic: 'https://music.apple.com/us/playlist/acoustic-chill/pl.83c4c5f0b6c44433ab76bbd5c3fbdfe1',
+                    spotify: 'https://open.spotify.com/playlist/37i9dQZF1DX0SM0LYsmbMT'
                 });
                 playlists.push({
                     icon: '🌸',
                     name: 'Lofi Beats',
                     description: 'Mellow hip-hop instrumentals',
                     reason: 'Non-intrusive background music',
-                    link: 'https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn'
+                    appleMusic: 'https://music.apple.com/us/playlist/lofi-chill/pl.2d86c226b7084775bb5642a36c537828',
+                    spotify: 'https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn'
                 });
             }
 
