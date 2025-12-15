@@ -49,13 +49,18 @@
     <div class="growth-sidebar" id="growth-sidebar">
         <div class="growth-sidebar-header">
             <div class="growth-sidebar-title" id="growth-sidebar-title">🎯 Active Growth Tasks</div>
-            <button class="growth-sidebar-toggle" onclick="toggleGrowthSidebar()">←</button>
+            <button class="growth-sidebar-toggle" onclick="toggleGrowthSidebar()">✕</button>
         </div>
         <div class="growth-sidebar-subtitle" id="growth-sidebar-subtitle">Select your identity to see personalized tasks</div>
         <div class="growth-checklist" id="growth-checklist">
             <div class="growth-loading">Select your identity (Node A or Node B) to begin...</div>
         </div>
     </div>
+
+    <!-- Growth Tasks Open Button (appears when sidebar is closed) -->
+    <button class="growth-sidebar-open-btn" id="growth-open-btn" onclick="toggleGrowthSidebar()" style="display: none;">
+        🎯
+    </button>
 
     <!-- Music Modal -->
     <div class="music-modal" id="music-modal">
@@ -1445,6 +1450,7 @@ git log --oneline relationship.branch
             // Collapse growth sidebar on mobile by default
             if (window.innerWidth <= 768) {
                 document.getElementById('growth-sidebar').classList.add('collapsed');
+                document.getElementById('growth-open-btn').style.display = 'flex';
             }
 
             // Check for first-time user
@@ -4613,7 +4619,16 @@ Analyze: Identify ONE encouraging pattern showing system health or improvement. 
         // ============ GROWTH CHECKLIST SIDEBAR ============
         function toggleGrowthSidebar() {
             const sidebar = document.getElementById('growth-sidebar');
+            const openBtn = document.getElementById('growth-open-btn');
+
             sidebar.classList.toggle('collapsed');
+
+            // Show open button when sidebar is collapsed, hide when expanded
+            if (sidebar.classList.contains('collapsed')) {
+                openBtn.style.display = 'flex';
+            } else {
+                openBtn.style.display = 'none';
+            }
         }
 
         function generateGrowthChecklist() {

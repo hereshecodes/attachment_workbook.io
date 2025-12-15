@@ -3035,6 +3035,42 @@ h1 {
     transform: rotate(180deg);
 }
 
+.growth-sidebar-open-btn {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.9) 0%, rgba(124, 58, 237, 0.9) 100%);
+    border: 2px solid rgba(139, 92, 246, 0.5);
+    color: #fff;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 998;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.growth-sidebar-open-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+}
+
+@media (max-width: 768px) {
+    .growth-sidebar-open-btn {
+        width: 48px;
+        height: 48px;
+        font-size: 1.5rem;
+        left: 12px;
+        bottom: 12px;
+    }
+}
+
 .growth-sidebar-subtitle {
     font-size: 0.8rem;
     color: rgba(255, 255, 255, 0.5);
