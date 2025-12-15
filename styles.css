@@ -2774,29 +2774,16 @@ h1 {
         position: fixed;
         left: 0;
         top: 50%;
-        transform: translateY(-50%) translateX(-100%);
+        transform: translateY(-50%) translateX(0);
         width: 280px;
         max-width: 85vw;
         margin: 0;
         max-height: 80vh;
-        transition: transform 0.3s ease;
         z-index: 1000;
     }
 
-    .growth-sidebar:not(.collapsed) {
-        transform: translateY(-50%) translateX(0);
-    }
-
     .growth-sidebar-toggle {
-        position: fixed !important;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        border-radius: 0 8px 8px 0 !important;
-        padding: 16px 8px !important;
-        font-size: 1.2rem !important;
-        z-index: 999;
-        box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+        position: relative !important;
     }
 
     .growth-sidebar:not(.collapsed) .growth-sidebar-toggle {
@@ -2991,13 +2978,7 @@ h1 {
 }
 
 .growth-sidebar.collapsed {
-    transform: translateX(-280px);
-}
-
-.growth-sidebar.collapsed .growth-sidebar-toggle {
-    position: absolute;
-    right: -50px;
-    top: 12px;
+    display: none;
 }
 
 .growth-sidebar-header {
