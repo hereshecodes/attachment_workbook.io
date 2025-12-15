@@ -578,6 +578,54 @@ h1 {
     animation: pulseGlow 0.8s ease-out;
 }
 
+.partner-message-integrated {
+    text-align: left;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #4a3a5a;
+}
+
+.partner-message-text-integrated {
+    font-family: 'Quicksand', sans-serif;
+}
+
+.status-context-guidance {
+    text-align: left;
+}
+
+.context-section-compact {
+    margin-bottom: 12px;
+}
+
+.context-label-compact {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6b5a7a;
+    margin-bottom: 6px;
+}
+
+.context-list-compact {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.context-list-compact li,
+.context-actions-compact li {
+    font-size: 0.8rem;
+    color: #4a3a5a;
+    margin-bottom: 4px;
+    padding-left: 8px;
+    position: relative;
+}
+
+.context-list-compact li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #8b7a9a;
+}
+
 .live-status-name {
     font-family: 'Playfair Display', serif;
     font-size: 1rem;
