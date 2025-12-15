@@ -656,6 +656,7 @@
                         <div class="metric-bar">
                             <div class="metric-bar-fill" id="stability-3day-bar"></div>
                         </div>
+                        <div class="metric-entries" id="entries-3day"></div>
                     </div>
                     <div class="consistency-metric">
                         <div class="metric-label">Last 5 Entries</div>
@@ -663,6 +664,7 @@
                         <div class="metric-bar">
                             <div class="metric-bar-fill" id="stability-5day-bar"></div>
                         </div>
+                        <div class="metric-entries" id="entries-5day"></div>
                     </div>
                     <div class="consistency-metric">
                         <div class="metric-label">Last 7 Entries</div>
@@ -670,6 +672,7 @@
                         <div class="metric-bar">
                             <div class="metric-bar-fill" id="stability-7day-bar"></div>
                         </div>
+                        <div class="metric-entries" id="entries-7day"></div>
                     </div>
                 </div>
                 <div class="consistency-evidence">
@@ -1981,14 +1984,46 @@ git log --oneline relationship.branch
             document.getElementById('mood-section').classList.add('visible');
             populateMoodButtons();
 
-            // Update growth checklist for new identity
+            // Update all display names and UI elements
+            updateDisplayNames();
+            updateVennDiagram();
+            updateOptimizationProtocols();
+
+            // Update attachment badges for both nodes
+            const myAttachment = localStorage.getItem('myAttachment');
+            const partnerAttachment = localStorage.getItem('partnerAttachment');
+            const myAttachmentSecondary = localStorage.getItem('myAttachmentSecondary');
+            const partnerAttachmentSecondary = localStorage.getItem('partnerAttachmentSecondary');
+            if (myAttachment) updateAttachmentBadge('me', myAttachment, myAttachmentSecondary);
+            if (partnerAttachment) updateAttachmentBadge('you', partnerAttachment, partnerAttachmentSecondary);
+
+            // Update all dashboard components with fresh data
+            updateMoodCalendar(moodHistory);
+            calculateConsistencyMetrics();
             generateGrowthChecklist();
+
+            // Generate insights and reflections if enough data
+            if (moodHistory.length >= 3) {
+                setTimeout(generateInsights, 500);
+                setTimeout(generateWeeklyReflection, 1000);
+            }
 
             // Show partner's latest status in context card
             showPartnerLatestStatus();
 
             // Update status cards to show only partner's card
             updateStatusCardVisibility();
+
+            // Refresh live status and system health from Firebase
+            if (roomRef) {
+                roomRef.once('value').then(snapshot => {
+                    const data = snapshot.val() || {};
+                    updateLiveStatus(data);
+                    updateSystemHealth(data);
+                }).catch(err => {
+                    console.error('Error refreshing Firebase data:', err);
+                });
+            }
 
             if (!silent) {
                 document.getElementById('mood-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -2117,16 +2152,24 @@ git log --oneline relationship.branch
 
         // ============ MOOD ENTRY DELETION ============
         function deleteMoodEntry(timestamp) {
+            // Convert timestamp to number if it's a string
+            const timestampNum = typeof timestamp === 'string' ? parseInt(timestamp, 10) : timestamp;
+
+            console.log('Delete requested:', { timestamp: timestampNum, currentIdentity });
+            console.log('MoodHistory entries:', moodHistory.map(e => ({ timestamp: e.timestamp, person: e.person })));
+
             // Find the entry to delete
-            const entryToDelete = moodHistory.find(e => e.timestamp === timestamp && e.person === currentIdentity);
+            const entryToDelete = moodHistory.find(e => e.timestamp === timestampNum && e.person === currentIdentity);
+
+            console.log('Entry to delete:', entryToDelete);
 
             if (!entryToDelete) {
-                alert('Entry not found or you do not have permission to delete it.');
+                alert(`Entry not found or you do not have permission to delete it.\n\nYour identity: ${currentIdentity}\nTimestamp: ${timestampNum}`);
                 return;
             }
 
             // Confirmation dialog
-            const entryDate = new Date(timestamp).toLocaleString();
+            const entryDate = new Date(timestampNum).toLocaleString();
             const entryMood = entryToDelete.mood;
             const confirmMessage = `Delete this mood entry?\n\n${entryToDelete.emoji || moodEmojis[entryMood]} ${entryMood}\n${entryDate}\n\nThis action cannot be undone.`;
 
@@ -2137,16 +2180,16 @@ git log --oneline relationship.branch
             // Delete from Firebase
             if (historyRef) {
                 // Find the Firebase key for this entry
-                historyRef.orderByChild('timestamp').equalTo(timestamp).once('value', snapshot => {
+                historyRef.orderByChild('timestamp').equalTo(timestampNum).once('value', snapshot => {
                     snapshot.forEach(childSnapshot => {
                         const entry = childSnapshot.val();
                         // Verify it's the current user's entry
-                        if (entry.person === currentIdentity && entry.timestamp === timestamp) {
+                        if (entry.person === currentIdentity && entry.timestamp === timestampNum) {
                             childSnapshot.ref.remove().then(() => {
-                                console.log('Mood entry deleted from Firebase:', timestamp);
+                                console.log('Mood entry deleted from Firebase:', timestampNum);
 
                                 // Remove from local moodHistory array
-                                const index = moodHistory.findIndex(e => e.timestamp === timestamp && e.person === currentIdentity);
+                                const index = moodHistory.findIndex(e => e.timestamp === timestampNum && e.person === currentIdentity);
                                 if (index !== -1) {
                                     moodHistory.splice(index, 1);
                                 }
@@ -3927,7 +3970,7 @@ Analyze: Identify ONE encouraging pattern showing system health or improvement. 
                     // Show delete button only for entries owned by current identity
                     const canDelete = currentIdentity && e.person === currentIdentity;
                     const deleteBtn = canDelete
-                        ? `<button class="delete-entry-btn" onclick="deleteMoodEntry(${e.timestamp})" title="Delete this entry">✕</button>`
+                        ? `<button class="delete-entry-btn" onclick="deleteMoodEntry('${e.timestamp}')" title="Delete this entry">✕</button>`
                         : '';
 
                     html += `<div class="calendar-mood-entry ${e.person}" style="display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 0.85rem;">
@@ -4393,19 +4436,33 @@ Analyze: Identify ONE encouraging pattern showing system health or improvement. 
                 ? Math.round((sevenRegulated / lastSeven.length) * 100)
                 : null;
 
+            // Helper function to format entries list
+            const formatEntries = (entries) => {
+                return entries.map(e => {
+                    const emoji = moodEmojis[e.mood] || '😐';
+                    const date = new Date(e.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    const isRegulated = regulated.includes(e.mood);
+                    const color = isRegulated ? '#10b981' : '#ef4444';
+                    return `<span style="color: ${color}; margin-right: 4px;" title="${e.mood} (${date})">${emoji}</span>`;
+                }).join('');
+            };
+
             // Update 3-entry metrics (always show if we have 3+)
             document.getElementById('stability-3day').textContent = threeStability + '%';
             document.getElementById('stability-3day-bar').style.width = threeStability + '%';
             document.getElementById('stability-3day-bar').style.background = threeStability >= 60 ? '#10b981' : threeStability >= 40 ? '#f59e0b' : '#ef4444';
+            document.getElementById('entries-3day').innerHTML = formatEntries(lastThree);
 
             // Update 5-entry metrics (need at least 5 entries)
             if (fiveStability !== null) {
                 document.getElementById('stability-5day').textContent = fiveStability + '%';
                 document.getElementById('stability-5day-bar').style.width = fiveStability + '%';
                 document.getElementById('stability-5day-bar').style.background = fiveStability >= 60 ? '#10b981' : fiveStability >= 40 ? '#f59e0b' : '#ef4444';
+                document.getElementById('entries-5day').innerHTML = formatEntries(lastFive);
             } else {
                 document.getElementById('stability-5day').textContent = 'Need 5+ entries';
                 document.getElementById('stability-5day-bar').style.width = '0%';
+                document.getElementById('entries-5day').innerHTML = '';
             }
 
             // Update 7-entry metrics (need at least 7 entries)
@@ -4413,9 +4470,11 @@ Analyze: Identify ONE encouraging pattern showing system health or improvement. 
                 document.getElementById('stability-7day').textContent = sevenStability + '%';
                 document.getElementById('stability-7day-bar').style.width = sevenStability + '%';
                 document.getElementById('stability-7day-bar').style.background = sevenStability >= 60 ? '#10b981' : sevenStability >= 40 ? '#f59e0b' : '#ef4444';
+                document.getElementById('entries-7day').innerHTML = formatEntries(lastSeven);
             } else {
                 document.getElementById('stability-7day').textContent = 'Need 7+ entries';
                 document.getElementById('stability-7day-bar').style.width = '0%';
+                document.getElementById('entries-7day').innerHTML = '';
             }
 
             // Generate evidence list
