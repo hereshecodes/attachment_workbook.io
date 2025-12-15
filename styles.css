@@ -2726,6 +2726,19 @@ h1 {
     margin-bottom: 16px;
 }
 
+.consistency-evidence {
+    margin-top: 20px;
+}
+
+.evidence-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
 .evidence-list {
     display: flex;
     flex-direction: column;
