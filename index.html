@@ -1552,9 +1552,14 @@ git log --oneline relationship.branch
                         <div class="music-playlist-desc">${playlist.description}</div>
                         <div class="music-playlist-reason">${playlist.reason}</div>
                     </div>
-                    <a href="${playlist.link}" target="_blank" class="music-playlist-link">
-                        Open in Spotify →
-                    </a>
+                    <div class="music-playlist-links">
+                        <a href="${playlist.appleMusic}" target="_blank" class="music-playlist-link apple">
+                             Apple Music →
+                        </a>
+                        <a href="${playlist.spotify}" target="_blank" class="music-playlist-link spotify">
+                             Spotify →
+                        </a>
+                    </div>
                 </div>
             `).join('');
 
@@ -1580,14 +1585,16 @@ git log --oneline relationship.branch
                     name: 'Peaceful Piano',
                     description: 'Gentle, calming instrumental piano',
                     reason: 'Both partners calm - maintain this regulated state',
-                    link: 'https://open.spotify.com/playlist/37i9dQZF1DX4sWSpwq3LiO'
+                    appleMusic: 'https://music.apple.com/us/playlist/peaceful-piano/pl.c12bd5f3b456482ab2691acbff6a774a',
+                    spotify: 'https://open.spotify.com/playlist/37i9dQZF1DX4sWSpwq3LiO'
                 });
                 playlists.push({
                     icon: '💫',
                     name: 'Chill Hits',
                     description: 'Relaxed, feel-good vibes',
                     reason: 'Perfect for shared calm moments',
-                    link: 'https://open.spotify.com/playlist/37i9dQZF1DWU0ScTcjJBdj'
+                    appleMusic: 'https://music.apple.com/us/playlist/todays-chill/pl.9fdc47146fc243bb807004afe29e05fc',
+                    spotify: 'https://open.spotify.com/playlist/37i9dQZF1DWU0ScTcjJBdj'
                 });
             }
 
@@ -1598,14 +1605,16 @@ git log --oneline relationship.branch
                     name: 'Deep Focus',
                     description: 'Ambient electronic for concentration',
                     reason: 'Helps regulate nervous system during activation',
-                    link: 'https://open.spotify.com/playlist/37i9dQZF1DWZeKCadgRdKQ'
+                    appleMusic: 'https://music.apple.com/us/playlist/deep-focus/pl.c2273b7e89b44121b3093f67228918e7',
+                    spotify: 'https://open.spotify.com/playlist/37i9dQZF1DWZeKCadgRdKQ'
                 });
                 playlists.push({
                     icon: '🧘',
                     name: 'Calm Meditation',
                     description: 'Soothing sounds for anxiety relief',
                     reason: 'Research-backed for stress reduction',
-                    link: 'https://open.spotify.com/playlist/37i9dQZF1DWZqd5JICZI0u'
+                    appleMusic: 'https://music.apple.com/us/playlist/meditation-music/pl.567c9c4608e64373919f558078ea29f0',
+                    spotify: 'https://open.spotify.com/playlist/37i9dQZF1DWZqd5JICZI0u'
                 });
             }
 
@@ -1616,14 +1625,16 @@ git log --oneline relationship.branch
                     name: 'Ambient Relaxation',
                     description: 'Gentle soundscapes, no lyrics',
                     reason: 'Low-stimulation for shutdown states',
-                    link: 'https://open.spotify.com/playlist/37i9dQZF1DWXe9gFZP0gtP'
+                    appleMusic: 'https://music.apple.com/us/playlist/pure-ambient/pl.b1078b2e00b54d97b2d6dc6f5c7cf3b8',
+                    spotify: 'https://open.spotify.com/playlist/37i9dQZF1DWXe9gFZP0gtP'
                 });
                 playlists.push({
                     icon: '🌲',
                     name: 'Nature Sounds',
                     description: 'Rain, forest, ocean waves',
                     reason: 'Grounding without emotional demands',
-                    link: 'https://open.spotify.com/playlist/37i9dQZF1DWVFeEut75IAL'
+                    appleMusic: 'https://music.apple.com/us/playlist/nature-sounds/pl.b35d54f3f2a943b5a99e63c45ed9f78d',
+                    spotify: 'https://open.spotify.com/playlist/37i9dQZF1DWVFeEut75IAL'
                 });
             }
 
@@ -1634,7 +1645,8 @@ git log --oneline relationship.branch
                     name: 'Feel Good Indie',
                     description: 'Uplifting indie and alternative',
                     reason: 'Light, positive energy for playful moods',
-                    link: 'https://open.spotify.com/playlist/37i9dQZF1DX2sUQwD7tbmL'
+                    appleMusic: 'https://music.apple.com/us/playlist/indie-pop/pl.1bb64568059547969a95d0d35cc4e589',
+                    spotify: 'https://open.spotify.com/playlist/37i9dQZF1DX2sUQwD7tbmL'
                 });
             }
 
