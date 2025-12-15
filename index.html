@@ -28,6 +28,9 @@
                 </div>
                 <span class="identity-badge" id="identity-badge" style="display: none;"></span>
             </div>
+            <button class="room-bar-toggle" onclick="toggleRoomBar()">▼</button>
+        </div>
+        <div class="room-bar-content" id="room-bar-content">
             <div class="share-actions">
                 <button class="share-btn" onclick="openAboutModal()">ℹ️ What Is This?</button>
                 <button class="share-btn" onclick="openMusicModal()">🎵 Music</button>
@@ -1535,6 +1538,22 @@ git log --oneline relationship.branch
             display.style.display = 'inline';
             input.style.display = 'none';
             localStorage.setItem('roomName_' + roomId, name);
+        }
+
+        function toggleRoomBar() {
+            const roomBar = document.getElementById('room-bar');
+            const content = document.getElementById('room-bar-content');
+            const toggle = document.querySelector('.room-bar-toggle');
+
+            roomBar.classList.toggle('collapsed');
+
+            if (roomBar.classList.contains('collapsed')) {
+                content.style.display = 'none';
+                toggle.textContent = '▶';
+            } else {
+                content.style.display = 'block';
+                toggle.textContent = '▼';
+            }
         }
 
         function openShareModal() {

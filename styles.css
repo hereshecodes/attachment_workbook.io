@@ -139,6 +139,11 @@ h1 {
     top: 20px;
     z-index: 100;
     animation: slideDown 0.5s ease-out;
+    transition: all 0.3s ease;
+}
+
+.room-bar.collapsed {
+    padding: 12px 24px;
 }
 
 .room-bar-top {
@@ -147,6 +152,27 @@ h1 {
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 12px;
+}
+
+.room-bar-toggle {
+    background: rgba(140, 120, 160, 0.1);
+    border: 1px solid rgba(140, 120, 160, 0.2);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #7a6a8a;
+}
+
+.room-bar-toggle:hover {
+    background: rgba(140, 120, 160, 0.2);
+    transform: scale(1.05);
+}
+
+.room-bar-content {
+    margin-top: 12px;
+    transition: all 0.3s ease;
 }
 
 .room-identity {
