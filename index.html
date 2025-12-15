@@ -1395,11 +1395,8 @@ git log --oneline relationship.branch
         // ============ INITIALIZATION ============
         function init() {
             // Collapse growth sidebar on mobile by default
-            const sidebar = document.getElementById('growth-sidebar');
-            const toggle = sidebar.querySelector('.growth-sidebar-toggle');
             if (window.innerWidth <= 768) {
-                sidebar.classList.add('collapsed');
-                toggle.textContent = '▼';
+                document.getElementById('growth-sidebar').classList.add('collapsed');
             }
 
             // Check for first-time user
@@ -4442,15 +4439,7 @@ Analyze: Identify ONE encouraging pattern showing system health or improvement. 
         // ============ GROWTH CHECKLIST SIDEBAR ============
         function toggleGrowthSidebar() {
             const sidebar = document.getElementById('growth-sidebar');
-            const toggle = sidebar.querySelector('.growth-sidebar-toggle');
             sidebar.classList.toggle('collapsed');
-
-            // Update toggle icon
-            if (sidebar.classList.contains('collapsed')) {
-                toggle.textContent = window.innerWidth <= 768 ? '▼' : '←';
-            } else {
-                toggle.textContent = window.innerWidth <= 768 ? '▲' : '←';
-            }
         }
 
         function generateGrowthChecklist() {
