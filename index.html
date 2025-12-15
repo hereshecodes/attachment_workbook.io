@@ -1505,10 +1505,16 @@ git log --oneline relationship.branch
             const myStateEl = document.getElementById('music-my-state');
             const partnerStateEl = document.getElementById('music-partner-state');
 
-            // Get current moods
-            const myMood = currentMoodKey;
-            const partnerData = currentIdentity === 'me' ? partnerStatus : myStatus;
-            const partnerMood = partnerData?.mood;
+            // Get current moods from most recent logged entries
+            const myRecentMood = moodHistory
+                .filter(h => h.person === currentIdentity)
+                .sort((a, b) => b.timestamp - a.timestamp)[0];
+            const partnerRecentMood = moodHistory
+                .filter(h => h.person !== currentIdentity)
+                .sort((a, b) => b.timestamp - a.timestamp)[0];
+
+            const myMood = myRecentMood?.mood;
+            const partnerMood = partnerRecentMood?.mood;
 
             // Update state badges
             if (myMood) {
