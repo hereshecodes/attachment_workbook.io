@@ -148,7 +148,7 @@
                     This tool is built on 30+ years of attachment theory research (Bowlby, Ainsworth, Hazan & Shaver), Emotionally Focused Therapy (Sue Johnson), Gottman Method couples research, and Polyvagal Theory (Stephen Porges). Every percentage, insight, and suggestion is grounded in peer-reviewed research.
                 </p>
                 <p class="about-text">
-                    The "tech/systems" language isn't arbitrary—it's designed to make emotional concepts feel concrete and debuggable for avoidant partners who struggle with abstract emotional language.
+                    The "tech/systems" language isn't arbitrary—it's designed to make emotional concepts feel concrete and debuggable for specific partner types.
                 </p>
             </div>
 
@@ -721,6 +721,68 @@
             <button class="understand-btn" onclick="helpMeUnderstand()">📖 Parse response protocol</button>
             <div class="understand-response" id="understand-response">
                 <div class="understand-text" id="understand-text"></div>
+            </div>
+        </div>
+
+        <!-- Partner Communication Card (Context-Aware Guidance) -->
+        <div class="partner-context-card" id="partner-context-card" style="display: none;">
+            <div class="context-card-header">
+                <div class="context-card-title">
+                    <span class="context-icon">💡</span>
+                    <span id="context-card-partner-name">Partner</span> Status Update
+                </div>
+                <button class="context-card-close" onclick="closePartnerContextCard()">✕</button>
+            </div>
+
+            <div class="context-card-body">
+                <div class="context-section context-current-state">
+                    <div class="context-label">Current State:</div>
+                    <div class="context-mood-display" id="context-mood-display">
+                        <span class="context-emoji" id="context-emoji">😐</span>
+                        <span class="context-mood-label" id="context-mood-label">Awaiting status</span>
+                    </div>
+                </div>
+
+                <div class="context-section context-needs">
+                    <div class="context-label">💭 What they likely need:</div>
+                    <ul class="context-list" id="context-needs-list">
+                        <li>Analyzing pattern...</li>
+                    </ul>
+                </div>
+
+                <div class="context-section context-fears">
+                    <div class="context-label">⚠️ What they might be afraid of:</div>
+                    <ul class="context-list" id="context-fears-list">
+                        <li>Analyzing pattern...</li>
+                    </ul>
+                </div>
+
+                <div class="context-section context-actions">
+                    <div class="context-label">✅ Best response strategies (ranked):</div>
+                    <div class="context-action-cards" id="context-actions-list">
+                        <div class="context-action-card">
+                            <div class="action-rank">1</div>
+                            <div class="action-content">
+                                <div class="action-title">Quick Reassurance</div>
+                                <div class="action-desc">Send a brief "I'm here" message</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="context-section context-avoid">
+                    <div class="context-label">🚫 What NOT to do:</div>
+                    <ul class="context-list context-avoid-list" id="context-avoid-list">
+                        <li>Don't withdraw without explanation</li>
+                    </ul>
+                </div>
+
+                <div class="context-section context-conversation">
+                    <div class="context-label">💬 Conversation starter (if ready):</div>
+                    <div class="context-conversation-box" id="context-conversation-box">
+                        <em>"Hey, I noticed you're feeling [mood]. Want to talk about it, or would you prefer some space right now?"</em>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1523,6 +1585,36 @@ git log --oneline relationship.branch
             document.body.style.overflow = '';
         }
 
+        function showDisconnectedMusicSuggestion() {
+            // Create a floating notification for the disconnected song
+            const notification = document.createElement('div');
+            notification.className = 'music-notification';
+            notification.innerHTML = `
+                <div class="music-notif-header">
+                    <span class="music-notif-icon">🎵</span>
+                    <span class="music-notif-title">Suggested for you</span>
+                    <button class="music-notif-close" onclick="this.parentElement.parentElement.remove()">✕</button>
+                </div>
+                <div class="music-notif-body">
+                    <div class="music-notif-song">"Solo" by The Story So Far</div>
+                    <div class="music-notif-desc">For when you're feeling disconnected</div>
+                </div>
+                <div class="music-notif-actions">
+                    <a href="https://music.apple.com/us/album/solo/1440852673?i=1440852858" target="_blank" class="music-notif-btn apple">
+                        Listen on Apple Music
+                    </a>
+                </div>
+            `;
+
+            document.body.appendChild(notification);
+
+            // Auto-remove after 15 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.4s ease-out';
+                setTimeout(() => notification.remove(), 400);
+            }, 15000);
+        }
+
         function generateMusicSuggestions() {
             const playlistsContainer = document.getElementById('music-playlists');
             const myStateEl = document.getElementById('music-my-state');
@@ -1910,6 +2002,11 @@ git log --oneline relationship.branch
 
             // Floating hearts for "good"
             if (moodKey === 'good') createFloatingHearts(btn);
+
+            // Auto-suggest music for "disconnected"
+            if (moodKey === 'disconnected') {
+                showDisconnectedMusicSuggestion();
+            }
 
             // Save
             const timestamp = Date.now();
@@ -2351,10 +2448,382 @@ Generated by Attachment Workbook - Systems Engineering Approach to Relationships
             }
             text.innerHTML = html;
             container.classList.add('visible');
-            
+
             // Show insight for partner's mood
             const partnerIdentity = currentIdentity === 'me' ? 'you' : 'me';
             showInsight(partnerIdentity, data.mood, true);
+
+            // Show partner context card
+            showPartnerContextCard(data.mood, partnerIdentity);
+        }
+
+        // ============ PARTNER CONTEXT CARD ============
+        function showPartnerContextCard(moodKey, partnerIdentity) {
+            const card = document.getElementById('partner-context-card');
+            const partnerName = localStorage.getItem('partnerName') || 'Partner';
+            const partnerAttachment = localStorage.getItem('partnerAttachment') || 'anxious';
+            const myAttachment = localStorage.getItem('myAttachment') || 'avoidant';
+
+            // Update partner name
+            document.getElementById('context-card-partner-name').textContent = partnerName;
+
+            // Update mood display
+            const emoji = moodEmojis[moodKey] || '😐';
+            document.getElementById('context-emoji').textContent = emoji;
+            document.getElementById('context-mood-label').textContent = moodKey;
+
+            // Get context-specific guidance
+            const context = getPartnerContext(moodKey, partnerAttachment, myAttachment, partnerName);
+
+            // Populate needs
+            const needsList = document.getElementById('context-needs-list');
+            needsList.innerHTML = context.needs.map(need => `<li>${need}</li>`).join('');
+
+            // Populate fears
+            const fearsList = document.getElementById('context-fears-list');
+            fearsList.innerHTML = context.fears.map(fear => `<li>${fear}</li>`).join('');
+
+            // Populate actions
+            const actionsList = document.getElementById('context-actions-list');
+            actionsList.innerHTML = context.actions.map((action, index) => `
+                <div class="context-action-card">
+                    <div class="action-rank">${index + 1}</div>
+                    <div class="action-content">
+                        <div class="action-title">${action.title}</div>
+                        <div class="action-desc">${action.desc}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Populate avoid list
+            const avoidList = document.getElementById('context-avoid-list');
+            avoidList.innerHTML = context.avoid.map(item => `<li>${item}</li>`).join('');
+
+            // Set conversation starter
+            document.getElementById('context-conversation-box').innerHTML = `<em>${context.conversation}</em>`;
+
+            // Show card
+            card.style.display = 'block';
+        }
+
+        function getPartnerContext(moodKey, partnerAttachment, myAttachment, partnerName) {
+            // Research-backed guidance database: mood × attachment style
+            const contexts = {
+                anxious: {
+                    anxious: {
+                        needs: ['Quick reassurance you\'re still invested', 'Clear timeline for next contact', 'Explicit "I\'m here" signal'],
+                        fears: ['You\'re pulling away permanently', 'They did something wrong', 'Connection is breaking down'],
+                        actions: [
+                            { title: 'Send Quick Reassurance', desc: 'Brief "thinking of you ♡" or "I\'m here" text' },
+                            { title: 'Set Specific Check-in Time', desc: 'E.g., "Let\'s talk at 7pm tonight"' },
+                            { title: 'Acknowledge Their Feeling', desc: '"I see you\'re anxious - what do you need?"' }
+                        ],
+                        avoid: ['Going silent without explanation', 'Saying "you\'re being too much"', 'Withdrawing in response'],
+                        conversation: `"Hey ${partnerName || 'love'}, I noticed you're feeling anxious. I'm here and not going anywhere. Want to talk about it?"`
+                    },
+                    avoidant: {
+                        needs: ['Space without feeling abandoned', 'Understanding distance ≠ rejection', 'Patience while they process'],
+                        fears: ['Your anxiety will pressure them', 'They\'ll lose themselves', 'Their space means losing you'],
+                        actions: [
+                            { title: 'Give Space With Reassurance', desc: '"Take your time - I\'ll be here when ready"' },
+                            { title: 'Don\'t Chase', desc: 'One caring message, then wait' },
+                            { title: 'Self-Regulate', desc: 'Journal, call friend, walk - manage your anxiety' }
+                        ],
+                        avoid: ['Pursuing when they withdraw', 'Asking "are we okay?" repeatedly', 'Making their space about you'],
+                        conversation: `"I can see you need space. I'm here whenever you're ready - no pressure."`
+                    },
+                    secure: {
+                        needs: ['Open communication', 'Balance of connection/autonomy', 'Collaborative problem-solving'],
+                        fears: ['Being too anxious for secure partner', 'They\'ll tire of reassuring', 'They don\'t need you'],
+                        actions: [
+                            { title: 'Communicate Openly', desc: '"I\'m feeling anxious - can we talk?"' },
+                            { title: 'Trust Their Consistency', desc: 'Secure partners show up reliably' },
+                            { title: 'Practice Self-Soothing', desc: 'Use their stability as anchor' }
+                        ],
+                        avoid: ['Testing with protest behavior', 'Assuming calm = indifference', 'Creating drama for reassurance'],
+                        conversation: `"I'm noticing some anxiety coming up. Can we talk through what I'm feeling?"`
+                    },
+                    fearful: {
+                        needs: ['Gentle, patient communication', 'Safety for contradictory feelings', 'Reassurance without pressure'],
+                        fears: ['Both abandonment AND engulfment', 'Vulnerability = hurt', 'Too broken to be loved'],
+                        actions: [
+                            { title: 'Move Slowly', desc: 'Gentle reassurance without overwhelming' },
+                            { title: 'Validate Both Needs', desc: '"Makes sense you\'d want connection AND space"' },
+                            { title: 'Be Consistent', desc: 'Predictable presence builds safety' }
+                        ],
+                        avoid: ['Pushing for quick resolution', 'Taking push-pull personally', 'Giving up when tested'],
+                        conversation: `"I see you're anxious. I'm here, and we can go at whatever pace feels right."`
+                    }
+                },
+                overwhelmed: {
+                    anxious: {
+                        needs: ['Support without fixing', 'Presence without demands', 'Validation it\'s okay to struggle'],
+                        fears: ['Being a burden', 'Vulnerability will make you leave', 'Should handle alone'],
+                        actions: [
+                            { title: 'Low-Pressure Support', desc: '"I\'m here if needed - no pressure to talk"' },
+                            { title: 'Validate Experience', desc: '"This sounds hard. You\'re not alone"' },
+                            { title: 'Concrete Help', desc: '"Can I [bring dinner/handle X]?"' }
+                        ],
+                        avoid: ['Minimizing: "It\'s not that bad"', 'Fixing without permission', 'Making it about you'],
+                        conversation: `"I see you're overwhelmed. Want to talk, or prefer I just sit with you?"`
+                    },
+                    avoidant: {
+                        needs: ['Space to process', 'Autonomy in handling stress', 'Support respecting independence'],
+                        fears: ['Struggle = weakness', 'Help = loss of autonomy', 'You\'ll be overwhelmed too'],
+                        actions: [
+                            { title: 'Respect Their Process', desc: 'Let them handle it their way' },
+                            { title: 'Practical Support', desc: '"Would it help if I handled [task]?"' },
+                            { title: 'Available, Not Intrusive', desc: '"I\'m here if needed" then space' }
+                        ],
+                        avoid: ['Hovering/"are you okay?" every hour', 'Forcing them to lean on you', 'Taking independence as rejection'],
+                        conversation: `"I see you're dealing with a lot. Let me know if I can help - otherwise I'll give you space."`
+                    },
+                    secure: {
+                        needs: ['Collaborative stress management', 'Permission to not be okay', 'Partnership in problem-solving'],
+                        fears: ['Disappointing you', 'Not meeting standards', 'Letting others down'],
+                        actions: [
+                            { title: 'Team Approach', desc: '"What can we do together to lighten load?"' },
+                            { title: 'Active Listening', desc: 'Ask what they need vs assuming' },
+                            { title: 'Share the Load', desc: 'Take specific tasks off their plate' }
+                        ],
+                        avoid: ['Assuming they\'ll ask if needed', 'Waiting for breakdown', 'Ignoring stress signals'],
+                        conversation: `"You seem overwhelmed. Want to talk through your plate and see what I can help with?"`
+                    }
+                },
+                space: {
+                    anxious: {
+                        needs: ['Alone time without guilt', 'Reassurance space ≠ rejection', 'Clear return timeline'],
+                        fears: ['Needing space = bad partner', 'You\'ll panic', 'Distance confirms unlovable'],
+                        actions: [
+                            { title: 'Honor the Request', desc: 'Give space without guilt' },
+                            { title: 'Ask Timeline', desc: '"When should I check back?" (then respect)' },
+                            { title: 'Self-Regulate', desc: 'Use time for your self-care' }
+                        ],
+                        avoid: ['Texting repeatedly "are you okay?"', 'Making space about you', 'Punishing when they return'],
+                        conversation: `"Of course, take the time you need. I'll be here when ready ♡"`
+                    },
+                    avoidant: {
+                        needs: ['Solo processing time', 'Freedom from demands', 'Trust space won\'t be questioned'],
+                        fears: ['Your space + my space = ending', 'Won\'t know how to reconnect', 'Both distancing'],
+                        actions: [
+                            { title: 'Parallel Processing', desc: 'Both take space, agree on reconnection' },
+                            { title: 'Set Reconnection Plan', desc: '"Let\'s connect [specific time]"' },
+                            { title: 'Trust the Process', desc: 'Space strengthens secure-avoidant couples' }
+                        ],
+                        avoid: ['Making space a competition', 'Forgetting to reconnect', 'Passive-aggressive punishment'],
+                        conversation: `"Sounds good - I could use time too. Check in tomorrow evening?"`
+                    },
+                    secure: {
+                        needs: ['Respected autonomy', 'Confidence you\'ll reconnect', 'Space as healthy practice'],
+                        fears: ['Minimal - comfortable with space', 'May worry if excessive', 'Pattern shift concern'],
+                        actions: [
+                            { title: 'Grant Space Easily', desc: '"Take time you need - see you later"' },
+                            { title: 'Use Time Productively', desc: 'Your own interests/self-care' },
+                            { title: 'Gentle Boundary If Needed', desc: '"Noticing more distance - want to talk?"' }
+                        ],
+                        avoid: ['Over-analyzing normal space needs', 'Feeling rejected by autonomy', 'Creating problems'],
+                        conversation: `"Absolutely, enjoy your time! Let me know when you want to connect."`
+                    }
+                },
+                disconnected: {
+                    anxious: {
+                        needs: ['Patient reconnection', 'Understanding withdrawal is protective', 'Gentle invitations without pressure'],
+                        fears: ['Given up on relationship', 'Disconnection is permanent', 'Falling out of love'],
+                        actions: [
+                            { title: 'Don\'t Chase', desc: 'One caring message, then space' },
+                            { title: 'Stay Regulated', desc: 'Manage anxiety without making it their problem' },
+                            { title: 'Gentle Invitation', desc: '"Here when ready to talk"' }
+                        ],
+                        avoid: ['Pursuing/demanding connection', 'Catastrophizing distance', 'Multiple "are we okay?" texts'],
+                        conversation: `"I notice you seem disconnected. I'm here whenever ready - no pressure."`
+                    },
+                    avoidant: {
+                        needs: ['Space to find themselves', 'Freedom from emotional demands', 'Path back without explanation'],
+                        fears: ['Connection will overwhelm', 'Losing themselves', 'Vulnerability = danger'],
+                        actions: [
+                            { title: 'Respect Withdrawal', desc: 'Significant space without pursuing' },
+                            { title: 'Low-Pressure Check-in', desc: 'Brief "thinking of you" no response needed' },
+                            { title: 'Wait for Green Light', desc: 'Let them initiate reconnection' }
+                        ],
+                        avoid: ['Forcing emotional conversations', 'Threats about distance', 'Punishing for space'],
+                        conversation: `"I see you need distance. I'll give space - reach out when ready."`
+                    }
+                },
+                reconnect: {
+                    anxious: {
+                        needs: ['Enthusiasm for their initiative', 'Explicit receptiveness', 'Rewarding vulnerable reaching'],
+                        fears: ['You won\'t reciprocate', 'Being needy again', 'Just tolerating them'],
+                        actions: [
+                            { title: 'Respond Warmly', desc: '"I\'d love to reconnect!"' },
+                            { title: 'Make Time Soon', desc: 'Prioritize connection in 24-48hrs' },
+                            { title: 'Validate Attempt', desc: '"So glad you reached out"' }
+                        ],
+                        avoid: ['Lukewarm: "sure, maybe later"', 'Making them work for engagement', 'Punishing earlier distance'],
+                        conversation: `"I'm so glad you want to reconnect - I've missed you. When's good?"`
+                    },
+                    avoidant: {
+                        needs: ['THIS IS HUGE - overriding avoidance', 'Gentle, non-overwhelming response', 'Respect for their courage'],
+                        fears: ['You\'ll need too much immediately', 'Reconnection = loss of autonomy', 'Will regret vulnerability'],
+                        actions: [
+                            { title: 'Honor This Moment', desc: 'Recognize how significant this is' },
+                            { title: 'Match Energy', desc: 'Don\'t overwhelm - meet where they are' },
+                            { title: 'Make It Safe', desc: 'Keep initial reconnection light/low-pressure' }
+                        ],
+                        avoid: ['Immediate heavy conversations', 'Bringing up all you need to discuss', 'Making them regret reaching'],
+                        conversation: `"I'd really like that. Want to [low-key activity] tonight?"`
+                    }
+                },
+                good: {
+                    anxious: {
+                        needs: ['Sharing joy with you', 'Celebration of positive state', 'Connection while regulated'],
+                        fears: ['Good feelings won\'t last', 'You\'re unavailable when happy', 'Letting guard down unsafe'],
+                        actions: [
+                            { title: 'Share Their Joy', desc: '"That\'s wonderful! Tell me more!"' },
+                            { title: 'Optimal Connection Window', desc: 'PERFECT time for quality time' },
+                            { title: 'Reinforce Positive', desc: 'Celebrate to build secure base' }
+                        ],
+                        avoid: ['Being unavailable during good mood', 'Bringing up problems now', 'Dampening positivity'],
+                        conversation: `"I love that you're feeling good! Want to grab dinner and celebrate?"`
+                    },
+                    avoidant: {
+                        needs: ['Sharing without pressure', 'Light/easy connection', 'Joy without demands'],
+                        fears: ['Good feelings = vulnerability', 'Happiness means you\'ll need more', 'Minimal when feeling good'],
+                        actions: [
+                            { title: 'Light Connection', desc: 'Enjoy time together without heavy talks' },
+                            { title: 'Positive Reinforcement', desc: 'Good experiences = more openness' },
+                            { title: 'Respect Their Sharing', desc: 'They chose to include you - honor it' }
+                        ],
+                        avoid: ['Using good mood for "the talk"', 'Immediately asking for more', 'Assuming problems solved'],
+                        conversation: `"So glad you're feeling good! Want to do something fun together?"`
+                    },
+                    secure: {
+                        needs: ['Shared joy', 'Quality time in positive state', 'Building positive memories'],
+                        fears: ['Minimal - secure in good moods', 'Want to maintain momentum', 'Protecting relationship health'],
+                        actions: [
+                            { title: 'Invest in Connection', desc: 'Optimal window for quality time' },
+                            { title: 'Create Positive Memories', desc: 'Plan fun activities together' },
+                            { title: 'Express Appreciation', desc: 'Share what you value' }
+                        ],
+                        avoid: ['Taking good moods for granted', 'Immediately pivoting to problems', 'Being too busy'],
+                        conversation: `"I'm feeling good too - let's make the most of it! Date night?"`
+                    }
+                },
+                calm: {
+                    anxious: {
+                        needs: ['Enjoying regulated state', 'Connection without crisis', 'Building positive memories'],
+                        fears: ['Calm won\'t last', 'Will mess it up', 'Waiting for other shoe to drop'],
+                        actions: [
+                            { title: 'Reinforce Calm', desc: 'Positive attention during good times' },
+                            { title: 'Quality Connection Time', desc: 'Optimal window for deeper talks' },
+                            { title: 'Build on This', desc: 'What\'s working? Do more of it' }
+                        ],
+                        avoid: ['Ignoring them when calm', 'Only engaging during crisis', 'Bringing up past conflicts'],
+                        conversation: `"It's really nice to see you feeling calm. Want to enjoy some time together?"`
+                    },
+                    avoidant: {
+                        needs: ['Peaceful presence', 'Connection that feels easy', 'No pressure during calm'],
+                        fears: ['Calm will invite demands', 'You\'ll use calm to push for more', 'Peace will be disrupted'],
+                        actions: [
+                            { title: 'Enjoy the Calm Together', desc: 'Low-key quality time' },
+                            { title: 'Don\'t Push', desc: 'Let calm be enough' },
+                            { title: 'Build Positive Association', desc: 'Connection can feel good/safe' }
+                        ],
+                        avoid: ['Using calm as opportunity for "serious talk"', 'Immediately asking for more closeness', 'Disrupting peace'],
+                        conversation: `"You seem really peaceful. Want to just hang out?"`
+                    }
+                },
+                connected: {
+                    anxious: {
+                        needs: ['Mutual vulnerability', 'Emotional intimacy', 'Savoring the closeness'],
+                        fears: ['It won\'t last', 'Will sabotage it', 'Too good to be true'],
+                        actions: [
+                            { title: 'Be Present', desc: 'Fully engage in the connection' },
+                            { title: 'Express Gratitude', desc: '"I really value this closeness"' },
+                            { title: 'Resist Anxiety', desc: 'Don\'t test or create problems' }
+                        ],
+                        avoid: ['Testing: "Do you really love me?"', 'Sabotaging good moment', 'Waiting for abandonment'],
+                        conversation: `"I love feeling this connected with you. This is really special."`
+                    },
+                    avoidant: {
+                        needs: ['Intimacy without losing self', 'Closeness that feels safe', 'Connection on their terms'],
+                        fears: ['Too much closeness', 'Will be smothered', 'Losing autonomy'],
+                        actions: [
+                            { title: 'Honor Their Openness', desc: 'HUGE for avoidant - don\'t waste it' },
+                            { title: 'Match, Don\'t Overwhelm', desc: 'Meet their level, don\'t push for more' },
+                            { title: 'Make It Safe', desc: 'Show connection doesn\'t = loss of self' }
+                        ],
+                        avoid: ['Immediately wanting deeper commitment', 'Pushing for more vulnerability', 'Making them regret opening up'],
+                        conversation: `"This feels really nice. Thanks for letting me in."`
+                    }
+                },
+                playful: {
+                    anxious: {
+                        needs: ['Light, joyful connection', 'Playfulness without anxiety', 'Fun together'],
+                        fears: ['Playfulness will end', 'Not taking relationship seriously enough', 'Joy = vulnerability'],
+                        actions: [
+                            { title: 'Join the Fun', desc: 'Be playful back!' },
+                            { title: 'Create Joy Together', desc: 'Shared laughter builds bonds' },
+                            { title: 'Don\'t Overthink', desc: 'Let play be play' }
+                        ],
+                        avoid: ['Turning playful into serious', 'Analyzing the moment', 'Dampening their energy'],
+                        conversation: `"I love seeing this playful side! What do you want to do?"`
+                    },
+                    avoidant: {
+                        needs: ['Light connection', 'Fun without pressure', 'Playfulness as safe intimacy'],
+                        fears: ['Play will turn heavy', 'Expectations will follow', 'Minimal - play feels safe'],
+                        actions: [
+                            { title: 'Match Their Energy', desc: 'Be playful, keep it light' },
+                            { title: 'Build Positive Bond', desc: 'Play together = connection without threat' },
+                            { title: 'Don\'t Shift Tone', desc: 'Let play stay play' }
+                        ],
+                        avoid: ['Using playful moment for serious talk', 'Making play into emotional intimacy push', 'Dampening fun'],
+                        conversation: `"You're in a good mood! What should we get into?"`
+                    }
+                },
+                content: {
+                    anxious: {
+                        needs: ['Sharing contentment', 'Peaceful presence', 'Appreciation'],
+                        fears: ['Contentment = complacency', 'Not showing enough enthusiasm', 'Peace will end'],
+                        actions: [
+                            { title: 'Share the Peace', desc: 'Enjoy contentment together' },
+                            { title: 'Express Appreciation', desc: '"I love these moments with you"' },
+                            { title: 'Don\'t Disrupt', desc: 'Let contentment be enough' }
+                        ],
+                        avoid: ['Creating drama because it\'s "too quiet"', 'Needing intensity', 'Testing during peace'],
+                        conversation: `"You seem really content. I feel that too - it's nice."`
+                    },
+                    avoidant: {
+                        needs: ['Comfortable quiet', 'No pressure', 'Peace together'],
+                        fears: ['You\'ll want more than contentment', 'Peace = opportunity for demands', 'Minimal when content'],
+                        actions: [
+                            { title: 'Comfortable Silence', desc: 'Be together without needing to do/say' },
+                            { title: 'Appreciate the Peace', desc: 'This is connection for avoidants' },
+                            { title: 'Don\'t Fill the Quiet', desc: 'Let contentment be' }
+                        ],
+                        avoid: ['Using contentment to push for emotional intimacy', 'Filling peaceful silence', 'Asking for more'],
+                        conversation: `"This is really nice. Just being together."`
+                    }
+                }
+            };
+
+            // Default fallback
+            const defaultContext = {
+                needs: ['Understanding and patience', 'Clear communication', 'Emotional support'],
+                fears: ['Rejection', 'Misunderstanding', 'Loss of connection'],
+                actions: [
+                    { title: 'Open Communication', desc: 'Ask what they need right now' },
+                    { title: 'Active Listening', desc: 'Hear without trying to fix' },
+                    { title: 'Show Presence', desc: 'Be available and attentive' }
+                ],
+                avoid: ['Making assumptions', 'Dismissing feelings', 'Making it about you'],
+                conversation: `"I see you're feeling ${moodKey}. I'm here - want to talk?"`
+            };
+
+            return contexts[moodKey]?.[partnerAttachment] || defaultContext;
+        }
+
+        function closePartnerContextCard() {
+            document.getElementById('partner-context-card').style.display = 'none';
         }
 
         // ============ INSIGHTS ============

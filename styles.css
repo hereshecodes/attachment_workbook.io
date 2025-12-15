@@ -3483,6 +3483,326 @@ h1 {
     color: #3b82f6;
 }
 
+/* ============ PARTNER CONTEXT CARD ============ */
+.partner-context-card {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(167, 139, 250, 0.1));
+    border: 2px solid rgba(167, 139, 250, 0.4);
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: 20px;
+    box-shadow: 0 8px 32px rgba(139, 92, 246, 0.2);
+    animation: slideInFromRight 0.4s ease-out;
+}
+
+.context-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(167, 139, 250, 0.3);
+}
+
+.context-card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: rgba(167, 139, 250, 0.95);
+}
+
+.context-icon {
+    font-size: 1.5rem;
+}
+
+.context-card-close {
+    background: rgba(167, 139, 250, 0.15);
+    border: 1px solid rgba(167, 139, 250, 0.3);
+    color: rgba(167, 139, 250, 0.9);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.context-card-close:hover {
+    background: rgba(167, 139, 250, 0.25);
+    transform: scale(1.1);
+}
+
+.context-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.context-section {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 16px;
+    border-left: 4px solid rgba(167, 139, 250, 0.5);
+}
+
+.context-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(167, 139, 250, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+}
+
+.context-current-state {
+    border-left-color: rgba(59, 130, 246, 0.6);
+}
+
+.context-mood-display {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 8px;
+}
+
+.context-emoji {
+    font-size: 2rem;
+}
+
+.context-mood-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.context-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.context-list li {
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    background: rgba(167, 139, 250, 0.08);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    position: relative;
+    padding-left: 32px;
+}
+
+.context-list li::before {
+    content: "•";
+    position: absolute;
+    left: 14px;
+    color: rgba(167, 139, 250, 0.7);
+    font-size: 1.2rem;
+}
+
+.context-action-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.context-action-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.context-action-card:hover {
+    background: rgba(16, 185, 129, 0.18);
+    transform: translateX(4px);
+}
+
+.action-rank {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: white;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.action-content {
+    flex: 1;
+}
+
+.action-title {
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 4px;
+    font-size: 1rem;
+}
+
+.action-desc {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+.context-avoid-list li {
+    background: rgba(239, 68, 68, 0.1);
+    border-left: 3px solid #ef4444;
+    padding-left: 32px;
+}
+
+.context-avoid-list li::before {
+    content: "✕";
+    color: #ef4444;
+}
+
+.context-conversation-box {
+    padding: 16px;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1rem;
+    line-height: 1.6;
+    font-style: italic;
+}
+
+@keyframes slideInFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+}
+
+/* ============ MUSIC NOTIFICATION ============ */
+.music-notification {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 350px;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.95), rgba(167, 139, 250, 0.9));
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(139, 92, 246, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    animation: slideInFromRight 0.5s ease-out;
+    z-index: 10000;
+    backdrop-filter: blur(10px);
+}
+
+.music-notif-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 16px 12px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.music-notif-icon {
+    font-size: 1.5rem;
+}
+
+.music-notif-title {
+    flex: 1;
+    font-weight: 600;
+    color: white;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.music-notif-close {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.music-notif-close:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.1);
+}
+
+.music-notif-body {
+    padding: 16px;
+}
+
+.music-notif-song {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 6px;
+}
+
+.music-notif-desc {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-style: italic;
+}
+
+.music-notif-actions {
+    padding: 12px 16px 16px 16px;
+}
+
+.music-notif-btn {
+    display: block;
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+}
+
+.music-notif-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.02);
+}
+
+.music-notif-btn.apple {
+    background: linear-gradient(135deg, rgba(250, 60, 60, 0.3), rgba(250, 60, 60, 0.2));
+    border-color: rgba(250, 60, 60, 0.5);
+}
+
+.music-notif-btn.apple:hover {
+    background: linear-gradient(135deg, rgba(250, 60, 60, 0.4), rgba(250, 60, 60, 0.3));
+}
+
 /* Mobile responsive */
 @media (max-width: 768px) {
     .music-modal-content {
